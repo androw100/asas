@@ -35,7 +35,7 @@ function PageFallback() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/asas">
       <ScrollToTop />
       <div className="app-wrapper">
         <Navbar />
