@@ -3,13 +3,15 @@
  * كتالوج المنتجات الرسمي مع دعم الموديلات ثلاثية الأبعاد الحقيقية
  */
 
+import { assetUrl } from '../utils/assetUrl';
+
 export const categories = [
   "جميع المنتجات",
   "كراسي ومقاعد",
   "طاولات"
 ];
 
-export const products = [
+const catalog = [
   // ==========================================
   // كراسي ومقاعد
   // ==========================================
@@ -418,6 +420,12 @@ export const products = [
     }
   }
 ];
+
+export const products = catalog.map((product) => ({
+  ...product,
+  modelUrl: assetUrl(product.modelUrl),
+  thumbnail: assetUrl(product.thumbnail)
+}));
 
 export const faqs = [
   {

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Box, Sparkles } from 'lucide-react';
 import gsap from 'gsap';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+import { assetUrl } from '../utils/assetUrl';
 
 export default function Hero() {
   const containerRef = useRef(null);
@@ -14,48 +15,31 @@ export default function Hero() {
     if (prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
-      // 1. Text & Elements Entrance
+      // Use fromTo so Strict Mode remounts never leave opacity stuck at 0
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      tl.from('.hero-badge-anim', {
-        y: -20,
-        opacity: 0,
-        duration: 0.8
-      })
-      .from('.hero-word-anim', {
-        y: 45,
-        opacity: 0,
-        filter: 'blur(8px)',
-        duration: 1.1,
-        stagger: 0.12
-      }, '-=0.5')
-      .from('.hero-desc-anim', {
-        y: 30,
-        opacity: 0,
-        duration: 0.9
-      }, '-=0.6')
-      .from('.hero-cta-anim', {
-        y: 25,
-        opacity: 0,
-        stagger: 0.15,
-        duration: 0.8
-      }, '-=0.5')
-      .from('.hero-sub-anim', {
-        opacity: 0,
-        duration: 0.7
-      }, '-=0.4');
+      tl.fromTo('.hero-badge-anim', { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 })
+        .fromTo(
+          '.hero-word-anim',
+          { y: 45, opacity: 0, filter: 'blur(8px)' },
+          { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.1, stagger: 0.12 },
+          '-=0.5'
+        )
+        .fromTo('.hero-desc-anim', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9 }, '-=0.6')
+        .fromTo(
+          '.hero-cta-anim',
+          { y: 25, opacity: 0 },
+          { y: 0, opacity: 1, stagger: 0.15, duration: 0.8 },
+          '-=0.5'
+        )
+        .fromTo('.hero-sub-anim', { opacity: 0 }, { opacity: 1, duration: 0.7 }, '-=0.4');
 
-      // 2. Visual Card Smooth Parallax & Scale
-      gsap.from(imageCardRef.current, {
-        scale: 0.94,
-        y: 40,
-        opacity: 0,
-        duration: 1.4,
-        ease: 'power2.out',
-        delay: 0.2
-      });
+      gsap.fromTo(
+        imageCardRef.current,
+        { scale: 0.94, y: 40, opacity: 0 },
+        { scale: 1, y: 0, opacity: 1, duration: 1.4, ease: 'power2.out', delay: 0.2 }
+      );
 
-      // 3. Floating 3D Badge Subtle Idle Float
       gsap.to('.hero-floating-badge', {
         y: -8,
         duration: 2.4,
@@ -108,7 +92,7 @@ export default function Hero() {
           {/* Left Visual Card Showcase with Real Lifestyle Image & Floating 3D Badge */}
           <div className="hero-visual-card" ref={imageCardRef} style={{ position: 'relative' }}>
             <img
-              src="/images/hero-living.webp"
+              src={assetUrl('images/hero-living.webp')}
               alt="مساحة معيشة معمارية فاخرة من ASAS"
               style={{
                 width: '100%',

@@ -16,19 +16,23 @@ export default function ProductGrid({ products = [] }) {
     const ctx = gsap.context(() => {
       const cards = gridRef.current?.querySelectorAll('.product-card');
       if (cards && cards.length > 0) {
-        gsap.from(cards, {
-          y: 45,
-          opacity: 0,
-          scale: 0.98,
-          duration: 0.85,
-          stagger: 0.1,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: gridRef.current,
-            start: 'top 85%',
-            toggleActions: 'play none none none'
+        gsap.fromTo(
+          cards,
+          { y: 45, opacity: 0, scale: 0.98 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.85,
+            stagger: 0.1,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: gridRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none none'
+            }
           }
-        });
+        );
       }
     }, gridRef);
 

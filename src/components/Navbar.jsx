@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { Menu, X, Sparkles } from 'lucide-react';
+import { assetUrl } from '../utils/assetUrl';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -48,17 +49,17 @@ export default function Navbar() {
               </NavLink>
             </li>
             <li>
-              <a href="/#about" className="nav-link" onClick={closeMobileMenu}>
+              <a href={`${assetUrl('')}#about`} className="nav-link" onClick={closeMobileMenu}>
                 من نحن
               </a>
             </li>
             <li>
-              <a href="/#faq" className="nav-link" onClick={closeMobileMenu}>
+              <a href={`${assetUrl('')}#faq`} className="nav-link" onClick={closeMobileMenu}>
                 الأسئلة الشائعة
               </a>
             </li>
             <li>
-              <a href="/#contact" className="nav-link" onClick={closeMobileMenu}>
+              <a href={`${assetUrl('')}#contact`} className="nav-link" onClick={closeMobileMenu}>
                 تواصل معنا
               </a>
             </li>

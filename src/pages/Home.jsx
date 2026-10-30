@@ -9,6 +9,7 @@ import ContactForm from '../components/ContactForm';
 import FAQSection from '../components/FAQSection';
 import { products } from '../data/products';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+import { assetUrl } from '../utils/assetUrl';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,85 +28,105 @@ export default function Home() {
 
     const ctx = gsap.context(() => {
       // 1. Categories Stagger
-      gsap.from('.category-card-anim', {
-        y: 35,
-        opacity: 0,
-        duration: 0.85,
-        stagger: 0.12,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: '.categories-grid',
-          start: 'top 85%',
-          toggleActions: 'play none none none'
+      gsap.fromTo(
+        '.category-card-anim',
+        { y: 35, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.85,
+          stagger: 0.12,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.categories-grid',
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+          }
         }
-      });
+      );
 
-      // 2. Philosophy Section Reveal
-      gsap.from('.philosophy-content', {
-        y: 35,
-        opacity: 0,
-        filter: 'blur(4px)',
-        duration: 1,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: philosophyRef.current,
-          start: 'top 80%',
-          toggleActions: 'play none none none'
+      gsap.fromTo(
+        '.philosophy-content',
+        { y: 35, opacity: 0, filter: 'blur(4px)' },
+        {
+          y: 0,
+          opacity: 1,
+          filter: 'blur(0px)',
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: philosophyRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+          }
         }
-      });
+      );
 
-      // 3. 3D Showcase Reveal & Parallax (Vertical only - zero horizontal drift)
-      gsap.from('.showcase-box', {
-        scale: 0.97,
-        opacity: 0,
-        y: 30,
-        duration: 1,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: showcaseRef.current,
-          start: 'top 80%',
-          toggleActions: 'play none none none'
+      gsap.fromTo(
+        '.showcase-box',
+        { scale: 0.97, opacity: 0, y: 30 },
+        {
+          scale: 1,
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: showcaseRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+          }
         }
-      });
+      );
 
-      // 4. About Section Image & Text Reveal (Vertical only - prevents mobile overflow)
-      gsap.from('.about-image-card', {
-        y: 35,
-        opacity: 0,
-        duration: 1,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: aboutRef.current,
-          start: 'top 75%',
-          toggleActions: 'play none none none'
+      gsap.fromTo(
+        '.about-image-card',
+        { y: 35, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: aboutRef.current,
+            start: 'top 75%',
+            toggleActions: 'play none none none'
+          }
         }
-      });
+      );
 
-      gsap.from('.about-text-content', {
-        y: 35,
-        opacity: 0,
-        duration: 1,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: aboutRef.current,
-          start: 'top 75%',
-          toggleActions: 'play none none none'
+      gsap.fromTo(
+        '.about-text-content',
+        { y: 35, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: aboutRef.current,
+            start: 'top 75%',
+            toggleActions: 'play none none none'
+          }
         }
-      });
+      );
 
-      // 5. Contact Section Reveal
-      gsap.from('.contact-anim-box', {
-        y: 30,
-        opacity: 0,
-        duration: 0.9,
-        stagger: 0.15,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: contactRef.current,
-          start: 'top 80%',
-          toggleActions: 'play none none none'
+      gsap.fromTo(
+        '.contact-anim-box',
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.9,
+          stagger: 0.15,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: contactRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+          }
         }
-      });
+      );
     });
 
     return () => ctx.revert();
@@ -297,7 +318,7 @@ export default function Home() {
             {/* Image Card Showcase */}
             <div className="about-image-card" style={{ position: 'relative', borderRadius: 'var(--radius-md)', overflow: 'hidden', boxShadow: 'var(--shadow-elevated)', border: '1px solid var(--color-border)', aspectRatio: '4/3', width: '100%' }}>
               <img
-                src="/images/about-craft.webp"
+                src={assetUrl('images/about-craft.webp')}
                 alt="حرفية التصميم والأخشاب الطبيعية لدى ASAS"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />

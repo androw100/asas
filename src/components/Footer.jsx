@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { assetUrl } from '../utils/assetUrl';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -50,8 +51,8 @@ export default function Footer() {
             <h4 className="footer-heading">التواصل والاستفسارات</h4>
             <ul className="footer-links">
               <li><span className="footer-link" style={{ direction: 'ltr', display: 'inline-block' }}>studio@asas-living.com</span></li>
-              <li><a href="/#contact" className="footer-link">طلب تسعيرة أو استشارة خاصة</a></li>
-              <li><a href="/#faq" className="footer-link">الأسئلة الشائعة</a></li>
+              <li><a href={`${assetUrl('')}#contact`} className="footer-link">طلب تسعيرة أو استشارة خاصة</a></li>
+              <li><a href={`${assetUrl('')}#faq`} className="footer-link">الأسئلة الشائعة</a></li>
             </ul>
           </div>
         </div>
@@ -59,7 +60,7 @@ export default function Footer() {
         <div className="footer-bottom">
           <p>© {CURRENT_YEAR} ASAS. جميع الحقوق محفوظة.</p>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-            <a href="/#faq" className="footer-link" style={{ fontSize: '0.82rem' }}>الأسئلة الشائعة</a>
+            <a href={`${assetUrl('')}#faq`} className="footer-link" style={{ fontSize: '0.82rem' }}>الأسئلة الشائعة</a>
             <span style={{ color: 'var(--color-border)' }}>•</span>
             <span style={{ fontSize: '0.82rem', color: 'var(--color-text-dim)' }}>سياسة الخصوصية</span>
             <span style={{ color: 'var(--color-border)' }}>•</span>
