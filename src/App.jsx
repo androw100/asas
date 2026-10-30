@@ -35,7 +35,7 @@ function PageFallback() {
 
 export default function App() {
   return (
-    <BrowserRouter basename="/asas">
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '') || '/'}>
       <ScrollToTop />
       <div className="app-wrapper">
         <Navbar />
