@@ -4,6 +4,7 @@ import { Box, Upload, RefreshCw, AlertCircle } from 'lucide-react';
 export default function ModelErrorState({
   modelUrl,
   errorType = 'missing',
+  errorMessage,
   onRetry,
   onFileSelect,
   onEnableProcedural
@@ -39,6 +40,11 @@ export default function ModelErrorState({
         ) : (
           <>
             ملف المجسم <code style={{ color: 'var(--color-accent)', padding: '2px 6px', background: 'var(--color-surface)', borderRadius: '2px' }}>{modelUrl}</code> غير موجود بالمسار الافتراضي.
+            {errorMessage && (
+              <span style={{ display: 'block', marginTop: '6px', fontSize: '0.8rem', color: '#e07a5f' }}>
+                ({errorMessage})
+              </span>
+            )}
           </>
         )}
       </p>

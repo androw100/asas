@@ -57,35 +57,55 @@ function CameraPresetController({ cameraPreset, defaultPos, defaultTarget }) {
 
 // Renders the GLTF model with finish application
 function GLTFModel({ url, product, finish }) {
-  const { scene } = useGLTF(url);
+  const gltf = useGLTF(url);
+  const [embeddedMaterials, setEmbeddedMaterials] = useState({});
 
-  // Clone scene deeply so cached GLTF scene is never mutated
-  const clonedScene = useMemo(() => {
-    const clone = scene.clone(true);
-    return clone;
-  }, [scene]);
-
-  // Apply material changes whenever finish or product mapping changes
+  // Extract all materials parsed by GLTFLoader, including KHR_materials_variants
   useEffect(() => {
-    if (clonedScene && finish) {
-      applyFinishToModel(clonedScene, finish, product);
+    let isMounted = true;
+    if (gltf?.parser) {
+      gltf.parser.getDependencies('material').then((mats) => {
+        if (!isMounted || !Array.isArray(mats)) return;
+        const dict = {};
+        mats.forEach((m) => {
+          if (m && m.name) {
+            dict[m.name] = m;
+          }
+        });
+        setEmbeddedMaterials(dict);
+      }).catch((err) => {
+        console.warn('Failed to load embedded GLTF materials:', err);
+      });
     }
-  }, [clonedScene, finish, product]);
+    return () => { isMounted = false; };
+  }, [gltf]);
+
+  // Apply material changes whenever finish, scene, or embedded materials change
+  useEffect(() => {
+    if (gltf?.scene && finish) {
+      const allMaterials = {
+        ...(gltf.materials || {}),
+        ...embeddedMaterials
+      };
+      applyFinishToModel(gltf.scene, finish, product, allMaterials);
+    }
+  }, [gltf, finish, product, embeddedMaterials]);
 
   return (
     <Center top>
-      <primitive object={clonedScene} castShadow receiveShadow />
+      <primitive object={gltf.scene} castShadow receiveShadow />
     </Center>
   );
 }
 
 export default function ProductViewer({ product, selectedFinish }) {
   const [webGLSupported] = useState(() => checkWebGLSupport());
-  const [modelStatus, setModelStatus] = useState('checking'); // 'checking' | 'loaded' | 'missing' | 'error'
+  const [modelStatus, setModelStatus] = useState('loaded'); // 'loaded' | 'missing' | 'error'
   const [useProcedural, setUseProcedural] = useState(false);
   const [customModelUrl, setCustomModelUrl] = useState(null);
   const [cameraPreset, setCameraPreset] = useState('threequarter');
   const [retryCount, setRetryCount] = useState(0);
+  const [loadError, setLoadError] = useState(null);
 
   const controlsRef = useRef();
 
@@ -98,37 +118,6 @@ export default function ProductViewer({ product, selectedFinish }) {
   const defaultCamTarget = useMemo(() => {
     return product?.cameraDefaults?.target || [0, 0.4, 0];
   }, [product]);
-
-  // Check if GLB file exists at path before triggering Drei's useGLTF
-  useEffect(() => {
-    if (customModelUrl) {
-      return;
-    }
-
-    if (!activeModelUrl) {
-      return;
-    }
-
-    let isSubscribed = true;
-
-    fetch(activeModelUrl, { method: 'HEAD' })
-      .then((res) => {
-        if (!isSubscribed) return;
-        if (res.ok) {
-          setModelStatus('loaded');
-        } else {
-          setModelStatus('missing');
-        }
-      })
-      .catch(() => {
-        if (!isSubscribed) return;
-        setModelStatus('missing');
-      });
-
-    return () => {
-      isSubscribed = false;
-    };
-  }, [activeModelUrl, retryCount, customModelUrl]);
 
   // Handle local user-selected GLB file for instantaneous testing
   const handleLocalFileSelect = (e) => {
@@ -184,16 +173,14 @@ export default function ProductViewer({ product, selectedFinish }) {
       </div>
 
       {/* Fallback & State Overlays */}
-      {modelStatus === 'checking' && !useProcedural && (
-        <LoadingState message="جارٍ تجهيز المجسم ثلاثي الأبعاد..." />
-      )}
-
       {showOverlayError && (
         <ModelErrorState
           modelUrl={activeModelUrl}
           errorType="missing"
+          errorMessage={loadError}
           onRetry={() => {
-            setModelStatus('checking');
+            setLoadError(null);
+            setModelStatus('loaded');
             setRetryCount((c) => c + 1);
           }}
           onFileSelect={handleLocalFileSelect}
@@ -205,16 +192,20 @@ export default function ProductViewer({ product, selectedFinish }) {
       {(!showOverlayError || useProcedural) && (
         <div className="viewer-canvas-container">
           <ThreeErrorBoundary
-            onError={() => {
-              setModelStatus('error');
-              setUseProcedural(true);
+            key={`${activeModelUrl}_${retryCount}`}
+            onError={(err) => {
+              console.error('Three.js Error in ProductViewer:', err);
+              setLoadError(err?.message || String(err));
+              setModelStatus('missing');
             }}
             fallback={
               <ModelErrorState
                 modelUrl={activeModelUrl}
-                errorType="corrupt"
+                errorType="missing"
+                errorMessage={loadError}
                 onRetry={() => {
-                  setModelStatus('checking');
+                  setLoadError(null);
+                  setModelStatus('loaded');
                   setRetryCount((c) => c + 1);
                 }}
                 onFileSelect={handleLocalFileSelect}
@@ -236,17 +227,22 @@ export default function ProductViewer({ product, selectedFinish }) {
               }}
             >
               {/* Lighting */}
-              <ambientLight intensity={0.75} />
+              <ambientLight intensity={0.45} />
               <directionalLight
                 position={[5, 8, 5]}
-                intensity={1.2}
+                intensity={1.4}
                 castShadow
                 shadow-mapSize-width={1024}
                 shadow-mapSize-height={1024}
                 shadow-bias={-0.0001}
               />
-              <directionalLight position={[-5, 4, -5]} intensity={0.4} color="#C4A477" />
-              <Environment preset="city" />
+              <directionalLight position={[-5, 4, -5]} intensity={0.5} color="#E8D5B5" />
+              <directionalLight position={[0, -2, 4]} intensity={0.25} color="#FFFFFF" />
+
+              {/* Offline-safe Environment */}
+              <Suspense fallback={null}>
+                <Environment preset="city" />
+              </Suspense>
 
               {/* Models */}
               <Suspense fallback={null}>
@@ -326,11 +322,10 @@ export default function ProductViewer({ product, selectedFinish }) {
           من الأعلى
         </button>
 
-        <div style={{ width: '1px', height: '18px', background: 'var(--color-border)', margin: '0 4px' }} />
+        <div className="viewer-toolbar-divider" />
 
         <button
-          className="btn-icon"
-          style={{ width: '32px', height: '32px' }}
+          className="btn-icon viewer-reset-btn"
           onClick={handleResetCamera}
           title="إعادة ضبط زاوية الكاميرا"
           aria-label="إعادة ضبط زاوية الكاميرا"

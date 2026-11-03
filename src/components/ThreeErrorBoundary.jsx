@@ -26,6 +26,10 @@ export class ThreeErrorBoundary extends React.Component {
       if (this.props.fallback) {
         return typeof this.props.fallback === 'function'
           ? this.props.fallback({ error: this.state.error, reset: this.resetError })
+          : React.isValidElement(this.props.fallback)
+          ? React.cloneElement(this.props.fallback, {
+              errorMessage: this.state.error?.message || String(this.state.error)
+            })
           : this.props.fallback;
       }
       return null;

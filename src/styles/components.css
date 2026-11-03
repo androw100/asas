@@ -567,39 +567,47 @@
   transform: translateX(-50%);
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: rgba(23, 23, 21, 0.85);
+  gap: 6px;
+  background: rgba(23, 23, 21, 0.88);
   backdrop-filter: blur(12px);
   border: 1px solid var(--color-border);
-  padding: 6px 12px;
+  padding: 5px 8px;
   border-radius: var(--radius-full);
   z-index: 10;
-  max-width: calc(100% - 20px);
+  max-width: calc(100% - 24px);
   overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
-@media (max-width: 520px) {
-  .viewer-toolbar {
-    gap: 4px;
-    padding: 4px 8px;
-    bottom: 10px;
-  }
-  .viewer-preset-btn {
-    padding: 5px 8px;
-    font-size: 0.72rem;
-  }
-  .viewer-hint {
-    font-size: 0.72rem;
-    padding: 3px 8px;
-  }
+.viewer-toolbar::-webkit-scrollbar {
+  display: none;
+}
+
+.viewer-toolbar-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--color-border);
+  margin: 0 2px;
+  flex-shrink: 0;
 }
 
 .viewer-preset-btn {
-  padding: 6px 14px;
+  padding: 6px 12px;
   font-size: 0.8rem;
   color: var(--color-text-muted);
   border-radius: var(--radius-full);
   transition: all var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  cursor: pointer;
+  user-select: none;
 }
 
 .viewer-preset-btn:hover {
@@ -611,6 +619,40 @@
   background: var(--color-accent);
   color: #12110E;
   font-weight: 600;
+}
+
+.viewer-reset-btn {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 520px) {
+  .viewer-toolbar {
+    gap: 3px;
+    padding: 4px 6px;
+    bottom: 8px;
+    max-width: calc(100% - 16px);
+  }
+  .viewer-preset-btn {
+    padding: 5px 8px;
+    font-size: 0.72rem;
+  }
+  .viewer-toolbar-divider {
+    height: 14px;
+    margin: 0 1px;
+  }
+  .viewer-reset-btn {
+    width: 26px;
+    height: 26px;
+  }
+  .viewer-hint {
+    font-size: 0.72rem;
+    padding: 3px 8px;
+  }
 }
 
 .viewer-hint {

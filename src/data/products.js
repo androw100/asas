@@ -24,7 +24,7 @@ const catalog = [
     description: "صُمم كرسي آتلييه ليمنح ركنك المفضل لمسة من الراحة والشخصية. يجمع بين الخشب الطبيعي المتين والتنجيد المدروس ليوازن بين الأناقة والاستخدام العملي في مساحات المعيشة وتناول الطعام.",
     dimensions: "العرض 62 سم × العمق 60 سم × الارتفاع 78 سم (ارتفاع المقعد 45 سم)",
     materialsDescription: "هيكل من الخشب الصلب المعالج، مفاصل متينة، وتشطيب طبيعي يدوي.",
-    modelUrl: "/models/chair.glb",
+    modelUrl: assetUrl("/models/tabel_final1.glb"),
     thumbnail: "/images/chair.webp",
     featured: true,
     cameraDefaults: {
@@ -33,13 +33,14 @@ const catalog = [
       fov: 38
     },
     finishes: [
-      { id: "original", name: "عرض القطعة بالشكل الأصلي", color: "#FFFFFF", target: "wood" },
-      { id: "natural-oak", name: "خشب أوك طبيعي", color: "#C6A477", target: "wood" },
-      { id: "walnut", name: "خشب جوز داكن", color: "#603A25", target: "wood" },
-      { id: "charcoal-ebony", name: "خشب أسود كربوني", color: "#222120", target: "wood" }
+      { id: "midnight-gold", name: "رخام أسود مذهب (Midnight Gold)", color: "#1C1B1A", variantName: "Midnight Gold_Marble", target: "marble" },
+      { id: "elegant-white", name: "رخام أبيض فاخر (Elegant White)", color: "#F0EFEB", variantName: "Elegant White_Marble", target: "marble" },
+      { id: "pure-black", name: "رخام أسود كلاسيكي (Pure Black)", color: "#111111", variantName: "black_marble", target: "marble" },
+      { id: "warm-oak", name: "خشب أوك دافئ (خامة إضافية)", color: "#C6A477", textureUrl: "/textures/warm-oak.png", roughness: 0.45, target: "marble" }
     ],
     materialMapping: {
-      wood: ["material_0", "object_0", "mesh", "wood", "material"]
+      marble: ["Midnight Gold_Marble", "Elegant White_Marble", "black_marble", "Black and gold marble", "marble", "Plane", "top"],
+      gold: ["Gold metal (Imperfections)", "gold", "metal", "Cube"]
     }
   },
   {
@@ -51,7 +52,7 @@ const catalog = [
     description: "تصميم يحتفي بالحرفية اليدوية وتداخل الخامات الطبيعية. يمنح نسيج القصب مرونة وتهوية مريحة، بينما يمنح الهيكل الخشبي الداكن حضوراً بصرياً دافئاً حول مائدة الطعام.",
     dimensions: "العرض 54 سم × العمق 56 سم × الارتفاع 79 سم (ارتفاع المقعد 45 سم)",
     materialsDescription: "خشب دردار مجفف في الفرن، قصب طبيعي منسوج يدوياً، طلاء شمعي ناعم.",
-    modelUrl: "/models/black-wood-cane-dining-chair.glb",
+    modelUrl: assetUrl("/models/tabel_final1.glb"),
     thumbnail: "/images/cane-chair.webp",
     featured: true,
     cameraDefaults: {
@@ -78,7 +79,7 @@ const catalog = [
     description: "إعادة ابتكار عصرية لكرسي ويندسور الكلاسيكي. يتميز بظهره المرتفع وانحناءاته الانسيابية التي تلفت الأنظار وتمنح زوايا المنزل هيبة وفخامة هادئة.",
     dimensions: "العرض 65 سم × العمق 62 سم × الارتفاع 118 سم",
     materialsDescription: "خشب بلوط صلب مشكّل بالبخار، أعمدة منحوتة ومصقولة يدوياً.",
-    modelUrl: "/models/highback-windsor-chair.glb",
+    modelUrl: assetUrl("/models/tabel_final1.glb"),
     thumbnail: "/images/windsor.webp",
     featured: true,
     cameraDefaults: {
@@ -105,7 +106,7 @@ const catalog = [
     description: "قطعة تجمع بين خفة الوزن والمتانة العالية. مسند الظهر المصمم على شكل حرف Y يوفر دعماً مريحاً للظهر أثناء الجلوس، بينما يضفي المقعد المنسوج دفئاً طبيعياً.",
     dimensions: "العرض 55 سم × العمق 51 سم × الارتفاع 76 سم",
     materialsDescription: "خشب زان طبيعي صلب، حبال ورقية مضفورة ومقاومة للاستخدام اليومي.",
-    modelUrl: "/models/wooden-wishbone-chair.glb",
+    modelUrl: assetUrl("/models/tabel_final1.glb"),
     thumbnail: "/images/wishbone.webp",
     featured: true,
     cameraDefaults: {
@@ -132,7 +133,7 @@ const catalog = [
     description: "تناسب هذه القطعة غرف الطعام العصرية والمساحات المفتوحة. توفر الوسادة المدمجة راحة إضافية تدوم طوال فترة الجلوس، مع الحفاظ على صفاء التصميم العام.",
     dimensions: "العرض 54 سم × العمق 55 سم × الارتفاع 85 سم",
     materialsDescription: "خشب بلوط مستدام، إسفنج عالي المرونة، قماش كتان بيج منسوج.",
-    modelUrl: "/models/scandinavian-oak-chair-with-beige-cushion.glb",
+    modelUrl: assetUrl("/models/tabel_final1.glb"),
     thumbnail: "/images/scandi-oak.webp",
     featured: false,
     cameraDefaults: {
@@ -159,7 +160,7 @@ const catalog = [
     description: "كرسي يركز على راحة الجسم والتناغم البصري مع طاولات الطعام المختلفة. يمنح مساحتك طابعاً مريحاً ومرحباً.",
     dimensions: "العرض 50 سم × العمق 54 سم × الارتفاع 85 سم",
     materialsDescription: "هيكل خشب رماد صلب، ظهر ومقعد من الكتان الطبيعي النقي.",
-    modelUrl: "/models/scandinavian-wood-and-linen-chair.glb",
+    modelUrl: assetUrl("/models/tabel_final1.glb"),
     thumbnail: "/images/scandi-linen.webp",
     featured: false,
     cameraDefaults: {
@@ -185,7 +186,7 @@ const catalog = [
     description: "خيار مثالي لغرف الطعام الفاخرة، حيث يحتضن الجالس بقماش فاخر وأرجل متناسقة تضيف لمسة فندقية راقية لبيتك.",
     dimensions: "العرض 52 سم × العمق 58 سم × الارتفاع 86 سم",
     materialsDescription: "هيكل داخلي متين، حشوات إسفنجية كثيفة، قماش ناعم الملمس وسهل العناية.",
-    modelUrl: "/models/upholstered-dining-chair.glb",
+    modelUrl: assetUrl("/models/tabel_final1.glb"),
     thumbnail: "/images/upholstered-chair.webp",
     featured: false,
     cameraDefaults: {
@@ -212,7 +213,7 @@ const catalog = [
     description: "صُمم للمكاتب المنزلية وغرف القراءة الخاصة. جلد ناعم ومريح مع قاعدة فولاذية وعجلات ناعمة تجعل يوم عملك مريحاً وأنيقاً.",
     dimensions: "العرض 68 سم × العمق 66 سم × الارتفاع 95 سم",
     materialsDescription: "جلد عالي الجودة بملمس طبيعي، قاعدة معدنية مصقولة، آلية تحكم بالارتفاع.",
-    modelUrl: "/models/leather-office-chair.glb",
+    modelUrl: assetUrl("/models/tabel_final1.glb"),
     thumbnail: "/images/leather-chair.webp",
     featured: false,
     cameraDefaults: {
@@ -239,7 +240,7 @@ const catalog = [
     description: "خيارك الأمثل لساعات العمل والتركيز الطويلة. دعم مستمر لأسفل الظهر ومساند قابلة للضبط تضمن سلامة وضعية الجلوس.",
     dimensions: "العرض 65 سم × العمق 65 سم × الارتفاع 115 سم",
     materialsDescription: "هيكل بوليمر معزز، نسيج شبكي متين وقابل للتنفس، قاعدة خماسية متوازنة.",
-    modelUrl: "/models/ergonomic-chair.glb",
+    modelUrl: assetUrl("/models/tabel_final1.glb"),
     thumbnail: "/images/ergonomic-chair.webp",
     featured: false,
     cameraDefaults: {
@@ -269,7 +270,7 @@ const catalog = [
     description: "قطعة مركزية مبهرة بطول 3 أمتار تجمع بين ألواح البلوط السميكة وقواعد الكونكريت المعماري الصلبة. صُممت للمساحات الكبيرة والولائم العائلية الممتدة.",
     dimensions: "الطول 300 سم × العرض 152 سم × الارتفاع 90 سم",
     materialsDescription: "سطح من خشب البلوط الصلب، قواعد صب كونكريت معمارية معززة.",
-    modelUrl: "/models/10-12-seat-extra-large-rectangular-oak-and-concrete-dining-table.glb",
+    modelUrl: assetUrl("/models/tabel_final1.glb"),
     thumbnail: "/images/oak-concrete-table.webp",
     featured: true,
     cameraDefaults: {
@@ -296,7 +297,7 @@ const catalog = [
     description: "عروق بيضاء دقيقة تنساب على سطح الرخام الأسود المصقول، ترتكز على أرجل فولاذية مطلية بلمسة ذهبية غير لامعة، لتمنح مساحتك لمسة عصرية وفخمة.",
     dimensions: "الطول 160 سم × العرض 95 سم × الارتفاع 68 سم",
     materialsDescription: "سطح رخام مركب عالي المقاومة، هيكل فولاذي مطلي بالذهب المطفأ.",
-    modelUrl: "/models/4-6-seat-rectangular-black-faux-marble-dining-table-with-gold-legs.glb",
+    modelUrl: assetUrl("/models/tabel_final1.glb"),
     thumbnail: "/images/black-marble-table.webp",
     featured: true,
     cameraDefaults: {
@@ -305,12 +306,14 @@ const catalog = [
       fov: 38
     },
     finishes: [
-      { id: "original", name: "عرض القطعة بالشكل الأصلي", color: "#FFFFFF", target: "table" },
-      { id: "warm-bronze", name: "عنبري دافئ", color: "#A88E67", target: "table" },
-      { id: "dark-obsidian", name: "أسود أوبسيديان حالك", color: "#222222", target: "table" }
+      { id: "midnight-gold", name: "رخام أسود مذهب (Midnight Gold)", color: "#1C1B1A", variantName: "Midnight Gold_Marble", target: "marble" },
+      { id: "elegant-white", name: "رخام أبيض فاخر (Elegant White)", color: "#F0EFEB", variantName: "Elegant White_Marble", target: "marble" },
+      { id: "pure-black", name: "رخام أسود كلاسيكي (Pure Black)", color: "#111111", variantName: "black_marble", target: "marble" },
+      { id: "warm-oak", name: "خشب أوك دافئ (خامة إضافية)", color: "#C6A477", textureUrl: "/textures/warm-oak.png", roughness: 0.45, target: "marble" }
     ],
     materialMapping: {
-      table: ["Material_0", "Mesh_0", "material", "mesh"]
+      marble: ["Midnight Gold_Marble", "Elegant White_Marble", "black_marble", "Black and gold marble", "marble", "Plane", "top"],
+      gold: ["Gold metal (Imperfections)", "gold", "metal", "Cube"]
     }
   },
   {
@@ -322,7 +325,7 @@ const catalog = [
     description: "يشجع الشكل الدائري على التواصل والقرب في جلسات الطعام العائلية. قاعدة البوق النحتية توفر راحة تامة لحركة الأقدام وتمنح الطاولة مظهراً يطفو برقة في الغرفة.",
     dimensions: "القطر 115 سم × الارتفاع 71 سم",
     materialsDescription: "سطح رخام كارارا مركب ومصقول، قاعدة بوقية فولاذية متزنة مطلية ببرونز ذهبي.",
-    modelUrl: "/models/4-seat-round-white-faux-marble-dining-table-with-gold-base.glb",
+    modelUrl: assetUrl("/models/tabel_final1.glb"),
     thumbnail: "/images/white-marble-table.webp",
     featured: true,
     cameraDefaults: {
@@ -348,7 +351,7 @@ const catalog = [
     description: "يمنح الزجاج الشفاف شعوراً باتساع المساحة وانسيابية الضوء، بينما تضفي القاعدة الخشبية الهندسية المتداخلة دفئاً معمارياً يثري المكان.",
     dimensions: "القطر 114 سم × الارتفاع 75 سم",
     materialsDescription: "زجاج سيكوريت مقسى بسماكة 12 مم بحواف مشطوفة، قاعدة هندسية من خشب الدردار.",
-    modelUrl: "/models/4-seat-round-tempered-glass-dining-table-with-geometric-base.glb",
+    modelUrl: assetUrl("/models/tabel_final1.glb"),
     thumbnail: "/images/glass-table.webp",
     featured: false,
     cameraDefaults: {
@@ -374,7 +377,7 @@ const catalog = [
     description: "تصميم مدمج يناسب شقق المدن، وزوايا الإفطار المشرقة، ومساحات تناول الشاي. قاعدة خشبية منحوتة تعكس دفء الضيافة الحقيقية.",
     dimensions: "القطر 80 سم × الارتفاع 75 سم",
     materialsDescription: "خشب طبيعي مصمت، عمود مركزي مخروط بعناية، حماية شمعية ضد السوائل.",
-    modelUrl: "/models/2-4-seat-compact-round-farmhouse-pedestal-dining-table.glb",
+    modelUrl: assetUrl("/models/tabel_final1.glb"),
     thumbnail: "/images/farmhouse-table.webp",
     featured: false,
     cameraDefaults: {
@@ -401,7 +404,7 @@ const catalog = [
     description: "توازن مدروس بين الأشكال الهندسية. السطح المربع بحوافه المستديرة يمنح استغلالاً مثالياً للمساحة، مع قاعدة التيوليب الانسيابية الخالية من الأرجل المزدحمة.",
     dimensions: "العرض 80 سم × العمق 80 سم × الارتفاع 76 سم",
     materialsDescription: "سطح مركب غير لامع ناعم الملمس، قاعدة حديدية ثقيلة مطلية حرارياً.",
-    modelUrl: "/models/2-4-seat-compact-square-tulip-dining-table.glb",
+    modelUrl: assetUrl("/models/tabel_final1.glb"),
     thumbnail: "/images/square-tulip-table.webp",
     featured: false,
     cameraDefaults: {
@@ -421,9 +424,55 @@ const catalog = [
   }
 ];
 
+export const tableFinishes = [
+  {
+    id: "black-marble",
+    name: "رخام أسود كلاسيكي (Black Marble)",
+    color: "#FFFFFF",
+    variantName: "black_marble",
+    textureUrl: assetUrl("/textures/black-marble.jpg"),
+    normalUrl: assetUrl("/textures/black-marble-normal.jpg"),
+    textureRepeat: [1.8, 1.8],
+    roughness: 0.12,
+    metalness: 0.0,
+    target: "marble"
+  },
+  {
+    id: "white-marble",
+    name: "رخام أبيض فاخر (Elegant White)",
+    color: "#FFFFFF",
+    variantName: "Elegant White_Marble",
+    textureUrl: assetUrl("/textures/white-marble.jpg"),
+    normalUrl: assetUrl("/textures/white-marble-normal.jpg"),
+    textureRepeat: [2, 2],
+    roughness: 0.14,
+    metalness: 0.0,
+    target: "marble"
+  },
+  {
+    id: "brown-marble",
+    name: "رخام رمادي حجري (Marble)",
+    color: "#FFFFFF",
+    variantName: "Marble",
+    target: "marble"
+  }
+];
+
+export const tableMaterialMapping = {
+  marble: ["Marble", "Midnight Gold_Marble", "Elegant White_Marble", "black_marble", "Black and gold marble", "brown_Marble", "marble", "Plane", "top"],
+  gold: ["Gold metal (Imperfections)", "gold", "metal", "Cube"]
+};
+
 export const products = catalog.map((product) => ({
   ...product,
-  modelUrl: assetUrl(product.modelUrl),
+  modelUrl: assetUrl("/models/tabel_final1.glb"),
+  finishes: tableFinishes,
+  materialMapping: tableMaterialMapping,
+  cameraDefaults: {
+    position: [2.2, 1.6, 2.6],
+    target: [0, 0.38, 0],
+    fov: 38
+  },
   thumbnail: assetUrl(product.thumbnail)
 }));
 
