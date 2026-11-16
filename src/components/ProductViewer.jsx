@@ -24,7 +24,7 @@ function checkWebGLSupport() {
 }
 
 // Controller component to smoothly reposition camera to presets
-function CameraPresetController({ cameraPreset, defaultPos, defaultTarget }) {
+function CameraPresetController({ cameraPreset, defaultPos, defaultTarget, controlsRef }) {
   const { camera } = useThree();
 
   useEffect(() => {
@@ -50,7 +50,12 @@ function CameraPresetController({ cameraPreset, defaultPos, defaultTarget }) {
     camera.position.set(targetPos[0], targetPos[1], targetPos[2]);
     camera.lookAt(new THREE.Vector3(...defaultTarget));
     camera.updateProjectionMatrix();
-  }, [cameraPreset, camera, defaultPos, defaultTarget]);
+
+    if (controlsRef?.current) {
+      controlsRef.current.target.set(...defaultTarget);
+      controlsRef.current.update();
+    }
+  }, [cameraPreset, camera, defaultPos, defaultTarget, controlsRef]);
 
   return null;
 }
@@ -67,9 +72,10 @@ function GLTFModel({ url, product, finish }) {
       gltf.parser.getDependencies('material').then((mats) => {
         if (!isMounted || !Array.isArray(mats)) return;
         const dict = {};
-        mats.forEach((m) => {
-          if (m && m.name) {
-            dict[m.name] = m;
+        mats.forEach((m, idx) => {
+          if (m) {
+            if (m.name) dict[m.name] = m;
+            dict[idx] = m;
           }
         });
         setEmbeddedMaterials(dict);
@@ -112,7 +118,7 @@ export default function ProductViewer({ product, selectedFinish }) {
   const activeModelUrl = customModelUrl || product?.modelUrl;
 
   const defaultCamPos = useMemo(() => {
-    return product?.cameraDefaults?.position || [2.8, 2.0, 3.4];
+    return product?.cameraDefaults?.position || [8.7, 5.5, 10.2];
   }, [product]);
 
   const defaultCamTarget = useMemo(() => {
@@ -218,7 +224,9 @@ export default function ProductViewer({ product, selectedFinish }) {
               dpr={[1, 1.8]}
               camera={{
                 position: defaultCamPos,
-                fov: product?.cameraDefaults?.fov || 40
+                fov: product?.cameraDefaults?.fov || 38,
+                near: 0.1,
+                far: 200
               }}
               gl={{
                 antialias: true,
@@ -226,18 +234,19 @@ export default function ProductViewer({ product, selectedFinish }) {
                 alpha: true
               }}
             >
-              {/* Lighting */}
-              <ambientLight intensity={0.45} />
+              {/* Neutral High-Fidelity Studio Lighting */}
+              <ambientLight intensity={0.7} color="#FFFFFF" />
               <directionalLight
                 position={[5, 8, 5]}
-                intensity={1.4}
+                intensity={1.2}
+                color="#FFFFFF"
                 castShadow
                 shadow-mapSize-width={1024}
                 shadow-mapSize-height={1024}
                 shadow-bias={-0.0001}
               />
-              <directionalLight position={[-5, 4, -5]} intensity={0.5} color="#E8D5B5" />
-              <directionalLight position={[0, -2, 4]} intensity={0.25} color="#FFFFFF" />
+              <directionalLight position={[-5, 4, -5]} intensity={0.4} color="#FFFFFF" />
+              <directionalLight position={[0, -2, 4]} intensity={0.2} color="#FFFFFF" />
 
               {/* Offline-safe Environment */}
               <Suspense fallback={null}>
@@ -261,9 +270,9 @@ export default function ProductViewer({ product, selectedFinish }) {
               <ContactShadows
                 position={[0, 0, 0]}
                 opacity={0.65}
-                scale={12}
+                scale={20}
                 blur={1.6}
-                far={4}
+                far={10}
                 resolution={512}
                 color="#0D0D0C"
               />
@@ -275,7 +284,7 @@ export default function ProductViewer({ product, selectedFinish }) {
                 enableDamping
                 dampingFactor={0.06}
                 minDistance={1.2}
-                maxDistance={6.5}
+                maxDistance={50.0}
                 maxPolarAngle={Math.PI / 2 + 0.05} // منع الكاميرا من النزول تحت الأرض
                 target={defaultCamTarget}
               />
@@ -285,6 +294,7 @@ export default function ProductViewer({ product, selectedFinish }) {
                 cameraPreset={cameraPreset}
                 defaultPos={defaultCamPos}
                 defaultTarget={defaultCamTarget}
+                controlsRef={controlsRef}
               />
             </Canvas>
           </ThreeErrorBoundary>

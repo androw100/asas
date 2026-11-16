@@ -150,7 +150,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="categories-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: 'var(--space-lg)' }}>
+          <div className="categories-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))', gap: 'var(--space-lg)' }}>
             <Link
               to="/collections?category=كراسي ومقاعد"
               style={{
@@ -167,16 +167,16 @@ export default function Home() {
               <span style={{ fontSize: '0.8rem', color: 'var(--color-accent)', fontWeight: 600 }}>01</span>
               <h3 style={{ fontSize: '1.35rem', fontWeight: 600 }}>كراسي ومقاعد</h3>
               <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', lineHeight: '1.7' }}>
-                تصاميم خشبية منحوتة وكراسي طعام ومكاتب مريحة تدعم مساحتك بالأناقة اليومية (9 موديلات 3D).
+                كراسي طعام واستراحة عصرية معمارية بتنجيد فاخر وهياكل خشبية صلبة (4 موديلات 3D).
               </p>
               <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--color-accent)', fontSize: '0.85rem', fontWeight: 600 }}>
-                <span>تصفح كراسي الجلوس</span>
+                <span>تصفح الكراسي</span>
                 <ArrowLeft size={15} />
               </div>
             </Link>
 
             <Link
-              to="/collections?category=طاولات"
+              to="/collections?category=كنب وأنتريهات"
               style={{
                 background: 'var(--color-bg)',
                 border: '1px solid var(--color-border)',
@@ -189,9 +189,33 @@ export default function Home() {
               className="category-card-anim"
             >
               <span style={{ fontSize: '0.8rem', color: 'var(--color-accent)', fontWeight: 600 }}>02</span>
-              <h3 style={{ fontSize: '1.35rem', fontWeight: 600 }}>طاولات طعام معمارية</h3>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 600 }}>كنب وأنتريهات</h3>
               <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', lineHeight: '1.7' }}>
-                طاولات مستطيلة ودائرية بألواح البلوط والرخام والزجاج المقسى (6 موديلات 3D).
+                كنبات ثلاثية وثنائية وركنيات عائلية رحبة بأقمشة وتنجيد متين عالي الجودة (4 موديلات 3D).
+              </p>
+              <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--color-accent)', fontSize: '0.85rem', fontWeight: 600 }}>
+                <span>تصفح الكنب</span>
+                <ArrowLeft size={15} />
+              </div>
+            </Link>
+
+            <Link
+              to="/collections?category=طاولات وسفرة"
+              style={{
+                background: 'var(--color-bg)',
+                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-sm)',
+                padding: 'var(--space-xl)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px'
+              }}
+              className="category-card-anim"
+            >
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-accent)', fontWeight: 600 }}>03</span>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 600 }}>طاولات وسفرة</h3>
+              <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', lineHeight: '1.7' }}>
+                مائدة طعام دايون متكاملة مع كراسيها المنحوتة وتفاصيل خشبية هندسية بديعة.
               </p>
               <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--color-accent)', fontSize: '0.85rem', fontWeight: 600 }}>
                 <span>تصفح الطاولات</span>
@@ -200,7 +224,7 @@ export default function Home() {
             </Link>
 
             <Link
-              to="/product/atelier-chair"
+              to="/collections?category=خزائن ودواليب"
               style={{
                 background: 'linear-gradient(135deg, #24221d 0%, #171715 100%)',
                 border: '1px solid var(--color-border-active)',
@@ -212,16 +236,16 @@ export default function Home() {
               }}
               className="category-card-anim"
             >
-              <span style={{ fontSize: '0.8rem', color: 'var(--color-accent)', fontWeight: 600 }}>03</span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--color-accent)', fontWeight: 600 }}>04</span>
               <h3 style={{ fontSize: '1.35rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Sparkles size={18} style={{ color: 'var(--color-accent)' }} />
-                استوديو 3D المخصص
+                خزائن ووحدات تخزين
               </h3>
               <p style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', lineHeight: '1.7' }}>
-                اختر أي قطعة، وبدل بين درجات الأخشاب والأقمشة واختبر مظهرها من كل زاوية.
+                خزائن خشبية راقية متعددة الأرفف بنظام إغلاق هيدروليكي عصري.
               </p>
               <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--color-accent)', fontSize: '0.85rem', fontWeight: 600 }}>
-                <span>بدء تجربة التخصيص 3D</span>
+                <span>استكشف وحدات التخزين</span>
                 <ArrowLeft size={15} />
               </div>
             </Link>

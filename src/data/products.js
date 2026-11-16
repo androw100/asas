@@ -1,476 +1,324 @@
-/**
- * ASAS — أساس للأثاث والديكور
- * كتالوج المنتجات الرسمي مع دعم الموديلات ثلاثية الأبعاد الحقيقية
- */
-
 import { assetUrl } from '../utils/assetUrl';
 
 export const categories = [
-  "جميع المنتجات",
-  "كراسي ومقاعد",
-  "طاولات"
-];
-
-const catalog = [
-  // ==========================================
-  // كراسي ومقاعد
-  // ==========================================
-  {
-    id: "atelier-chair",
-    name: "كرسي آتلييه الفاخر",
-    englishName: "The Atelier Accent Chair",
-    category: "كراسي ومقاعد",
-    tagline: "تناغم راقٍ بين بساطة الخطوط الهندسية والراحة اليومية.",
-    description: "صُمم كرسي آتلييه ليمنح ركنك المفضل لمسة من الراحة والشخصية. يجمع بين الخشب الطبيعي المتين والتنجيد المدروس ليوازن بين الأناقة والاستخدام العملي في مساحات المعيشة وتناول الطعام.",
-    dimensions: "العرض 62 سم × العمق 60 سم × الارتفاع 78 سم (ارتفاع المقعد 45 سم)",
-    materialsDescription: "هيكل من الخشب الصلب المعالج، مفاصل متينة، وتشطيب طبيعي يدوي.",
-    modelUrl: assetUrl("/models/tabel_final1.glb"),
-    thumbnail: "/images/chair.webp",
-    featured: true,
-    cameraDefaults: {
-      position: [2.0, 1.5, 2.5],
-      target: [0, 0.4, 0],
-      fov: 38
-    },
-    finishes: [
-      { id: "midnight-gold", name: "رخام أسود مذهب (Midnight Gold)", color: "#1C1B1A", variantName: "Midnight Gold_Marble", target: "marble" },
-      { id: "elegant-white", name: "رخام أبيض فاخر (Elegant White)", color: "#F0EFEB", variantName: "Elegant White_Marble", target: "marble" },
-      { id: "pure-black", name: "رخام أسود كلاسيكي (Pure Black)", color: "#111111", variantName: "black_marble", target: "marble" },
-      { id: "warm-oak", name: "خشب أوك دافئ (خامة إضافية)", color: "#C6A477", textureUrl: "/textures/warm-oak.png", roughness: 0.45, target: "marble" }
-    ],
-    materialMapping: {
-      marble: ["Midnight Gold_Marble", "Elegant White_Marble", "black_marble", "Black and gold marble", "marble", "Plane", "top"],
-      gold: ["Gold metal (Imperfections)", "gold", "metal", "Cube"]
-    }
-  },
-  {
-    id: "cane-dining-chair",
-    name: "كرسي القصب والخشب الأسود",
-    englishName: "Black Wood Cane Dining Chair",
-    category: "كراسي ومقاعد",
-    tagline: "قصب طبيعي منسوج يلتقي مع انحناءات خشبية نحتية.",
-    description: "تصميم يحتفي بالحرفية اليدوية وتداخل الخامات الطبيعية. يمنح نسيج القصب مرونة وتهوية مريحة، بينما يمنح الهيكل الخشبي الداكن حضوراً بصرياً دافئاً حول مائدة الطعام.",
-    dimensions: "العرض 54 سم × العمق 56 سم × الارتفاع 79 سم (ارتفاع المقعد 45 سم)",
-    materialsDescription: "خشب دردار مجفف في الفرن، قصب طبيعي منسوج يدوياً، طلاء شمعي ناعم.",
-    modelUrl: assetUrl("/models/tabel_final1.glb"),
-    thumbnail: "/images/cane-chair.webp",
-    featured: true,
-    cameraDefaults: {
-      position: [1.8, 1.4, 2.2],
-      target: [0, 0.38, 0],
-      fov: 38
-    },
-    finishes: [
-      { id: "original", name: "عرض القطعة بالشكل الأصلي", color: "#FFFFFF", target: "wood" },
-      { id: "aged-walnut", name: "جوز معتق", color: "#7A4D35", target: "wood" },
-      { id: "nordic-oak", name: "أوك عنبري", color: "#C8A67B", target: "wood" },
-      { id: "deep-charcoal", name: "أسود فحمي مطفأ", color: "#1F1E1C", target: "wood" }
-    ],
-    materialMapping: {
-      wood: ["material", "mesh", "wood", "frame"]
-    }
-  },
-  {
-    id: "highback-windsor-chair",
-    name: "كرسي ويندسور النحتي بظهر مرتفع",
-    englishName: "Highback Windsor Sculptural Chair",
-    category: "كراسي ومقاعد",
-    tagline: "أعمدة خشبية رأسية تصنع حضوراً معمارياً استثنائياً.",
-    description: "إعادة ابتكار عصرية لكرسي ويندسور الكلاسيكي. يتميز بظهره المرتفع وانحناءاته الانسيابية التي تلفت الأنظار وتمنح زوايا المنزل هيبة وفخامة هادئة.",
-    dimensions: "العرض 65 سم × العمق 62 سم × الارتفاع 118 سم",
-    materialsDescription: "خشب بلوط صلب مشكّل بالبخار، أعمدة منحوتة ومصقولة يدوياً.",
-    modelUrl: assetUrl("/models/tabel_final1.glb"),
-    thumbnail: "/images/windsor.webp",
-    featured: true,
-    cameraDefaults: {
-      position: [2.5, 1.8, 2.9],
-      target: [0, 0.55, 0],
-      fov: 42
-    },
-    finishes: [
-      { id: "original", name: "عرض القطعة بالشكل الأصلي", color: "#FFFFFF", target: "wood" },
-      { id: "raw-oak", name: "تشطيب البلوط الخام", color: "#CCA779", target: "wood" },
-      { id: "charcoal-pitch", name: "أسود نفاث", color: "#222120", target: "wood" },
-      { id: "bronze-wash", name: "لمسة برونزية دافئة", color: "#8E7A5A", target: "wood" }
-    ],
-    materialMapping: {
-      wood: ["material", "mesh", "spindles", "wood"]
-    }
-  },
-  {
-    id: "wooden-wishbone-chair",
-    name: "كرسي ويشبون الخشبي الاسكندنافي",
-    englishName: "Scandinavian Wishbone Timber Chair",
-    category: "كراسي ومقاعد",
-    tagline: "تصميم أيقوني يجمع بين مسند الذراع المنحني والمقعد المنسوج.",
-    description: "قطعة تجمع بين خفة الوزن والمتانة العالية. مسند الظهر المصمم على شكل حرف Y يوفر دعماً مريحاً للظهر أثناء الجلوس، بينما يضفي المقعد المنسوج دفئاً طبيعياً.",
-    dimensions: "العرض 55 سم × العمق 51 سم × الارتفاع 76 سم",
-    materialsDescription: "خشب زان طبيعي صلب، حبال ورقية مضفورة ومقاومة للاستخدام اليومي.",
-    modelUrl: assetUrl("/models/tabel_final1.glb"),
-    thumbnail: "/images/wishbone.webp",
-    featured: true,
-    cameraDefaults: {
-      position: [1.8, 1.3, 2.2],
-      target: [0, 0.38, 0],
-      fov: 38
-    },
-    finishes: [
-      { id: "original", name: "عرض القطعة بالشكل الأصلي", color: "#FFFFFF", target: "wood" },
-      { id: "warm-oak", name: "أوك ذهبي", color: "#D4B083", target: "wood" },
-      { id: "dark-walnut", name: "جوز داكن", color: "#563625", target: "wood" },
-      { id: "ebonized", name: "رمادي معتم", color: "#242322", target: "wood" }
-    ],
-    materialMapping: {
-      wood: ["material", "mesh", "wood"]
-    }
-  },
-  {
-    id: "scandinavian-oak-chair",
-    name: "كرسي أوك الاسكندنافي بوسادة بيج",
-    englishName: "Scandinavian Oak & Cushion Chair",
-    category: "كراسي ومقاعد",
-    tagline: "خطوط خشبية مستديرة مع وسادة مريحة بتدرجات محايدة.",
-    description: "تناسب هذه القطعة غرف الطعام العصرية والمساحات المفتوحة. توفر الوسادة المدمجة راحة إضافية تدوم طوال فترة الجلوس، مع الحفاظ على صفاء التصميم العام.",
-    dimensions: "العرض 54 سم × العمق 55 سم × الارتفاع 85 سم",
-    materialsDescription: "خشب بلوط مستدام، إسفنج عالي المرونة، قماش كتان بيج منسوج.",
-    modelUrl: assetUrl("/models/tabel_final1.glb"),
-    thumbnail: "/images/scandi-oak.webp",
-    featured: false,
-    cameraDefaults: {
-      position: [1.8, 1.4, 2.2],
-      target: [0, 0.42, 0],
-      fov: 38
-    },
-    finishes: [
-      { id: "original", name: "عرض القطعة بالشكل الأصلي", color: "#FFFFFF", target: "wood" },
-      { id: "honey-oak", name: "عسلي دافئ", color: "#DAB685", target: "wood" },
-      { id: "smoked-walnut", name: "جوز مدخن", color: "#5F3E2B", target: "wood" },
-      { id: "black-timber", name: "خشب أسود", color: "#252422", target: "wood" }
-    ],
-    materialMapping: {
-      wood: ["material.001", "mesh", "wood"]
-    }
-  },
-  {
-    id: "scandinavian-wood-linen-chair",
-    name: "كرسي خشب وكتان اسكندنافي",
-    englishName: "Scandinavian Wood & Linen Dining Chair",
-    category: "كراسي ومقاعد",
-    tagline: "تصميم بسيط يحتفي بالألياف الطبيعية والاتصال الهادئ.",
-    description: "كرسي يركز على راحة الجسم والتناغم البصري مع طاولات الطعام المختلفة. يمنح مساحتك طابعاً مريحاً ومرحباً.",
-    dimensions: "العرض 50 سم × العمق 54 سم × الارتفاع 85 سم",
-    materialsDescription: "هيكل خشب رماد صلب، ظهر ومقعد من الكتان الطبيعي النقي.",
-    modelUrl: assetUrl("/models/tabel_final1.glb"),
-    thumbnail: "/images/scandi-linen.webp",
-    featured: false,
-    cameraDefaults: {
-      position: [1.7, 1.4, 2.1],
-      target: [0, 0.42, 0],
-      fov: 38
-    },
-    finishes: [
-      { id: "original", name: "عرض القطعة بالشكل الأصلي", color: "#FFFFFF", target: "wood" },
-      { id: "golden-oak", name: "بلوط ناصع", color: "#CFA978", target: "wood" },
-      { id: "espresso", name: "إسبريسو غني", color: "#3B2A20", target: "wood" }
-    ],
-    materialMapping: {
-      wood: ["material", "mesh", "wood"]
-    }
-  },
-  {
-    id: "upholstered-dining-chair",
-    name: "كرسي طعام منجد بتصميم متقن",
-    englishName: "Tailored Upholstered Dining Chair",
-    category: "كراسي ومقاعد",
-    tagline: "انحناءات مريحة وتنجيد يمنح تجربة جلوس وثيرة.",
-    description: "خيار مثالي لغرف الطعام الفاخرة، حيث يحتضن الجالس بقماش فاخر وأرجل متناسقة تضيف لمسة فندقية راقية لبيتك.",
-    dimensions: "العرض 52 سم × العمق 58 سم × الارتفاع 86 سم",
-    materialsDescription: "هيكل داخلي متين، حشوات إسفنجية كثيفة، قماش ناعم الملمس وسهل العناية.",
-    modelUrl: assetUrl("/models/tabel_final1.glb"),
-    thumbnail: "/images/upholstered-chair.webp",
-    featured: false,
-    cameraDefaults: {
-      position: [1.8, 1.4, 2.2],
-      target: [0, 0.42, 0],
-      fov: 38
-    },
-    finishes: [
-      { id: "original", name: "عرض القطعة بالشكل الأصلي", color: "#FFFFFF", target: "upholstery" },
-      { id: "sand-linen", name: "رملي دافئ", color: "#E0D7C8", target: "upholstery" },
-      { id: "terracotta", name: "تيراكوتا ترابي", color: "#A76049", target: "upholstery" },
-      { id: "slate-grey", name: "رمادي صخري", color: "#454443", target: "upholstery" }
-    ],
-    materialMapping: {
-      upholstery: ["material", "mesh", "fabric", "seat"]
-    }
-  },
-  {
-    id: "leather-office-chair",
-    name: "كرسي مكتب من الجلد الفاخر",
-    englishName: "Executive Leather Desk Chair",
-    category: "كراسي ومقاعد",
-    tagline: "حضور قيادي راقٍ مع خياطة جلدية متقنة وقاعدة انسيابية.",
-    description: "صُمم للمكاتب المنزلية وغرف القراءة الخاصة. جلد ناعم ومريح مع قاعدة فولاذية وعجلات ناعمة تجعل يوم عملك مريحاً وأنيقاً.",
-    dimensions: "العرض 68 سم × العمق 66 سم × الارتفاع 95 سم",
-    materialsDescription: "جلد عالي الجودة بملمس طبيعي، قاعدة معدنية مصقولة، آلية تحكم بالارتفاع.",
-    modelUrl: assetUrl("/models/tabel_final1.glb"),
-    thumbnail: "/images/leather-chair.webp",
-    featured: false,
-    cameraDefaults: {
-      position: [2.0, 1.5, 2.4],
-      target: [0, 0.45, 0],
-      fov: 38
-    },
-    finishes: [
-      { id: "original", name: "عرض القطعة بالشكل الأصلي", color: "#FFFFFF", target: "upholstery" },
-      { id: "caramel", name: "كراميل كلاسيكي", color: "#B87545", target: "upholstery" },
-      { id: "oxblood", name: "عنابي ملكي", color: "#6A2F2B", target: "upholstery" },
-      { id: "obsidian", name: "أسود أوبسيديان", color: "#202020", target: "upholstery" }
-    ],
-    materialMapping: {
-      upholstery: ["material", "mesh", "leather"]
-    }
-  },
-  {
-    id: "ergonomic-chair",
-    name: "كرسي مريح عصري بتقنية الشبك",
-    englishName: "Contemporary Ergonomic Task Chair",
-    category: "كراسي ومقاعد",
-    tagline: "شبك تقني يسمح بالتهوية ودعم ديناميكي للفقرات.",
-    description: "خيارك الأمثل لساعات العمل والتركيز الطويلة. دعم مستمر لأسفل الظهر ومساند قابلة للضبط تضمن سلامة وضعية الجلوس.",
-    dimensions: "العرض 65 سم × العمق 65 سم × الارتفاع 115 سم",
-    materialsDescription: "هيكل بوليمر معزز، نسيج شبكي متين وقابل للتنفس، قاعدة خماسية متوازنة.",
-    modelUrl: assetUrl("/models/tabel_final1.glb"),
-    thumbnail: "/images/ergonomic-chair.webp",
-    featured: false,
-    cameraDefaults: {
-      position: [2.2, 1.6, 2.6],
-      target: [0, 0.55, 0],
-      fov: 40
-    },
-    finishes: [
-      { id: "original", name: "عرض القطعة بالشكل الأصلي", color: "#FFFFFF", target: "mesh" },
-      { id: "graphite", name: "رمادي جرافيت", color: "#777777", target: "mesh" },
-      { id: "bronze-accent", name: "برونزي معاصر", color: "#9E825C", target: "mesh" }
-    ],
-    materialMapping: {
-      mesh: ["material.001", "mesh.001", "mesh"]
-    }
-  },
-
-  // ==========================================
-  // طاولات
-  // ==========================================
-  {
-    id: "oak-concrete-dining-table",
-    name: "طاولة طعام مونوليث الضخمة من الأوك والكونكريت",
-    englishName: "Monolith Oak & Concrete Grand Dining Table",
-    category: "طاولات",
-    tagline: "طاولة طعام معمارية تتسع لـ 10 إلى 12 شخصاً بتصميم مهيب.",
-    description: "قطعة مركزية مبهرة بطول 3 أمتار تجمع بين ألواح البلوط السميكة وقواعد الكونكريت المعماري الصلبة. صُممت للمساحات الكبيرة والولائم العائلية الممتدة.",
-    dimensions: "الطول 300 سم × العرض 152 سم × الارتفاع 90 سم",
-    materialsDescription: "سطح من خشب البلوط الصلب، قواعد صب كونكريت معمارية معززة.",
-    modelUrl: assetUrl("/models/tabel_final1.glb"),
-    thumbnail: "/images/oak-concrete-table.webp",
-    featured: true,
-    cameraDefaults: {
-      position: [4.4, 2.7, 4.4],
-      target: [0, 0.45, 0],
-      fov: 42
-    },
-    finishes: [
-      { id: "original", name: "عرض القطعة بالشكل الأصلي", color: "#FFFFFF", target: "table" },
-      { id: "smoked-oak", name: "أوك مدخن", color: "#544336", target: "table" },
-      { id: "raw-concrete", name: "رمادي أسمنتي فاتح", color: "#D2CBC2", target: "table" },
-      { id: "dark-slate", name: "حجري داكن", color: "#2E2D2B", target: "table" }
-    ],
-    materialMapping: {
-      table: ["Material_0.003", "Mesh_0.001", "material", "mesh"]
-    }
-  },
-  {
-    id: "black-marble-gold-table",
-    name: "طاولة رخام أسود مستطيلة بأرجل ذهبية",
-    englishName: "Rectangular Black Marble & Gold Dining Table",
-    category: "طاولات",
-    tagline: "تتسع لـ 4 إلى 6 مقاعد بأناقة هندسية وتشطيب ذهبي ناعم.",
-    description: "عروق بيضاء دقيقة تنساب على سطح الرخام الأسود المصقول، ترتكز على أرجل فولاذية مطلية بلمسة ذهبية غير لامعة، لتمنح مساحتك لمسة عصرية وفخمة.",
-    dimensions: "الطول 160 سم × العرض 95 سم × الارتفاع 68 سم",
-    materialsDescription: "سطح رخام مركب عالي المقاومة، هيكل فولاذي مطلي بالذهب المطفأ.",
-    modelUrl: assetUrl("/models/tabel_final1.glb"),
-    thumbnail: "/images/black-marble-table.webp",
-    featured: true,
-    cameraDefaults: {
-      position: [2.8, 1.8, 2.8],
-      target: [0, 0.35, 0],
-      fov: 38
-    },
-    finishes: [
-      { id: "midnight-gold", name: "رخام أسود مذهب (Midnight Gold)", color: "#1C1B1A", variantName: "Midnight Gold_Marble", target: "marble" },
-      { id: "elegant-white", name: "رخام أبيض فاخر (Elegant White)", color: "#F0EFEB", variantName: "Elegant White_Marble", target: "marble" },
-      { id: "pure-black", name: "رخام أسود كلاسيكي (Pure Black)", color: "#111111", variantName: "black_marble", target: "marble" },
-      { id: "warm-oak", name: "خشب أوك دافئ (خامة إضافية)", color: "#C6A477", textureUrl: "/textures/warm-oak.png", roughness: 0.45, target: "marble" }
-    ],
-    materialMapping: {
-      marble: ["Midnight Gold_Marble", "Elegant White_Marble", "black_marble", "Black and gold marble", "marble", "Plane", "top"],
-      gold: ["Gold metal (Imperfections)", "gold", "metal", "Cube"]
-    }
-  },
-  {
-    id: "white-marble-gold-table",
-    name: "طاولة رخام أبيض دائرية بقاعدة ذهبية",
-    englishName: "Round White Marble & Gold Dining Table",
-    category: "طاولات",
-    tagline: "طاولة دائرية لـ 4 مقاعد بقاعدة بوقية نحتية تمنح حميمية دافئة.",
-    description: "يشجع الشكل الدائري على التواصل والقرب في جلسات الطعام العائلية. قاعدة البوق النحتية توفر راحة تامة لحركة الأقدام وتمنح الطاولة مظهراً يطفو برقة في الغرفة.",
-    dimensions: "القطر 115 سم × الارتفاع 71 سم",
-    materialsDescription: "سطح رخام كارارا مركب ومصقول، قاعدة بوقية فولاذية متزنة مطلية ببرونز ذهبي.",
-    modelUrl: assetUrl("/models/tabel_final1.glb"),
-    thumbnail: "/images/white-marble-table.webp",
-    featured: true,
-    cameraDefaults: {
-      position: [2.4, 1.6, 2.4],
-      target: [0, 0.35, 0],
-      fov: 38
-    },
-    finishes: [
-      { id: "original", name: "عرض القطعة بالشكل الأصلي", color: "#FFFFFF", target: "table" },
-      { id: "rose-alabaster", name: "ألاباستر عاجي دافئ", color: "#E0D7CB", target: "table" },
-      { id: "bronze-patina", name: "برونز أنتيك", color: "#8E7756", target: "table" }
-    ],
-    materialMapping: {
-      table: ["Material_0", "Mesh_0", "material", "mesh"]
-    }
-  },
-  {
-    id: "tempered-glass-dining-table",
-    name: "طاولة زجاج مقسى دائرية بقاعدة هندسية",
-    englishName: "Round Tempered Glass Dining Table with Geometric Base",
-    category: "طاولات",
-    tagline: "سطح زجاجي شفاف يعكس الضوء ويكشف عن قاعدة خشبية متقاطعة.",
-    description: "يمنح الزجاج الشفاف شعوراً باتساع المساحة وانسيابية الضوء، بينما تضفي القاعدة الخشبية الهندسية المتداخلة دفئاً معمارياً يثري المكان.",
-    dimensions: "القطر 114 سم × الارتفاع 75 سم",
-    materialsDescription: "زجاج سيكوريت مقسى بسماكة 12 مم بحواف مشطوفة، قاعدة هندسية من خشب الدردار.",
-    modelUrl: assetUrl("/models/tabel_final1.glb"),
-    thumbnail: "/images/glass-table.webp",
-    featured: false,
-    cameraDefaults: {
-      position: [2.4, 1.6, 2.4],
-      target: [0, 0.38, 0],
-      fov: 38
-    },
-    finishes: [
-      { id: "original", name: "عرض القطعة بالشكل الأصلي", color: "#FFFFFF", target: "table" },
-      { id: "smoked-tint", name: "زجاج مدخن خفيف", color: "#666460", target: "table" },
-      { id: "bronze-tint", name: "زجاج برونزي دافئ", color: "#9E825C", target: "table" }
-    ],
-    materialMapping: {
-      table: ["Material_0", "Mesh_0", "material", "mesh"]
-    }
-  },
-  {
-    id: "farmhouse-pedestal-table",
-    name: "طاولة فارمهاوس الدائرية المدمجة",
-    englishName: "Compact Round Farmhouse Pedestal Table",
-    category: "طاولات",
-    tagline: "طاولة دائرية لـ 2 إلى 4 مقاعد بلمسة ريفية دافئة وزوايا ناعمة.",
-    description: "تصميم مدمج يناسب شقق المدن، وزوايا الإفطار المشرقة، ومساحات تناول الشاي. قاعدة خشبية منحوتة تعكس دفء الضيافة الحقيقية.",
-    dimensions: "القطر 80 سم × الارتفاع 75 سم",
-    materialsDescription: "خشب طبيعي مصمت، عمود مركزي مخروط بعناية، حماية شمعية ضد السوائل.",
-    modelUrl: assetUrl("/models/tabel_final1.glb"),
-    thumbnail: "/images/farmhouse-table.webp",
-    featured: false,
-    cameraDefaults: {
-      position: [1.9, 1.4, 2.0],
-      target: [0, 0.38, 0],
-      fov: 38
-    },
-    finishes: [
-      { id: "original", name: "عرض القطعة بالشكل الأصلي", color: "#FFFFFF", target: "table" },
-      { id: "honey-pine", name: "خشب صنوبر عسلي", color: "#D2AB74", target: "table" },
-      { id: "dark-roast", name: "بني محمص داكن", color: "#4E3626", target: "table" },
-      { id: "white-wash", name: "أبيض طباشيري اسكندنافي", color: "#DDD8D0", target: "table" }
-    ],
-    materialMapping: {
-      table: ["Material_0.003", "Mesh_0.001", "material", "mesh"]
-    }
-  },
-  {
-    id: "square-tulip-dining-table",
-    name: "طاولة تيوليب المربعة المدمجة",
-    englishName: "Compact Square Tulip Architectural Table",
-    category: "طاولات",
-    tagline: "طاولة 2 إلى 4 مقاعد بحواف منحنية وقاعدة تيوليب انسيابية.",
-    description: "توازن مدروس بين الأشكال الهندسية. السطح المربع بحوافه المستديرة يمنح استغلالاً مثالياً للمساحة، مع قاعدة التيوليب الانسيابية الخالية من الأرجل المزدحمة.",
-    dimensions: "العرض 80 سم × العمق 80 سم × الارتفاع 76 سم",
-    materialsDescription: "سطح مركب غير لامع ناعم الملمس، قاعدة حديدية ثقيلة مطلية حرارياً.",
-    modelUrl: assetUrl("/models/tabel_final1.glb"),
-    thumbnail: "/images/square-tulip-table.webp",
-    featured: false,
-    cameraDefaults: {
-      position: [1.9, 1.4, 2.0],
-      target: [0, 0.38, 0],
-      fov: 38
-    },
-    finishes: [
-      { id: "original", name: "عرض القطعة بالشكل الأصلي", color: "#FFFFFF", target: "table" },
-      { id: "warm-biscuit", name: "بيسكويت دافئ", color: "#D6C7B2", target: "table" },
-      { id: "charcoal-matte", name: "فحمي مطفأ", color: "#30302E", target: "table" },
-      { id: "bronze-luster", name: "برونزي حريري", color: "#8E7756", target: "table" }
-    ],
-    materialMapping: {
-      table: ["Material_0.001", "Mesh_0", "material", "mesh"]
-    }
-  }
+  'جميع المنتجات',
+  'كراسي ومقاعد',
+  'كنب وأنتريهات',
+  'طاولات وسفرة',
+  'خزائن ودواليب'
 ];
 
 export const tableFinishes = [
+  // ألوان وخامات القماش والسطح (Fabric / Top Variants - الماتيريال الأولى)
   {
-    id: "black-marble",
-    name: "رخام أسود كلاسيكي (Black Marble)",
-    color: "#FFFFFF",
-    variantName: "black_marble",
-    textureUrl: assetUrl("/textures/black-marble.jpg"),
-    normalUrl: assetUrl("/textures/black-marble-normal.jpg"),
-    textureRepeat: [1.8, 1.8],
-    roughness: 0.12,
-    metalness: 0.0,
-    target: "marble"
+    id: 'white-fabric',
+    name: 'قماش أبيض ناصع (White Fabric)',
+    color: '#B9B9B9',
+    variantName: 'white Fabric',
+    materialIndex: 0,
+    target: 'fabric',
+    group: 'fabric'
   },
   {
-    id: "white-marble",
-    name: "رخام أبيض فاخر (Elegant White)",
-    color: "#FFFFFF",
-    variantName: "Elegant White_Marble",
-    textureUrl: assetUrl("/textures/white-marble.jpg"),
-    normalUrl: assetUrl("/textures/white-marble-normal.jpg"),
-    textureRepeat: [2, 2],
-    roughness: 0.14,
-    metalness: 0.0,
-    target: "marble"
+    id: 'blue-fabric',
+    name: 'قماش كحلي أنيق (Blue Fabric)',
+    color: '#444F7C',
+    variantName: 'Blue Fabric',
+    materialIndex: 1,
+    target: 'fabric',
+    group: 'fabric'
   },
   {
-    id: "brown-marble",
-    name: "رخام رمادي حجري (Marble)",
-    color: "#FFFFFF",
-    variantName: "Marble",
-    target: "marble"
+    id: 'hessian',
+    name: 'قماش خيش طبيعي (Hessian)',
+    color: '#C6B6A3',
+    variantName: 'Hessain',
+    materialIndex: 2,
+    target: 'fabric',
+    group: 'fabric'
+  },
+  {
+    id: 'pink-fabric',
+    name: 'قماش وردي هادئ (Pink Fabric)',
+    color: '#6E4243',
+    variantName: 'Pink Fabric',
+    materialIndex: 3,
+    target: 'fabric',
+    group: 'fabric'
+  },
+  {
+    id: 'olive-fabric',
+    name: 'قماش أخضر زيتوني (Olive Green)',
+    color: '#4F4C2C',
+    variantName: 'Olive Green Fabric',
+    materialIndex: 4,
+    target: 'fabric',
+    group: 'fabric'
+  },
+
+  // ألوان وخامات الأرجل والقاعدة الخشبية (Wood Base Variants - الماتيريال الثانية)
+  {
+    id: 'dark-wood',
+    name: 'خشب أثاث داكن (Dark Wood)',
+    color: '#201A16',
+    variantName: 'Furniture wood.002',
+    materialIndex: 5,
+    target: 'wood',
+    group: 'wood'
+  },
+  {
+    id: 'oak-wood',
+    name: 'خشب أوك طبيعي (Oak Wood)',
+    color: '#795434',
+    variantName: 'Oak Wood2',
+    materialIndex: 6,
+    target: 'wood',
+    group: 'wood'
+  }
+];
+
+export const cabinFinishes = [
+  {
+    id: 'light-wood',
+    name: 'خشب طبيعي فاتح (Light Wood)',
+    color: '#C6A477',
+    variantName: 'Furniture wood.004',
+    materialIndex: 0,
+    target: 'wood',
+    group: 'wood'
+  },
+  {
+    id: 'dark-wood-cabin',
+    name: 'خشب داكن غني (Dark Wood)',
+    color: '#201A16',
+    variantName: 'Furniture wood.002',
+    materialIndex: 1,
+    target: 'wood',
+    group: 'wood'
   }
 ];
 
 export const tableMaterialMapping = {
-  marble: ["Marble", "Midnight Gold_Marble", "Elegant White_Marble", "black_marble", "Black and gold marble", "brown_Marble", "marble", "Plane", "top"],
-  gold: ["Gold metal (Imperfections)", "gold", "metal", "Cube"]
+  fabric: ['fabric', 'cloth', 'hessain', 'cushion', 'seat', 'upholstery', 'white fabric'],
+  wood: ['wood', 'oak', 'leg', 'base', 'frame', 'furniture wood']
 };
+
+const catalog = [
+  // ==========================================
+  // 1. كراسي ومقاعد (Chairs)
+  // ==========================================
+  {
+    id: 'chair-1',
+    name: 'كرسي استرخاء عصري (Modern Lounge Chair)',
+    category: 'كراسي ومقاعد',
+    tagline: 'تناغم راقٍ بين انحناءات الخشب الصلب والتنجيد الفاخر.',
+    description: 'كرسي استرخاء مفرد يجمع بين الهيكل الخشبي المنحوت والقماش المبطن فائق النعومة. يوفر دعماً مريحاً لفقرات الظهر أثناء الجلوس والقراءة في غرف المعيشة وصالات الاستقبال.',
+    dimensions: 'العرض 65 سم × العمق 62 سم × الارتفاع 78 سم (ارتفاع المقعد 45 سم)',
+    materialsDescription: 'هيكل من خشب البلوط المعالج، تنجيد قماش مقاوم للبقع، مفاصل متينة مصقولة يدوياً.',
+    modelUrl: '/furniture/chair1.glb',
+    thumbnail: '/images/chair.webp',
+    featured: true,
+    cameraDefaults: {
+      position: [3.0, 2.5, 3.5],
+      target: [0, 1.35, 0],
+      fov: 38
+    },
+    finishes: tableFinishes,
+    materialMapping: tableMaterialMapping
+  },
+  {
+    id: 'chair-2',
+    name: 'كرسي طعام فاخر (Luxury Dining Chair)',
+    category: 'كراسي ومقاعد',
+    tagline: 'انسيابية هندسية مع مسند ظهر منحوت بدقة متناهية.',
+    description: 'كرسي طعام بتصميم هندسي استثنائي يجمع بين الهيكل الخشبي المتين والمقعد المبطن المريح. يضفي لمسة من الفخامة العصرية حول أي مائدة طعام راقية.',
+    dimensions: 'العرض 58 سم × العمق 60 سم × الارتفاع 80 سم (ارتفاع المقعد 46 سم)',
+    materialsDescription: 'خشب زان طبيعي صلب، تنجيد قماش عالي الكثافة، طلاء ورنيش شمعي واقٍ.',
+    modelUrl: '/furniture/chair2.glb',
+    thumbnail: '/images/cane-chair.webp',
+    featured: true,
+    cameraDefaults: {
+      position: [3.3, 2.6, 3.8],
+      target: [0, 1.35, 0],
+      fov: 38
+    },
+    finishes: tableFinishes,
+    materialMapping: tableMaterialMapping
+  },
+  {
+    id: 'chair-3',
+    name: 'كرسي اسكندنافي أنيق (Scandi Comfort Chair)',
+    category: 'كراسي ومقاعد',
+    tagline: 'بساطة الشمال الأوروبي مع دفء الملمس الطبيعي.',
+    description: 'تصميم اسكندنافي بسيط يعتمد على خطوط نقية وألوان طبيعية دافئة. يتميز بمسند ظهر محتضن يمنحك شعوراً فورياً بالراحة والهدوء في زوايا المنزل المختلفة.',
+    dimensions: 'العرض 62 سم × العمق 58 سم × الارتفاع 76 سم',
+    materialsDescription: 'خشب أوك مصمت، ألياف كتانية طبيعية، حشوات إسفنجية عالية المرونة.',
+    modelUrl: '/furniture/chair3.glb',
+    thumbnail: '/images/scandi-oak.webp',
+    featured: true,
+    cameraDefaults: {
+      position: [3.2, 2.5, 3.6],
+      target: [0, 1.28, 0],
+      fov: 38
+    },
+    finishes: tableFinishes,
+    materialMapping: tableMaterialMapping
+  },
+  {
+    id: 'chair-4',
+    name: 'كرسي بذراعين مبطن (Padded Armchair)',
+    category: 'كراسي ومقاعد',
+    tagline: 'راحة مطلقة تدوم طويلاً بمساند مريحة وملمس غني.',
+    description: 'كرسي مريح بذراعين مصمم خصيصاً لجلسات العمل والاسترخاء الطويلة. الهيكل الخشبي المتين يحتضن مقعداً مبطناً بعناية لضمان التوازن المثالي بين الصلابة والراحة.',
+    dimensions: 'العرض 64 سم × العمق 64 سم × الارتفاع 82 سم',
+    materialsDescription: 'خشب بلوط أسود أو طبيعي، أقمشة تنجيد منتقاة بعناية، حواف دائرية آمنة.',
+    modelUrl: '/furniture/chair4.glb',
+    thumbnail: '/images/ergonomic-chair.webp',
+    featured: false,
+    cameraDefaults: {
+      position: [3.0, 2.5, 3.5],
+      target: [0, 1.40, 0],
+      fov: 38
+    },
+    finishes: tableFinishes,
+    materialMapping: tableMaterialMapping
+  },
+
+  // ==========================================
+  // 2. كنب وأنتريهات (Sofas)
+  // ==========================================
+  {
+    id: 'sofa-1',
+    name: 'كنبة ثلاثية مودرن (Randy 3-Seater Sofa)',
+    category: 'كنب وأنتريهات',
+    tagline: 'فخامة معاصرة بمقاعد فسيحة وعمق مدروس للراحة اليومية.',
+    description: 'كنبة عائلية تتسع لثلاثة أشخاص بكل أريحية. تتميز بخطوطها المعمارية الواضحة وتنجيدها الفاخر مع قاعدة خشبية متينة ترفع التصميم وتمنحه خفة بصرية راقية في صالات المعيشة.',
+    dimensions: 'الطول 240 سم × العمق 98 سم × الارتفاع 78 سم',
+    materialsDescription: 'هيكل داخلي صلب من الخشب المعالج، نوابض جيبية مرنة، تنجيد قماش مقاوم للاهتراء.',
+    modelUrl: '/furniture/sofa1.glb',
+    thumbnail: '/images/scandi-linen.webp',
+    featured: true,
+    cameraDefaults: {
+      position: [6.8, 4.8, 7.8],
+      target: [0, 1.35, 0],
+      fov: 38
+    },
+    finishes: tableFinishes,
+    materialMapping: tableMaterialMapping
+  },
+  {
+    id: 'sofa-2',
+    name: 'كنبة ثنائية مريحة (Loveseat Cozy Sofa)',
+    category: 'كنب وأنتريهات',
+    tagline: 'أناقة مدمجة للمساحات الدافئة والاستقبال العصري.',
+    description: 'كنبة ثنائية أنيقة تلائم المساحات المدمجة ومكاتب الاستقبال الفاخرة. تجمع بين العملية العالية والجمال الانسيابي لتوفر ركناً مثالياً للحديث والاسترخاء.',
+    dimensions: 'الطول 175 سم × العمق 92 سم × الارتفاع 78 سم',
+    materialsDescription: 'خشب طبيعي صلب، حشوات إسفنجية متعددة الكثافة، قماش فاخر قابل للتهوية.',
+    modelUrl: '/furniture/sofa2.glb',
+    thumbnail: '/images/hero-living.webp',
+    featured: true,
+    cameraDefaults: {
+      position: [4.8, 3.6, 5.6],
+      target: [0, 1.32, 0],
+      fov: 38
+    },
+    finishes: tableFinishes,
+    materialMapping: tableMaterialMapping
+  },
+  {
+    id: 'sofa-3',
+    name: 'كنبة ركنية حرف L عصرية (Corner L-Shape Sofa)',
+    category: 'كنب وأنتريهات',
+    tagline: 'تصميم ركني رحب يجمع العائلة في جلسات مليئة بالدفء.',
+    description: 'كنبة ركنية رحبة مصممة لتحقيق أقصى درجات الاستفادة من زوايا الغرفة. توفر شيزلونج ممتد للاسترخاء التام ومشاهدة التلفاز مع وسائد ظهر محشوة بالريش الصناعي الفاخر.',
+    dimensions: 'الطول 285 سم × عمق الركن 180 سم × الارتفاع 80 سم',
+    materialsDescription: 'قاعدة خشبية ثقيلة معالجة، أقمشة محبوكة عالية المتانة، أقدام خشبية متينة.',
+    modelUrl: '/furniture/sofa3.glb',
+    thumbnail: '/images/upholstered-chair.webp',
+    featured: true,
+    cameraDefaults: {
+      position: [7.5, 5.2, 8.5],
+      target: [0, 1.34, 0],
+      fov: 38
+    },
+    finishes: tableFinishes,
+    materialMapping: tableMaterialMapping
+  },
+  {
+    id: 'sofa-4',
+    name: 'طقم كنب عائلي كبير (Modular Sectional Sofa)',
+    category: 'كنب وأنتريهات',
+    tagline: 'تجربة جلوس فندقية متكاملة تلبي أرقى معايير الضيافة.',
+    description: 'طقم كنب عائلي متكامل بمقاسات رحبة جداً وتوزيع مقاعد مرن. مصمم لصالونات الاستقبال الفخمة والمساحات المفتوحة ليمنح منزلك فخامة فندقية لا تُضاهى.',
+    dimensions: 'الطول 350 سم × العمق 240 سم × الارتفاع 78 سم',
+    materialsDescription: 'هيكل من الخشب الزان، وسائد مقاعد قابلة للقلب، أقمشة منسوجة فاخرة مقاومة للسوائل.',
+    modelUrl: '/furniture/sofa4.glb',
+    thumbnail: '/images/hero-living.webp',
+    featured: false,
+    cameraDefaults: {
+      position: [11.5, 7.5, 12.8],
+      target: [0, 1.31, 0],
+      fov: 38
+    },
+    finishes: tableFinishes,
+    materialMapping: tableMaterialMapping
+  },
+
+  // ==========================================
+  // 3. طاولات وسفرة (Tables)
+  // ==========================================
+  {
+    id: 'dining-table-1',
+    name: 'طاولة طعام دايون مع كراسي (Dion Dining Table Set)',
+    category: 'طاولات وسفرة',
+    tagline: 'مائدة طعام معمارية متكاملة بستة كراسي منحوتة.',
+    description: 'طقم مائدة طعام متكامل يجمع بين طاولة خشبية مستطيلة بستة كراسي أنيقة مبطنة. يمثل التصميم تحفة في التوازن البصري والمتانة ليصبح النقطة المحورية لغرفة الطعام العائلية.',
+    dimensions: 'الطول 240 سم × العرض 110 سم × الارتفاع 76 سم',
+    materialsDescription: 'سطح من خشب البلوط الطبيعي الصلب، أرجل خشبية هندسية، كراسي مبطنة بقماش فاخر.',
+    modelUrl: '/furniture/dining_tabel.glb',
+    thumbnail: '/images/oak-concrete-table.webp',
+    featured: true,
+    cameraDefaults: {
+      position: [11.0, 7.2, 12.2],
+      target: [0, 1.48, 0],
+      fov: 38
+    },
+    finishes: tableFinishes,
+    materialMapping: tableMaterialMapping
+  },
+
+  // ==========================================
+  // 4. خزائن ودواليب (Cabinets)
+  // ==========================================
+  {
+    id: 'cabinet-1',
+    name: 'خزانة خشبية متعددة الأرفف (Modern Wooden Cabinet)',
+    category: 'خزائن ودواليب',
+    tagline: 'تنظيم ذكي وفخامة خشبية هادئة تعزز جمال مساحتك.',
+    description: 'خزانة متعددة الأغراض بتصميم عصري وأبواب ناعمة الإغلاق. توفر مساحة تخزين واسعة لحفظ الأواني والكتب والمقتنيات الثمينة مع الحفاظ على مظهر راقٍ وبسيط.',
+    dimensions: 'العرض 180 سم × العمق 45 سم × الارتفاع 90 سم',
+    materialsDescription: 'خشب طبيعي مصفح بقشرة البلوط الفاخرة، مفصلات ألمانية مخفية بنظام هيدروليك.',
+    modelUrl: '/furniture/Cabin.glb',
+    thumbnail: '/images/about-craft.webp',
+    featured: true,
+    cameraDefaults: {
+      position: [7.2, 4.8, 8.0],
+      target: [0, 1.49, 0],
+      fov: 38
+    },
+    finishes: cabinFinishes,
+    materialMapping: tableMaterialMapping
+  }
+];
 
 export const products = catalog.map((product) => ({
   ...product,
-  modelUrl: assetUrl("/models/tabel_final1.glb"),
-  finishes: tableFinishes,
-  materialMapping: tableMaterialMapping,
-  cameraDefaults: {
-    position: [2.2, 1.6, 2.6],
-    target: [0, 0.38, 0],
+  modelUrl: assetUrl(product.modelUrl),
+  finishes: product.finishes || tableFinishes,
+  materialMapping: product.materialMapping || tableMaterialMapping,
+  cameraDefaults: product.cameraDefaults || {
+    position: [8.5, 5.5, 10.5],
+    target: [0, 1.48, 0],
     fov: 38
   },
   thumbnail: assetUrl(product.thumbnail)
@@ -478,27 +326,27 @@ export const products = catalog.map((product) => ({
 
 export const faqs = [
   {
-    question: "هل يمكنني مشاهدة المنتج بتقنية 3D؟",
-    answer: "نعم، المنتجات التي تتوفر لها ملفات ثلاثية الأبعاد مدعومة يمكنك استكشافها وتدويرها 360 درجة، وتقريب أدق التفاصيل من زوايا مختلفة داخل الموقع مباشرة."
+    question: 'هل يمكنني مشاهدة المنتج بتقنية 3D؟',
+    answer: 'نعم، جميع منتجات ASAS مدعومة بنماذج تفاعلية ثلاثية الأبعاد يمكنك استكشافها وتدويرها 360 درجة، وتقريب أدق تفاصيل الخامة مباشرة داخل الموقع.'
   },
   {
-    question: "هل يمكنني تغيير لون المنتج؟",
-    answer: "يمكنك تجربة الألوان والتشطيبات المتاحة للمنتج، ومشاهدة التغييرات مباشرة على المجسم ثلاثي الأبعاد في الوقت الفعلي قبل اتخاذ قرارك."
+    question: 'هل يمكنني تغيير خامات وألوان المنتج؟',
+    answer: 'بالتأكيد! يمكنك تجربة ألوان القماش وخامات الخشب المدمجة للمنتج، ومشاهدة التغييرات فوراً على المجسم ثلاثي الأبعاد بأعلى دقة.'
   },
   {
-    question: "هل الألوان والخامات المعروضة متاحة للشراء؟",
-    answer: "تعتمد الخيارات على المواصفات الفعلية لكل منتج. يُرجى التواصل معنا عبر زر الاستفسار لتأكيد التوافر ومطابقة درجات الخامات قبل الطلب."
+    question: 'هل الألوان والخامات المعروضة متاحة للتصنيع والشراء؟',
+    answer: 'نعم، جميع الخيارات المعروضة مطابقة لمواصفات الإنتاج الفعلية. يُرجى التواصل معنا عبر زر الاستفسار لتأكيد موعد التسليم والتفاصيل.'
   },
   {
-    question: "كيف يمكنني معرفة السعر؟",
-    answer: "يمكنك مراجعة السعر التقديري المعروض، أو التواصل معنا مباشرة عبر زر 'استفسر عن السعر والتفاصيل' للحصول على تسعيرة رسمية دقيقة وفق خياراتك."
+    question: 'كيف يمكنني معرفة السعر والحصول على عرض رسمي؟',
+    answer: 'يمكنك التواصل معنا مباشرة عبر زر "استفسر عن السعر والتفاصيل" للحصول على تسعيرة رسمية دقيقة وفق التخصيص والخامات التي اخترتها.'
   },
   {
-    question: "هل يمكنني معرفة أبعاد المنتج بدقة؟",
-    answer: "تُعرض الأبعاد التفصيلية (العرض، العمق، الارتفاع) في صفحة كل منتج لتساعدك على تخطيط وتنسيق مساحتك بكل ثقة."
+    question: 'هل يمكنني معرفة أبعاد المنتج بدقة؟',
+    answer: 'تُعرض الأبعاد التفصيلية (العرض، العمق، الارتفاع) في صفحة كل منتج لتساعدك على تخطيط وتنسيق مساحتك بكل ثقة.'
   },
   {
-    question: "كيف يمكنني التواصل مع الشركة؟",
-    answer: "يمكنك استخدام نموذج الاستفسار المباشر في صفحة التواصل وصفحة كل منتج، أو مراسلتنا على بريد الاستوديو الرسمي studio@asas-living.com."
+    question: 'كيف يمكنني التواصل مع الشركة؟',
+    answer: 'يمكنك استخدام نموذج الاستفسار المباشر في صفحة التواصل وصفحة كل منتج، أو مراسلتنا على بريد الاستوديو الرسمي studio@asas-living.com.'
   }
 ];

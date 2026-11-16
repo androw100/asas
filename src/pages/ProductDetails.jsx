@@ -19,10 +19,22 @@ export default function ProductDetails() {
   const [showInquiryModal, setShowInquiryModal] = useState(false);
 
   // Derived selected finish
-  const selectedFinish =
-    selectedFinishOverride && product?.finishes?.some((f) => f.id === selectedFinishOverride.id)
-      ? selectedFinishOverride
-      : product?.finishes?.[0] || null;
+  const selectedFinish = useMemo(() => {
+    if (selectedFinishOverride) return selectedFinishOverride;
+    if (!product?.finishes || product.finishes.length === 0) return null;
+
+    const hasFabric = product.finishes.some((f) => f.group === 'fabric' || f.target === 'fabric');
+    const hasWood = product.finishes.some((f) => f.group === 'wood' || f.target === 'wood');
+
+    if (hasFabric && hasWood) {
+      return [
+        product.finishes.find((f) => f.group === 'fabric' || f.target === 'fabric'),
+        product.finishes.find((f) => f.group === 'wood' || f.target === 'wood')
+      ].filter(Boolean);
+    }
+
+    return product.finishes[0];
+  }, [selectedFinishOverride, product]);
 
   // Similar products in same category
   const similarProducts = useMemo(() => {
@@ -141,7 +153,9 @@ export default function ProductDetails() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '8px' }}>
                   <span style={{ color: 'var(--color-text-dim)' }}>التشطيب المحدد:</span>
                   <span style={{ color: 'var(--color-accent)', fontWeight: 600 }}>
-                    {selectedFinish?.name}
+                    {Array.isArray(selectedFinish)
+                      ? selectedFinish.map((f) => f?.name?.split('(')[0]?.trim() || f?.name).join(' + ')
+                      : selectedFinish?.name || 'الأصلي'}
                   </span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -190,7 +204,13 @@ export default function ProductDetails() {
                     إغلاق ✕
                   </button>
                 </div>
-                <ContactForm initialProduct={`${product.name} - تشطيب: ${selectedFinish?.name || 'الأصلي'}`} />
+                <ContactForm
+                  initialProduct={`${product.name} - تشطيب: ${
+                    Array.isArray(selectedFinish)
+                      ? selectedFinish.map((f) => f?.name).join(' / ')
+                      : selectedFinish?.name || 'الأصلي'
+                  }`}
+                />
               </div>
             )}
           </div>

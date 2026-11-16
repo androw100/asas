@@ -34,16 +34,35 @@ function getOrCreateTexture(url, repeat = [1, 1], isNormal = false) {
  * @param {Object} availableMaterials - Dictionary of all materials in the GLB scene (gltf.materials)
  * @returns {Array<string>} list of modified material/mesh identifiers
  */
-export function applyFinishToModel(scene, finish, product, availableMaterials = {}) {
-  if (!scene || !finish) return [];
+/**
+ * Applies a chosen finish or array of finishes to the 3D model hierarchy based on configured targets.
+ * Supports GLTF embedded Material Variants (KHR_materials_variants), dynamic texture swapping, and color tinting.
+ * 
+ * @param {THREE.Object3D} scene - Scene object
+ * @param {Object|Array<Object>} finishOrFinishes - A finish or array of finishes to apply
+ * @param {Object} product - Product definition with materialMapping
+ * @param {Object} availableMaterials - Dictionary of all materials in the GLB scene (gltf.materials + embedded variants)
+ * @returns {Array<string>} list of modified material/mesh identifiers
+ */
+export function applyFinishToModel(scene, finishOrFinishes, product, availableMaterials = {}) {
+  if (!scene || !finishOrFinishes) return [];
+
+  const finishList = Array.isArray(finishOrFinishes)
+    ? finishOrFinishes
+    : typeof finishOrFinishes === 'object' && (finishOrFinishes.fabric || finishOrFinishes.wood)
+    ? Object.values(finishOrFinishes).filter(Boolean)
+    : [finishOrFinishes];
+
+  if (finishList.length === 0) return [];
 
   // If 'original', restore the pristine original materials
-  if (finish.id === 'original') {
+  const hasOriginal = finishList.some((f) => f?.id === 'original');
+  if (hasOriginal) {
     scene.traverse((node) => {
       if (node.isMesh && originalMaterialMap.has(node)) {
         node.material = originalMaterialMap.get(node);
         if (Array.isArray(node.material)) {
-          node.material.forEach((m) => { m.needsUpdate = true; });
+          node.material.forEach((m) => { if (m) m.needsUpdate = true; });
         } else if (node.material) {
           node.material.needsUpdate = true;
         }
@@ -53,26 +72,83 @@ export function applyFinishToModel(scene, finish, product, availableMaterials = 
   }
 
   const modified = [];
-  const targetGroup = finish.target?.toLowerCase() || 'all';
-  const mappingKeywords = product?.materialMapping?.[targetGroup] || [
-    targetGroup,
-    'marble',
-    'plane',
-    'top',
-    'table',
-    'wood',
-    'surface'
-  ];
 
-  // Helper to determine if a mesh or material name matches the target group
-  const isTargetMatch = (matName, meshName) => {
-    if (targetGroup === 'all') return true;
+  // Helper to determine if a material matches a target group strictly by material name
+  const isTargetMatch = (matName, targetGroup) => {
+    if (!targetGroup || targetGroup === 'all') return true;
     const lowerMat = (matName || '').toLowerCase();
-    const lowerMesh = (meshName || '').toLowerCase();
-    return mappingKeywords.some((keyword) => {
-      const k = keyword.toLowerCase();
-      return lowerMat.includes(k) || lowerMesh.includes(k);
-    });
+
+    if (targetGroup === 'fabric') {
+      return (
+        lowerMat.includes('fabric') ||
+        lowerMat.includes('cloth') ||
+        lowerMat.includes('hessain') ||
+        lowerMat.includes('cushion') ||
+        lowerMat.includes('seat') ||
+        lowerMat.includes('upholstery')
+      );
+    }
+
+    if (targetGroup === 'wood') {
+      return (
+        lowerMat.includes('wood') ||
+        lowerMat.includes('oak') ||
+        lowerMat.includes('leg') ||
+        lowerMat.includes('base') ||
+        lowerMat.includes('frame')
+      );
+    }
+
+    if (targetGroup === 'marble') {
+      return (
+        lowerMat.includes('marble') ||
+        lowerMat.includes('stone') ||
+        lowerMat.includes('plane') ||
+        lowerMat.includes('top')
+      );
+    }
+
+    if (targetGroup === 'gold' || targetGroup === 'metal') {
+      return (
+        lowerMat.includes('gold') ||
+        lowerMat.includes('metal') ||
+        lowerMat.includes('brass') ||
+        lowerMat.includes('cube')
+      );
+    }
+
+    const mappingKeywords = product?.materialMapping?.[targetGroup] || [targetGroup];
+    return mappingKeywords.some((keyword) => lowerMat.includes(keyword.toLowerCase()));
+  };
+
+  // Find matching variant material from availableMaterials (variant name first, then fallback to index)
+  const findVariantMaterial = (finish) => {
+    if (!finish) return null;
+
+    // 1. By variant name first (safe across models where material order may differ)
+    const targetVariantName = finish.variantName;
+    if (targetVariantName) {
+      if (availableMaterials[targetVariantName]) return availableMaterials[targetVariantName];
+
+      const tv = targetVariantName.toLowerCase().trim();
+      const foundByName = Object.values(availableMaterials).find((m) => {
+        const n = (m?.name || '').toLowerCase().trim();
+        return (
+          n === tv ||
+          n.replace(/[\s_.-]/g, '') === tv.replace(/[\s_.-]/g, '') ||
+          n.includes(tv) ||
+          tv.includes(n)
+        );
+      });
+      if (foundByName) return foundByName;
+    }
+
+    // 2. Fallback by exact material index
+    if (finish.materialIndex !== undefined && availableMaterials[finish.materialIndex]) {
+      return availableMaterials[finish.materialIndex];
+    }
+
+    return null;
   };
 
   scene.traverse((node) => {
@@ -82,80 +158,58 @@ export function applyFinishToModel(scene, finish, product, availableMaterials = 
         originalMaterialMap.set(node, node.material);
       }
 
-      const materials = Array.isArray(node.material) ? node.material : [node.material];
-      const newMaterials = materials.map((mat) => {
-        const matName = mat.name || '';
-        const meshName = node.name || '';
+      const materials = Array.isArray(node.material) ? [...node.material] : [node.material];
 
-        const matches = isTargetMatch(matName, meshName);
+      // For each finish in finishList, apply to matching material slots
+      finishList.forEach((finish) => {
+        if (!finish) return;
+        const targetGroup = finish.target?.toLowerCase() || finish.group?.toLowerCase() || 'all';
 
-        if (matches) {
-          // A) GLTF Embedded Material Variant (Direct assignment from designer's file)
-          const targetVariantName = finish.variantName;
-          const foundVariantMat = targetVariantName
-            ? availableMaterials[targetVariantName] ||
-              Object.values(availableMaterials).find((m) => {
-                const n = (m?.name || '').toLowerCase();
-                const tv = targetVariantName.toLowerCase();
-                return n === tv ||
-                  (tv.includes('white') && n.includes('white')) ||
-                  (tv.includes('black') && n.includes('black')) ||
-                  ((tv.includes('brown') || tv.includes('marble') || tv.includes('midnight')) &&
-                   (n === 'marble' || n.includes('midnight') || n.includes('brown')));
-              })
-            : null;
+        for (let i = 0; i < materials.length; i++) {
+          const mat = materials[i];
+          const matName = mat?.name || '';
+          const meshName = node.name || '';
 
-          if (foundVariantMat) {
-            foundVariantMat.needsUpdate = true;
-            modified.push(`${meshName || 'Mesh'} (Variant: ${targetVariantName})`);
-            return foundVariantMat;
-          }
+          if (isTargetMatch(matName, targetGroup)) {
+            // A) GLTF Embedded Material Variant (Direct swap from designer's GLB)
+            const foundVariantMat = findVariantMaterial(finish);
 
-          // B) Dynamic high-resolution texture replacement (if variant not embedded in GLB)
-          if (finish.textureUrl) {
-            const clonedMat = mat.clone();
-            const repeat = finish.textureRepeat || [1, 1];
-            clonedMat.map = getOrCreateTexture(finish.textureUrl, repeat, false);
-            clonedMat.color = new THREE.Color(finish.color || '#FFFFFF');
-
-            if (finish.normalUrl) {
-              clonedMat.normalMap = getOrCreateTexture(finish.normalUrl, repeat, true);
-              clonedMat.normalScale = new THREE.Vector2(0.2, 0.2);
+            if (foundVariantMat) {
+              if (foundVariantMat.normalScale && (foundVariantMat.name === 'Hessain' || foundVariantMat.name?.toLowerCase().includes('hessain'))) {
+                foundVariantMat.normalScale.set(1, 1);
+              }
+              foundVariantMat.needsUpdate = true;
+              materials[i] = foundVariantMat;
+              modified.push(`${meshName} Slot ${i} (Variant: ${finish.variantName})`);
+              continue;
             }
 
-            if (finish.roughness !== undefined) {
-              clonedMat.roughness = finish.roughness;
+            // B) Dynamic high-resolution texture replacement (Custom Texture)
+            if (finish.textureUrl) {
+              const clonedMat = mat.clone();
+              const repeat = finish.textureRepeat || [2, 2];
+              clonedMat.map = getOrCreateTexture(finish.textureUrl, repeat, false);
+              clonedMat.color = new THREE.Color(finish.color || '#FFFFFF');
+              clonedMat.needsUpdate = true;
+              materials[i] = clonedMat;
+              modified.push(`${meshName} Slot ${i} (Custom Texture)`);
+              continue;
             }
-            if (finish.metalness !== undefined) {
-              clonedMat.metalness = finish.metalness;
+
+            // C) Custom Color Tint (only when explicitly requested as a custom color)
+            if (finish.color && finish.id?.startsWith('custom-color')) {
+              const clonedMat = mat.clone();
+              clonedMat.color = new THREE.Color(finish.color);
+              clonedMat.needsUpdate = true;
+              materials[i] = clonedMat;
+              modified.push(`${meshName} Slot ${i} (Color: ${finish.color})`);
+              continue;
             }
-
-            clonedMat.needsUpdate = true;
-            modified.push(`${meshName || 'Mesh'} (Texture: ${finish.id})`);
-            return clonedMat;
           }
-
-          // C) Dynamic Color Tint
-          const clonedMat = mat.clone();
-          if (finish.color) {
-            clonedMat.color = new THREE.Color(finish.color);
-          }
-          if (finish.roughness !== undefined) {
-            clonedMat.roughness = finish.roughness;
-          }
-          if (finish.metalness !== undefined) {
-            clonedMat.metalness = finish.metalness;
-          }
-
-          clonedMat.needsUpdate = true;
-          modified.push(`${meshName || 'Mesh'} (${matName || 'Material'})`);
-          return clonedMat;
         }
-
-        return mat;
       });
 
-      node.material = Array.isArray(node.material) ? newMaterials : newMaterials[0];
+      node.material = Array.isArray(node.material) ? materials : materials[0];
     }
   });
 
