@@ -12,7 +12,7 @@ export default function Hero() {
           <div className="hero-image-overlay" />
           <img
             src={assetUrl('images/hero-living.webp')}
-            alt="صمّم أثاث أحلامك بتقنية ثلاثية الأبعاد - ARTHA FURNITURE"
+            alt="صمّم أثاث أحلامك بتقنية ثلاثية الأبعاد - ASAS FURNITURE"
             className="hero-bg-img"
           />
 

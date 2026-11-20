@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { Menu, X, Sparkles } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { assetUrl } from '../utils/assetUrl';
 
 export default function Navbar() {
@@ -22,10 +22,10 @@ export default function Navbar() {
           {/* Brand Logo */}
           <Link to="/" className="brand-wrapper" onClick={closeMobileMenu}>
             <div className="brand-monogram">
-              <span className="monogram-icon">M</span>
+              <span className="monogram-icon">A</span>
             </div>
             <div className="brand-text">
-              <span className="brand-title">ARTHA</span>
+              <span className="brand-title">ASAS</span>
               <span className="brand-subtitle">FURNITURE</span>
             </div>
           </Link>
@@ -49,28 +49,6 @@ export default function Navbar() {
                 >
                   المتجر
                 </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/collections"
-                  className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                >
-                  التصنيفات
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/product/sofa-1"
-                  className={({ isActive }) => `nav-link nav-link-highlight ${isActive ? 'active' : ''}`}
-                >
-                  <Sparkles size={14} />
-                  <span>مصمم 3D</span>
-                </NavLink>
-              </li>
-              <li>
-                <a href={`${assetUrl('')}#about`} className="nav-link">
-                  عن أرثا
-                </a>
               </li>
               <li>
                 <a href={`${assetUrl('')}#contact`} className="nav-link">
@@ -105,19 +83,8 @@ export default function Navbar() {
             </li>
             <li>
               <NavLink to="/collections" className="mobile-nav-link" onClick={closeMobileMenu}>
-                المتجر والتصنيفات
+                المتجر
               </NavLink>
-            </li>
-            <li>
-              <NavLink to="/product/sofa-1" className="mobile-nav-link mobile-highlight" onClick={closeMobileMenu}>
-                <Sparkles size={16} />
-                <span>مصمم أثاث 3D التفاعلي</span>
-              </NavLink>
-            </li>
-            <li>
-              <a href={`${assetUrl('')}#about`} className="mobile-nav-link" onClick={closeMobileMenu}>
-                عن أرثا
-              </a>
             </li>
             <li>
               <a href={`${assetUrl('')}#contact`} className="mobile-nav-link" onClick={closeMobileMenu}>
