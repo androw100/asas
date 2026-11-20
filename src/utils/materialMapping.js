@@ -171,7 +171,31 @@ export function applyFinishToModel(scene, finishOrFinishes, product, availableMa
           const meshName = node.name || '';
 
           if (isTargetMatch(matName, targetGroup)) {
-            // A) GLTF Embedded Material Variant (Direct swap from designer's GLB)
+            // A) Dynamic high-resolution texture replacement (when explicit textureUrl is configured)
+            if (finish.textureUrl) {
+              const baseMat = findVariantMaterial(finish) || mat;
+              const clonedMat = baseMat.clone();
+              clonedMat.name = matName;
+              const repeat = finish.textureRepeat || [2, 2];
+              clonedMat.map = getOrCreateTexture(finish.textureUrl, repeat, false);
+
+              if (finish.tint) {
+                clonedMat.color = new THREE.Color(finish.tint);
+              } else if (finish.color && finish.id?.startsWith('custom-color')) {
+                clonedMat.color = new THREE.Color(finish.color);
+              } else {
+                clonedMat.color = new THREE.Color('#FFFFFF');
+              }
+
+              clonedMat.roughness = 0.72;
+              clonedMat.metalness = 0.05;
+              clonedMat.needsUpdate = true;
+              materials[i] = clonedMat;
+              modified.push(`${meshName} Slot ${i} (Custom Texture: ${finish.textureUrl})`);
+              continue;
+            }
+
+            // B) GLTF Embedded Material Variant (Direct swap from designer's GLB)
             const foundVariantMat = findVariantMaterial(finish);
 
             if (foundVariantMat) {
@@ -194,21 +218,10 @@ export function applyFinishToModel(scene, finishOrFinishes, product, availableMa
               continue;
             }
 
-            // B) Dynamic high-resolution texture replacement (Custom Texture)
-            if (finish.textureUrl) {
-              const clonedMat = mat.clone();
-              const repeat = finish.textureRepeat || [2, 2];
-              clonedMat.map = getOrCreateTexture(finish.textureUrl, repeat, false);
-              clonedMat.color = new THREE.Color(finish.color || '#FFFFFF');
-              clonedMat.needsUpdate = true;
-              materials[i] = clonedMat;
-              modified.push(`${meshName} Slot ${i} (Custom Texture)`);
-              continue;
-            }
-
             // C) Custom Color Tint (only when explicitly requested as a custom color)
             if (finish.color && finish.id?.startsWith('custom-color')) {
               const clonedMat = mat.clone();
+              clonedMat.name = matName;
               clonedMat.color = new THREE.Color(finish.color);
               clonedMat.needsUpdate = true;
               materials[i] = clonedMat;

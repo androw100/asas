@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layers, Check, RotateCcw, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
 
 export default function FinishPicker({ finishes = [], selectedFinish, onSelectFinish, sizes = [], selectedSize, onSelectSize }) {
-  const [openSection, setOpenSection] = useState('fabric'); // 'fabric' | 'wood' | 'size' | 'all'
-
-  if (!finishes || finishes.length === 0) return null;
-
   const fabricFinishes = finishes.filter((f) => f.group === 'fabric' || f.target === 'fabric');
   const woodFinishes = finishes.filter((f) => f.group === 'wood' || f.target === 'wood');
   const isDualMaterial = fabricFinishes.length > 0 && woodFinishes.length > 0;
+
+  const [openSection, setOpenSection] = useState(() => (fabricFinishes.length > 0 ? 'fabric' : 'wood'));
+
+  useEffect(() => {
+    if (fabricFinishes.length > 0) {
+      setOpenSection('fabric');
+    } else if (woodFinishes.length > 0) {
+      setOpenSection('wood');
+    }
+  }, [finishes]);
+
+  if (!finishes || finishes.length === 0) return null;
 
   // Active selections
   const currentFabric = Array.isArray(selectedFinish)

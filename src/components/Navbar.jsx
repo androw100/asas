@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { Menu, X, Search, User, Heart, ShoppingBag, Sparkles, ChevronDown } from 'lucide-react';
+import { Menu, X, Sparkles } from 'lucide-react';
 import { assetUrl } from '../utils/assetUrl';
 
 export default function Navbar() {
@@ -16,29 +16,10 @@ export default function Navbar() {
 
   return (
     <header className="site-header">
-      {/* 1. Top Announcement Bar (Like Artha design) */}
-      <div className="top-announcement-bar">
-        <div className="container top-bar-container">
-          <div className="top-bar-right">
-            <span>✨ شحن مجاني للطلبات فوق 1,000 ريال</span>
-            <span className="top-bar-divider">|</span>
-            <span>📞 خدمة عملاء 24/7</span>
-          </div>
-
-          <div className="top-bar-left">
-            <Link to="/contact" className="top-bar-link">تتبع الطلب</Link>
-            <span className="top-bar-divider">|</span>
-            <span className="top-bar-lang">
-              العربية <ChevronDown size={13} />
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. Main Navigation Bar */}
+      {/* Main Navigation Bar */}
       <div className="navbar">
         <div className="container navbar-container">
-          {/* Brand Logo (Artha / Asas Luxury Monogram) */}
+          {/* Brand Logo */}
           <Link to="/" className="brand-wrapper" onClick={closeMobileMenu}>
             <div className="brand-monogram">
               <span className="monogram-icon">M</span>
@@ -99,24 +80,8 @@ export default function Navbar() {
             </ul>
           </nav>
 
-          {/* Action Icons (Search, Profile, Wishlist, Cart) */}
+          {/* Mobile menu toggle button */}
           <div className="navbar-actions">
-            <button className="nav-action-btn" aria-label="بحث" title="بحث">
-              <Search size={19} />
-            </button>
-            <button className="nav-action-btn" aria-label="حسابي" title="تسجيل الدخول / حسابي">
-              <User size={19} />
-            </button>
-            <Link to="/collections" className="nav-action-btn" aria-label="المفضلة" title="قائمة الرغبات">
-              <Heart size={19} />
-              <span className="action-badge">1</span>
-            </Link>
-            <Link to="/collections" className="nav-action-btn nav-cart-btn" aria-label="سلة المشتريات" title="السلة">
-              <ShoppingBag size={19} />
-              <span className="action-badge">2</span>
-            </Link>
-
-            {/* Mobile menu toggle */}
             <button
               className="nav-mobile-toggle"
               onClick={toggleMobileMenu}
