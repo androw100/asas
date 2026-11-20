@@ -79,46 +79,20 @@ export const tableFinishes = [
 
 export const cabinFinishes = [
   {
-    id: 'light-wood',
-    name: 'خشب طبيعي فاتح (Light Oak)',
-    color: '#C6A477',
+    id: 'cabin-wood-oak',
+    name: 'خشب أوك طبيعي (Natural Oak)',
+    color: '#A88056',
     variantName: 'Oak Wood2',
     materialIndex: 0,
-    textureUrl: assetUrl('images/textures/oak_wood.jpg'),
-    textureRepeat: [3, 3],
     target: 'wood',
     group: 'wood'
   },
   {
-    id: 'dark-wood-cabin',
-    name: 'خشب داكن غني (Dark Walnut)',
+    id: 'cabin-wood-dark',
+    name: 'خشب أثاث داكن (Dark Wood)',
     color: '#2B221B',
     variantName: 'Furniture wood.002',
     materialIndex: 1,
-    textureUrl: assetUrl('images/textures/dark_wood.jpg'),
-    textureRepeat: [3, 3],
-    target: 'wood',
-    group: 'wood'
-  },
-  {
-    id: 'charcoal-wood-cabin',
-    name: 'خشب رمادي فحمي (Charcoal Ash)',
-    color: '#3B3632',
-    materialIndex: 1,
-    textureUrl: assetUrl('images/textures/dark_wood.jpg'),
-    textureRepeat: [3, 3],
-    tint: '#524C46',
-    target: 'wood',
-    group: 'wood'
-  },
-  {
-    id: 'warm-teak-cabin',
-    name: 'خشب زان دافئ (Warm Teak)',
-    color: '#A06B3E',
-    materialIndex: 0,
-    textureUrl: assetUrl('images/textures/oak_wood.jpg'),
-    textureRepeat: [3, 3],
-    tint: '#E09B60',
     target: 'wood',
     group: 'wood'
   }

@@ -101,6 +101,32 @@ function GLTFModel({ url, product, finish }) {
             dict[idx] = m;
           }
         });
+
+        // Map variant names from glTF KHR_materials_variants extension
+        const variantsDef = gltf.parser.json?.extensions?.KHR_materials_variants?.variants;
+        const meshesDef = gltf.parser.json?.meshes;
+
+        if (Array.isArray(variantsDef) && Array.isArray(meshesDef)) {
+          meshesDef.forEach((mesh) => {
+            mesh.primitives?.forEach((prim) => {
+              const mappings = prim.extensions?.KHR_materials_variants?.mappings;
+              if (Array.isArray(mappings)) {
+                mappings.forEach((mapping) => {
+                  const mat = mats[mapping.material];
+                  if (mat && Array.isArray(mapping.variants)) {
+                    mapping.variants.forEach((vIdx) => {
+                      const vName = variantsDef[vIdx]?.name;
+                      if (vName) {
+                        dict[vName] = mat;
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          });
+        }
+
         setEmbeddedMaterials(dict);
       }).catch((err) => {
         console.warn('Failed to load embedded GLTF materials:', err);
