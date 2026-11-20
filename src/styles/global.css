@@ -22,6 +22,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
+  direction: rtl;
 }
 
 body {
@@ -58,15 +59,15 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-sans);
   color: var(--color-text-main);
-  font-weight: 500;
-  line-height: 1.2;
+  font-weight: 600;
+  line-height: 1.25;
   letter-spacing: -0.01em;
   overflow-wrap: break-word;
 }
 
 p {
   color: var(--color-text-muted);
-  font-size: 1rem;
+  font-size: 0.96rem;
   line-height: 1.7;
   overflow-wrap: break-word;
 }
@@ -97,6 +98,12 @@ img {
   outline-offset: 3px;
 }
 
+/* Selection Color */
+::selection {
+  background-color: var(--color-surface-soft);
+  color: var(--color-accent);
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -108,16 +115,10 @@ img {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-surface-hover);
-  border-radius: var(--radius-sm);
+  background: var(--color-border);
+  border-radius: var(--radius-full);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-accent);
-}
-
-/* Text Selection */
-::selection {
-  background: var(--color-accent);
-  color: var(--color-bg);
+  background: var(--color-text-dim);
 }

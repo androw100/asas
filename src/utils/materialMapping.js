@@ -175,9 +175,19 @@ export function applyFinishToModel(scene, finishOrFinishes, product, availableMa
             const foundVariantMat = findVariantMaterial(finish);
 
             if (foundVariantMat) {
-              if (foundVariantMat.normalScale && (foundVariantMat.name === 'Hessain' || foundVariantMat.name?.toLowerCase().includes('hessain'))) {
-                foundVariantMat.normalScale.set(1, 1);
+              // Ensure fabric materials have realistic diffuse matte behavior and prevent glossy specular glare/artifacts
+              const isFabric =
+                targetGroup === 'fabric' ||
+                (foundVariantMat.name && /fabric|cloth|hessain|cushion|seat|upholstery/i.test(foundVariantMat.name));
+
+              if (isFabric) {
+                foundVariantMat.roughness = 0.95;
+                foundVariantMat.metalness = 0.0;
+                if (foundVariantMat.normalScale) {
+                  foundVariantMat.normalScale.set(0.8, 0.8);
+                }
               }
+
               foundVariantMat.needsUpdate = true;
               materials[i] = foundVariantMat;
               modified.push(`${meshName} Slot ${i} (Variant: ${finish.variantName})`);

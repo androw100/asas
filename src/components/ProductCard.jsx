@@ -1,83 +1,72 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Box, ArrowLeft } from 'lucide-react';
-
-function ArchitecturalPlaceholder({ category }) {
-  const isTable = category === 'طاولات' || category === 'Tables';
-
-  return (
-    <svg
-      width="180"
-      height="180"
-      viewBox="0 0 160 160"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ opacity: 0.85 }}
-    >
-      <circle cx="80" cy="80" r="64" stroke="rgba(196,164,119,0.12)" strokeWidth="1" strokeDasharray="3 3" />
-      {isTable ? (
-        <g>
-          <ellipse cx="80" cy="130" rx="45" ry="8" fill="rgba(0,0,0,0.3)" />
-          <rect x="42" y="85" width="22" height="42" rx="4" fill="#2E2C27" stroke="#C4A477" strokeWidth="1.5" />
-          <rect x="96" y="85" width="22" height="42" rx="4" fill="#2E2C27" stroke="#C4A477" strokeWidth="1.5" />
-          <rect x="25" y="76" width="110" height="12" rx="2" fill="#3D3933" stroke="#F1EEE7" strokeWidth="1.5" />
-        </g>
-      ) : (
-        <g>
-          <ellipse cx="80" cy="136" rx="36" ry="6" fill="rgba(0,0,0,0.3)" />
-          <line x1="56" y1="105" x2="50" y2="136" stroke="#C4A477" strokeWidth="2" />
-          <line x1="104" y1="105" x2="110" y2="136" stroke="#C4A477" strokeWidth="2" />
-          <rect x="48" y="92" width="64" height="14" rx="4" fill="#2E2C27" stroke="#F1EEE7" strokeWidth="1.5" />
-          <path d="M 52 94 C 52 56, 108 56, 108 94" fill="none" stroke="#C4A477" strokeWidth="2.5" />
-        </g>
-      )}
-    </svg>
-  );
-}
+import { Heart, Box, Star, ArrowLeft } from 'lucide-react';
 
 export default function ProductCard({ product }) {
+  const [isLiked, setIsLiked] = useState(false);
   const [imageError, setImageError] = useState(false);
+
+  const formattedPrice = product.price
+    ? `${product.price.toLocaleString('ar-SA')} ريال`
+    : '4,250 ريال';
+
+  // Clean Arabic title (remove English text in parentheses if exists)
+  const cleanTitle = product.name ? product.name.split('(')[0].trim() : product.name;
 
   return (
     <article className="product-card" aria-label={product.name}>
-      <Link to={`/product/${product.id}`} className="product-card-media" tabIndex={-1}>
-        <div className="product-badge-3d">
-          <Box size={13} />
-          <span>عارض 3D تفاعلي</span>
-        </div>
+      {/* Top Favorite Toggle & 3D Badge */}
+      <div className="product-card-header">
+        <button
+          type="button"
+          className={`card-wishlist-btn ${isLiked ? 'liked' : ''}`}
+          onClick={(e) => {
+            e.preventDefault();
+            setIsLiked(!isLiked);
+          }}
+          aria-label="إضافة للمفضلة"
+        >
+          <Heart size={18} fill={isLiked ? '#A64D4D' : 'none'} color={isLiked ? '#A64D4D' : '#8C827A'} />
+        </button>
 
+        <span className="card-badge-3d">
+          <Box size={13} />
+          <span>3D</span>
+        </span>
+      </div>
+
+      {/* Product Image Media */}
+      <Link to={`/product/${product.id}`} className="product-card-media">
         {product.thumbnail && !imageError ? (
           <img
             src={product.thumbnail}
-            alt={product.name}
+            alt={cleanTitle}
             onError={() => setImageError(true)}
             loading="lazy"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover'
-            }}
+            className="product-card-img"
           />
         ) : (
-          <ArchitecturalPlaceholder category={product.category} />
+          <div className="product-card-placeholder">
+            <Box size={42} strokeWidth={1.5} color="var(--color-accent)" />
+          </div>
         )}
       </Link>
 
+      {/* Product Information (Centered Luxury Style) */}
       <div className="product-card-body">
-        <span className="product-card-category">{product.category}</span>
         <h3 className="product-card-title">
-          <Link to={`/product/${product.id}`}>{product.name}</Link>
+          <Link to={`/product/${product.id}`}>{cleanTitle}</Link>
         </h3>
-        <p className="product-card-description">{product.description}</p>
 
-        <div className="product-card-footer">
-          <span style={{ fontSize: '0.8rem', color: 'var(--color-text-dim)' }}>
-            متوفر بتشطيبات متعددة
-          </span>
-          <Link to={`/product/${product.id}`} className="product-card-link">
-            <span>استكشف القطعة</span>
-            <ArrowLeft size={15} />
-          </Link>
+        <div className="product-card-price-row">
+          <span className="product-card-price">{formattedPrice}</span>
+        </div>
+
+        {/* Rating & Reviews */}
+        <div className="product-card-rating">
+          <Star size={13} fill="#C29B38" color="#C29B38" />
+          <span className="rating-score">{product.rating || '4.8'}</span>
+          <span className="rating-count">({product.reviewsCount || '110'})</span>
         </div>
       </div>
     </article>

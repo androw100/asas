@@ -2,45 +2,45 @@ import { assetUrl } from '../utils/assetUrl';
 
 export const categories = [
   'جميع المنتجات',
-  'كراسي ومقاعد',
-  'كنب وأنتريهات',
-  'طاولات وسفرة',
-  'خزائن ودواليب'
+  'الكنب',
+  'كراسي',
+  'طاولات',
+  'وحدات تخزين'
 ];
 
 export const tableFinishes = [
   // ألوان وخامات القماش والسطح (Fabric / Top Variants - الماتيريال الأولى)
   {
     id: 'white-fabric',
-    name: 'قماش أبيض ناصع (White Fabric)',
-    color: '#B9B9B9',
+    name: 'قماش عاجي ناعم (Ivory White)',
+    color: '#EDE8DF',
     variantName: 'white Fabric',
     materialIndex: 0,
     target: 'fabric',
     group: 'fabric'
   },
   {
-    id: 'blue-fabric',
-    name: 'قماش كحلي أنيق (Blue Fabric)',
-    color: '#444F7C',
-    variantName: 'Blue Fabric',
-    materialIndex: 1,
-    target: 'fabric',
-    group: 'fabric'
-  },
-  {
     id: 'hessian',
-    name: 'قماش خيش طبيعي (Hessian)',
-    color: '#C6B6A3',
+    name: 'قماش خيش بيج (Natural Hessian)',
+    color: '#D4C4B1',
     variantName: 'Hessain',
     materialIndex: 2,
     target: 'fabric',
     group: 'fabric'
   },
   {
+    id: 'blue-fabric',
+    name: 'قماش كحلي أنيق (Navy Blue)',
+    color: '#3F4A70',
+    variantName: 'Blue Fabric',
+    materialIndex: 1,
+    target: 'fabric',
+    group: 'fabric'
+  },
+  {
     id: 'pink-fabric',
-    name: 'قماش وردي هادئ (Pink Fabric)',
-    color: '#6E4243',
+    name: 'قماش وردي هادئ (Muted Blush)',
+    color: '#8A5B60',
     variantName: 'Pink Fabric',
     materialIndex: 3,
     target: 'fabric',
@@ -48,8 +48,8 @@ export const tableFinishes = [
   },
   {
     id: 'olive-fabric',
-    name: 'قماش أخضر زيتوني (Olive Green)',
-    color: '#4F4C2C',
+    name: 'قماش أخضر زيتوني (Earthy Olive)',
+    color: '#535033',
     variantName: 'Olive Green Fabric',
     materialIndex: 4,
     target: 'fabric',
@@ -58,20 +58,20 @@ export const tableFinishes = [
 
   // ألوان وخامات الأرجل والقاعدة الخشبية (Wood Base Variants - الماتيريال الثانية)
   {
-    id: 'dark-wood',
-    name: 'خشب أثاث داكن (Dark Wood)',
-    color: '#201A16',
-    variantName: 'Furniture wood.002',
-    materialIndex: 5,
+    id: 'oak-wood',
+    name: 'خشب أوك طبيعي (Natural Oak)',
+    color: '#A88056',
+    variantName: 'Oak Wood2',
+    materialIndex: 6,
     target: 'wood',
     group: 'wood'
   },
   {
-    id: 'oak-wood',
-    name: 'خشب أوك طبيعي (Oak Wood)',
-    color: '#795434',
-    variantName: 'Oak Wood2',
-    materialIndex: 6,
+    id: 'dark-wood',
+    name: 'خشب أثاث داكن (Dark Walnut)',
+    color: '#2B221B',
+    variantName: 'Furniture wood.002',
+    materialIndex: 5,
     target: 'wood',
     group: 'wood'
   }
@@ -80,7 +80,7 @@ export const tableFinishes = [
 export const cabinFinishes = [
   {
     id: 'light-wood',
-    name: 'خشب طبيعي فاتح (Light Wood)',
+    name: 'خشب طبيعي فاتح (Light Oak)',
     color: '#C6A477',
     variantName: 'Furniture wood.004',
     materialIndex: 0,
@@ -89,8 +89,8 @@ export const cabinFinishes = [
   },
   {
     id: 'dark-wood-cabin',
-    name: 'خشب داكن غني (Dark Wood)',
-    color: '#201A16',
+    name: 'خشب داكن غني (Dark Walnut)',
+    color: '#2B221B',
     variantName: 'Furniture wood.002',
     materialIndex: 1,
     target: 'wood',
@@ -105,98 +105,22 @@ export const tableMaterialMapping = {
 
 const catalog = [
   // ==========================================
-  // 1. كراسي ومقاعد (Chairs)
-  // ==========================================
-  {
-    id: 'chair-1',
-    name: 'كرسي استرخاء عصري (Modern Lounge Chair)',
-    category: 'كراسي ومقاعد',
-    tagline: 'تناغم راقٍ بين انحناءات الخشب الصلب والتنجيد الفاخر.',
-    description: 'كرسي استرخاء مفرد يجمع بين الهيكل الخشبي المنحوت والقماش المبطن فائق النعومة. يوفر دعماً مريحاً لفقرات الظهر أثناء الجلوس والقراءة في غرف المعيشة وصالات الاستقبال.',
-    dimensions: 'العرض 65 سم × العمق 62 سم × الارتفاع 78 سم (ارتفاع المقعد 45 سم)',
-    materialsDescription: 'هيكل من خشب البلوط المعالج، تنجيد قماش مقاوم للبقع، مفاصل متينة مصقولة يدوياً.',
-    modelUrl: '/furniture/chair1.glb',
-    thumbnail: '/images/chair.webp',
-    featured: true,
-    cameraDefaults: {
-      position: [3.0, 2.5, 3.5],
-      target: [0, 1.35, 0],
-      fov: 38
-    },
-    finishes: tableFinishes,
-    materialMapping: tableMaterialMapping
-  },
-  {
-    id: 'chair-2',
-    name: 'كرسي طعام فاخر (Luxury Dining Chair)',
-    category: 'كراسي ومقاعد',
-    tagline: 'انسيابية هندسية مع مسند ظهر منحوت بدقة متناهية.',
-    description: 'كرسي طعام بتصميم هندسي استثنائي يجمع بين الهيكل الخشبي المتين والمقعد المبطن المريح. يضفي لمسة من الفخامة العصرية حول أي مائدة طعام راقية.',
-    dimensions: 'العرض 58 سم × العمق 60 سم × الارتفاع 80 سم (ارتفاع المقعد 46 سم)',
-    materialsDescription: 'خشب زان طبيعي صلب، تنجيد قماش عالي الكثافة، طلاء ورنيش شمعي واقٍ.',
-    modelUrl: '/furniture/chair2.glb',
-    thumbnail: '/images/cane-chair.webp',
-    featured: true,
-    cameraDefaults: {
-      position: [3.3, 2.6, 3.8],
-      target: [0, 1.35, 0],
-      fov: 38
-    },
-    finishes: tableFinishes,
-    materialMapping: tableMaterialMapping
-  },
-  {
-    id: 'chair-3',
-    name: 'كرسي اسكندنافي أنيق (Scandi Comfort Chair)',
-    category: 'كراسي ومقاعد',
-    tagline: 'بساطة الشمال الأوروبي مع دفء الملمس الطبيعي.',
-    description: 'تصميم اسكندنافي بسيط يعتمد على خطوط نقية وألوان طبيعية دافئة. يتميز بمسند ظهر محتضن يمنحك شعوراً فورياً بالراحة والهدوء في زوايا المنزل المختلفة.',
-    dimensions: 'العرض 62 سم × العمق 58 سم × الارتفاع 76 سم',
-    materialsDescription: 'خشب أوك مصمت، ألياف كتانية طبيعية، حشوات إسفنجية عالية المرونة.',
-    modelUrl: '/furniture/chair3.glb',
-    thumbnail: '/images/scandi-oak.webp',
-    featured: true,
-    cameraDefaults: {
-      position: [3.2, 2.5, 3.6],
-      target: [0, 1.28, 0],
-      fov: 38
-    },
-    finishes: tableFinishes,
-    materialMapping: tableMaterialMapping
-  },
-  {
-    id: 'chair-4',
-    name: 'كرسي بذراعين مبطن (Padded Armchair)',
-    category: 'كراسي ومقاعد',
-    tagline: 'راحة مطلقة تدوم طويلاً بمساند مريحة وملمس غني.',
-    description: 'كرسي مريح بذراعين مصمم خصيصاً لجلسات العمل والاسترخاء الطويلة. الهيكل الخشبي المتين يحتضن مقعداً مبطناً بعناية لضمان التوازن المثالي بين الصلابة والراحة.',
-    dimensions: 'العرض 64 سم × العمق 64 سم × الارتفاع 82 سم',
-    materialsDescription: 'خشب بلوط أسود أو طبيعي، أقمشة تنجيد منتقاة بعناية، حواف دائرية آمنة.',
-    modelUrl: '/furniture/chair4.glb',
-    thumbnail: '/images/ergonomic-chair.webp',
-    featured: false,
-    cameraDefaults: {
-      position: [3.0, 2.5, 3.5],
-      target: [0, 1.40, 0],
-      fov: 38
-    },
-    finishes: tableFinishes,
-    materialMapping: tableMaterialMapping
-  },
-
-  // ==========================================
-  // 2. كنب وأنتريهات (Sofas)
+  // 1. الكنب (Sofas)
   // ==========================================
   {
     id: 'sofa-1',
-    name: 'كنبة ثلاثية مودرن (Randy 3-Seater Sofa)',
-    category: 'كنب وأنتريهات',
-    tagline: 'فخامة معاصرة بمقاعد فسيحة وعمق مدروس للراحة اليومية.',
-    description: 'كنبة عائلية تتسع لثلاثة أشخاص بكل أريحية. تتميز بخطوطها المعمارية الواضحة وتنجيدها الفاخر مع قاعدة خشبية متينة ترفع التصميم وتمنحه خفة بصرية راقية في صالات المعيشة.',
-    dimensions: 'الطول 240 سم × العمق 98 سم × الارتفاع 78 سم',
-    materialsDescription: 'هيكل داخلي صلب من الخشب المعالج، نوابض جيبية مرنة، تنجيد قماش مقاوم للاهتراء.',
+    name: 'أريكة لونا الفاخرة (Luna Curved Sofa)',
+    category: 'الكنب',
+    tagline: 'منحنيات انسيابية دافئة وتصميم يحتضن الراحة والأناقة.',
+    description: 'أريكة لونا الأيقونية بتصميم مقوس عصري يمنح غرفة المعيشة هدوءاً ودفئاً استثنائياً. تتميز بتنجيد كتاني فاخر مقاوم للاستخدام اليومي وقاعدة خشبية صلبة منحوتة بعناية متناهية.',
+    price: 4250,
+    rating: 4.9,
+    reviewsCount: 124,
+    sizes: ['240 سم (3 مقاعد)', '280 سم (4 مقاعد)', '320 سم (كبير)'],
+    dimensions: 'العرض 240 سم × العمق 98 سم × الارتفاع 78 سم (ارتفاع المقعد 44 سم)',
+    materialsDescription: 'هيكل من خشب الزان المعالج حرارياً، قماش بوليستر قطني ناعم الملمس، حشوة فوم عالية الكثافة مع نوابض جيبية مرنة.',
     modelUrl: '/furniture/sofa1.glb',
-    thumbnail: '/images/scandi-linen.webp',
+    thumbnail: '/images/products/sofa-1.webp',
     featured: true,
     cameraDefaults: {
       position: [6.8, 4.8, 7.8],
@@ -208,14 +132,18 @@ const catalog = [
   },
   {
     id: 'sofa-2',
-    name: 'كنبة ثنائية مريحة (Loveseat Cozy Sofa)',
-    category: 'كنب وأنتريهات',
-    tagline: 'أناقة مدمجة للمساحات الدافئة والاستقبال العصري.',
-    description: 'كنبة ثنائية أنيقة تلائم المساحات المدمجة ومكاتب الاستقبال الفاخرة. تجمع بين العملية العالية والجمال الانسيابي لتوفر ركناً مثالياً للحديث والاسترخاء.',
-    dimensions: 'الطول 175 سم × العمق 92 سم × الارتفاع 78 سم',
-    materialsDescription: 'خشب طبيعي صلب، حشوات إسفنجية متعددة الكثافة، قماش فاخر قابل للتهوية.',
+    name: 'أريكة سينا المريحة (Siena Loveseat)',
+    category: 'الكنب',
+    tagline: 'أناقة مدمجة مثالية للمساحات العصرية الدافئة.',
+    description: 'كنبة ثنائية مدمجة تجمع بين الخطوط المعمارية النظيفة والتنجيد الوثير. صُممت خصيصاً لتناسب الصالونات الأنيقة والشقق العصرية ومساحات القراءة الهادئة.',
+    price: 3950,
+    rating: 4.9,
+    reviewsCount: 67,
+    sizes: ['175 سم (مقعدين)', '200 سم (مقعدين رحب)'],
+    dimensions: 'العرض 175 سم × العمق 92 سم × الارتفاع 78 سم',
+    materialsDescription: 'خشب بلوط طبيعي مصمت، تنجيد قماش عالي المتانة قابل للتنفس، وسائد مقعد مدعمة بحشوة ريشية صناعية.',
     modelUrl: '/furniture/sofa2.glb',
-    thumbnail: '/images/hero-living.webp',
+    thumbnail: '/images/products/sofa-2.webp',
     featured: true,
     cameraDefaults: {
       position: [4.8, 3.6, 5.6],
@@ -227,14 +155,18 @@ const catalog = [
   },
   {
     id: 'sofa-3',
-    name: 'كنبة ركنية حرف L عصرية (Corner L-Shape Sofa)',
-    category: 'كنب وأنتريهات',
-    tagline: 'تصميم ركني رحب يجمع العائلة في جلسات مليئة بالدفء.',
-    description: 'كنبة ركنية رحبة مصممة لتحقيق أقصى درجات الاستفادة من زوايا الغرفة. توفر شيزلونج ممتد للاسترخاء التام ومشاهدة التلفاز مع وسائد ظهر محشوة بالريش الصناعي الفاخر.',
+    name: 'كنبة كلاود الركنية (Cloud Corner Sectional)',
+    category: 'الكنب',
+    tagline: 'تجربة جلوس سحابية رحبة تملأ أركان منزلك بالدفء.',
+    description: 'كنبة ركنية رحبة بحرف L مزودة بشيزلونج ممتد للاسترخاء التام. مصممة لتكون القلب النابض لغرفة المعيشة العائلية، وتمنحك أقصى درجات المرونة والراحة.',
+    price: 5450,
+    rating: 4.8,
+    reviewsCount: 88,
+    sizes: ['285 سم × 180 سم (شيزلونج يمين)', '285 سم × 180 سم (شيزلونج يسار)'],
     dimensions: 'الطول 285 سم × عمق الركن 180 سم × الارتفاع 80 سم',
-    materialsDescription: 'قاعدة خشبية ثقيلة معالجة، أقمشة محبوكة عالية المتانة، أقدام خشبية متينة.',
+    materialsDescription: 'قاعدة خشبية ثقيلة معالجة ضد الرطوبة، أقمشة منسوجة مقاومة للبقع، حشوات فائقة النعومة مع نوابض ارتدادية.',
     modelUrl: '/furniture/sofa3.glb',
-    thumbnail: '/images/upholstered-chair.webp',
+    thumbnail: '/images/products/sofa-3.webp',
     featured: true,
     cameraDefaults: {
       position: [7.5, 5.2, 8.5],
@@ -246,14 +178,18 @@ const catalog = [
   },
   {
     id: 'sofa-4',
-    name: 'طقم كنب عائلي كبير (Modular Sectional Sofa)',
-    category: 'كنب وأنتريهات',
-    tagline: 'تجربة جلوس فندقية متكاملة تلبي أرقى معايير الضيافة.',
-    description: 'طقم كنب عائلي متكامل بمقاسات رحبة جداً وتوزيع مقاعد مرن. مصمم لصالونات الاستقبال الفخمة والمساحات المفتوحة ليمنح منزلك فخامة فندقية لا تُضاهى.',
+    name: 'طقم كنب صالون ملكي (Modular Grand Suite)',
+    category: 'الكنب',
+    tagline: 'فخامة فندقية استثنائية لمساحات الاستقبال والقصور.',
+    description: 'طقم كنب موديل صالون بمقاييس رحبة وتوزيع مقاعد مرن. يجمع بين الفخامة المعمارية والحرفية الدقيقة ليعكس ذوقك الرفيع في مجالس الضيافة الكبرى.',
+    price: 6800,
+    rating: 5.0,
+    reviewsCount: 42,
+    sizes: ['350 سم × 240 سم (شامل كل القطع)'],
     dimensions: 'الطول 350 سم × العمق 240 سم × الارتفاع 78 سم',
-    materialsDescription: 'هيكل من الخشب الزان، وسائد مقاعد قابلة للقلب، أقمشة منسوجة فاخرة مقاومة للسوائل.',
+    materialsDescription: 'هيكل من الخشب الزان الروماني، أقمشة تركية فاخرة، وسائد إضافية متعددة الأحجام بأقمشة متناسقة.',
     modelUrl: '/furniture/sofa4.glb',
-    thumbnail: '/images/hero-living.webp',
+    thumbnail: '/images/products/sofa-4.webp',
     featured: false,
     cameraDefaults: {
       position: [11.5, 7.5, 12.8],
@@ -265,18 +201,118 @@ const catalog = [
   },
 
   // ==========================================
-  // 3. طاولات وسفرة (Tables)
+  // 2. كراسي (Chairs)
+  // ==========================================
+  {
+    id: 'chair-1',
+    name: 'كرسي فينوس المريح (Venus Armchair)',
+    category: 'كراسي',
+    tagline: 'تناغم راقٍ بين انحناءات الخشب الصلب والتنجيد الفاخر.',
+    description: 'كرسي بذراعين بتصميم عصري يمزج بين راحة الاسترخاء وهيبة الحضور البصري. مقعده المبطن بعناية ومساند يديه المنحوتة تمنحك جلسة مريحة لساعات القراءة والحديث.',
+    price: 1250,
+    rating: 4.9,
+    reviewsCount: 98,
+    sizes: ['قياسي 65 سم'],
+    dimensions: 'العرض 65 سم × العمق 62 سم × الارتفاع 78 سم (ارتفاع المقعد 45 سم)',
+    materialsDescription: 'هيكل من خشب البلوط المعالج، تنجيد قماش مقاوم للاهتراء، مفاصل متينة مصقولة يدوياً.',
+    modelUrl: '/furniture/chair1.glb',
+    thumbnail: '/images/products/chair-1.webp',
+    featured: true,
+    cameraDefaults: {
+      position: [3.0, 2.5, 3.5],
+      target: [0, 1.35, 0],
+      fov: 38
+    },
+    finishes: tableFinishes,
+    materialMapping: tableMaterialMapping
+  },
+  {
+    id: 'chair-2',
+    name: 'كرسي طعام أوريون (Orion Dining Chair)',
+    category: 'كراسي',
+    tagline: 'انسيابية هندسية مع مسند ظهر منحوت بدقة متناهية.',
+    description: 'كرسي طعام فاخر يوازن بين خفة الوزن والصلابة الفائقة. يضفي لمسة من الأناقة الراقية حول طاولات الطعام العصرية، مع دعم ممتاز للظهر أثناء الجلوس.',
+    price: 890,
+    rating: 4.8,
+    reviewsCount: 76,
+    sizes: ['قياسي 58 سم'],
+    dimensions: 'العرض 58 سم × العمق 60 سم × الارتفاع 80 سم (ارتفاع المقعد 46 سم)',
+    materialsDescription: 'خشب زان طبيعي صلب، تنجيد قماش عالي الكثافة، طلاء ورنيش شمعي واقٍ غير لامع.',
+    modelUrl: '/furniture/chair2.glb',
+    thumbnail: '/images/products/chair-2.webp',
+    featured: true,
+    cameraDefaults: {
+      position: [3.3, 2.6, 3.8],
+      target: [0, 1.35, 0],
+      fov: 38
+    },
+    finishes: tableFinishes,
+    materialMapping: tableMaterialMapping
+  },
+  {
+    id: 'chair-3',
+    name: 'كرسي نورديك الاسكندنافي (Nordic Lounge Chair)',
+    category: 'كراسي',
+    tagline: 'بساطة الشمال الأوروبي مع دفء الملمس الطبيعي.',
+    description: 'تصميم اسكندنافي هادئ يعتمد على نقاء الخطوط وبساطة المواد الطبيعية. مسند الظهر العريض والمقعد المنحدر يوفران تجربة جلوس مريحة واستثنائية.',
+    price: 1100,
+    rating: 4.7,
+    reviewsCount: 53,
+    sizes: ['قياسي 62 سم'],
+    dimensions: 'العرض 62 سم × العمق 58 سم × الارتفاع 76 سم',
+    materialsDescription: 'خشب أوك مصمت، ألياف كتانية طبيعية عالية الجودة، أقدام مدعمة بحلقات حماية للأرضيات.',
+    modelUrl: '/furniture/chair3.glb',
+    thumbnail: '/images/products/chair-3.webp',
+    featured: false,
+    cameraDefaults: {
+      position: [3.2, 2.5, 3.6],
+      target: [0, 1.28, 0],
+      fov: 38
+    },
+    finishes: tableFinishes,
+    materialMapping: tableMaterialMapping
+  },
+  {
+    id: 'chair-4',
+    name: 'كرسي كلوب المبطن (Club Occasional Chair)',
+    category: 'كراسي',
+    tagline: 'راحة مطلقة تدوم طويلاً بمساند مريحة وملمس غني.',
+    description: 'كرسي مريح بذراعين مصمم خصيصاً لجلسات العمل والمطالعة الطويلة. الهيكل الخشبي يحتضن مقعداً مبطناً بعناية فائقة لضمان التوازن المثالي بين الصلابة والراحة.',
+    price: 1350,
+    rating: 4.9,
+    reviewsCount: 39,
+    sizes: ['قياسي 64 سم'],
+    dimensions: 'العرض 64 سم × العمق 64 سم × الارتفاع 82 سم',
+    materialsDescription: 'خشب بلوط أسود أو طبيعي، أقمشة تنجيد منتقاة بعناية، حواف دائرية آمنة.',
+    modelUrl: '/furniture/chair4.glb',
+    thumbnail: '/images/products/chair-4.webp',
+    featured: false,
+    cameraDefaults: {
+      position: [3.0, 2.5, 3.5],
+      target: [0, 1.40, 0],
+      fov: 38
+    },
+    finishes: tableFinishes,
+    materialMapping: tableMaterialMapping
+  },
+
+  // ==========================================
+  // 3. طاولات (Tables)
   // ==========================================
   {
     id: 'dining-table-1',
-    name: 'طاولة طعام دايون مع كراسي (Dion Dining Table Set)',
-    category: 'طاولات وسفرة',
+    name: 'طاولة طعام دايون مع كراسي (Dion Dining Set)',
+    category: 'طاولات',
     tagline: 'مائدة طعام معمارية متكاملة بستة كراسي منحوتة.',
-    description: 'طقم مائدة طعام متكامل يجمع بين طاولة خشبية مستطيلة بستة كراسي أنيقة مبطنة. يمثل التصميم تحفة في التوازن البصري والمتانة ليصبح النقطة المحورية لغرفة الطعام العائلية.',
+    description: 'طقم مائدة طعام متكامل يجمع بين طاولة خشبية مستطيلة فسيحة وستة كراسي أنيقة مبطنة. يمثل التصميم تحفة في التوازن البصري والمتانة ليصبح النقطة المحورية لغرفة الطعام العائلية.',
+    price: 4950,
+    rating: 4.9,
+    reviewsCount: 110,
+    sizes: ['240 سم × 110 سم (6 كراسي)', '280 سم × 120 سم (8 كراسي)'],
     dimensions: 'الطول 240 سم × العرض 110 سم × الارتفاع 76 سم',
     materialsDescription: 'سطح من خشب البلوط الطبيعي الصلب، أرجل خشبية هندسية، كراسي مبطنة بقماش فاخر.',
     modelUrl: '/furniture/dining_tabel.glb',
-    thumbnail: '/images/oak-concrete-table.webp',
+    thumbnail: '/images/products/dining-table-1.webp',
     featured: true,
     cameraDefaults: {
       position: [11.0, 7.2, 12.2],
@@ -288,18 +324,22 @@ const catalog = [
   },
 
   // ==========================================
-  // 4. خزائن ودواليب (Cabinets)
+  // 4. وحدات تخزين (Storage & Cabinets)
   // ==========================================
   {
     id: 'cabinet-1',
-    name: 'خزانة خشبية متعددة الأرفف (Modern Wooden Cabinet)',
-    category: 'خزائن ودواليب',
+    name: 'خزانة ميلان الخشبية (Milan Storage Cabinet)',
+    category: 'وحدات تخزين',
     tagline: 'تنظيم ذكي وفخامة خشبية هادئة تعزز جمال مساحتك.',
     description: 'خزانة متعددة الأغراض بتصميم عصري وأبواب ناعمة الإغلاق. توفر مساحة تخزين واسعة لحفظ الأواني والكتب والمقتنيات الثمينة مع الحفاظ على مظهر راقٍ وبسيط.',
+    price: 3200,
+    rating: 4.8,
+    reviewsCount: 31,
+    sizes: ['180 سم × 90 سم'],
     dimensions: 'العرض 180 سم × العمق 45 سم × الارتفاع 90 سم',
-    materialsDescription: 'خشب طبيعي مصفح بقشرة البلوط الفاخرة، مفصلات ألمانية مخفية بنظام هيدروليك.',
+    materialsDescription: 'خشب طبيعي مصفح بقشرة البلوط الفاخرة، مفصلات ألمانية مخفية بنظام هيدروليك ناعم.',
     modelUrl: '/furniture/Cabin.glb',
-    thumbnail: '/images/about-craft.webp',
+    thumbnail: '/images/products/cabinet-1.webp',
     featured: true,
     cameraDefaults: {
       position: [7.2, 4.8, 8.0],
@@ -326,27 +366,19 @@ export const products = catalog.map((product) => ({
 
 export const faqs = [
   {
-    question: 'هل يمكنني مشاهدة المنتج بتقنية 3D؟',
-    answer: 'نعم، جميع منتجات ASAS مدعومة بنماذج تفاعلية ثلاثية الأبعاد يمكنك استكشافها وتدويرها 360 درجة، وتقريب أدق تفاصيل الخامة مباشرة داخل الموقع.'
+    question: 'هل يمكنني مشاهدة وتخصيص المنتج بتقنية 3D؟',
+    answer: 'نعم! يمكنك تجربة دوران 360 درجة، واختيار الأقمشة وتغيير خامات الخشب في الوقت الفعلي ومشاهدة كل التفاصيل مباشرة في المتصفح قبل اتخاذ قرار الشراء.'
   },
   {
-    question: 'هل يمكنني تغيير خامات وألوان المنتج؟',
-    answer: 'بالتأكيد! يمكنك تجربة ألوان القماش وخامات الخشب المدمجة للمنتج، ومشاهدة التغييرات فوراً على المجسم ثلاثي الأبعاد بأعلى دقة.'
+    question: 'هل الألوان والخامات المعروضة مطابقة للمنتج الواقعي؟',
+    answer: 'بالتأكيد. جميع الخامات مأخوذة من عينات الإنتاج الفعلية وأقمشة التوريد المعتمدة لدينا بدون أي معالجة لونية إضافية لضمان مطابقتها التامة للواقع.'
   },
   {
-    question: 'هل الألوان والخامات المعروضة متاحة للتصنيع والشراء؟',
-    answer: 'نعم، جميع الخيارات المعروضة مطابقة لمواصفات الإنتاج الفعلية. يُرجى التواصل معنا عبر زر الاستفسار لتأكيد موعد التسليم والتفاصيل.'
+    question: 'كيف يتم الشحن والتوصيل والتركيب؟',
+    answer: 'نوفر خدمة شحن وتوصيل احترافية مع فريق تركيب متخصص لكافة مناطق المملكة والخليج، مع خدمة الشحن المجاني للطلبات المؤهلة.'
   },
   {
-    question: 'كيف يمكنني معرفة السعر والحصول على عرض رسمي؟',
-    answer: 'يمكنك التواصل معنا مباشرة عبر زر "استفسر عن السعر والتفاصيل" للحصول على تسعيرة رسمية دقيقة وفق التخصيص والخامات التي اخترتها.'
-  },
-  {
-    question: 'هل يمكنني معرفة أبعاد المنتج بدقة؟',
-    answer: 'تُعرض الأبعاد التفصيلية (العرض، العمق، الارتفاع) في صفحة كل منتج لتساعدك على تخطيط وتنسيق مساحتك بكل ثقة.'
-  },
-  {
-    question: 'كيف يمكنني التواصل مع الشركة؟',
-    answer: 'يمكنك استخدام نموذج الاستفسار المباشر في صفحة التواصل وصفحة كل منتج، أو مراسلتنا على بريد الاستوديو الرسمي studio@asas-living.com.'
+    question: 'ما هي مدة الضمان وسياسة الاستبدال؟',
+    answer: 'نقدم ضماناً ممتداً يصل حتى 5 سنوات على الهياكل الخشبية والمفاصل، بالإضافة لسياسة إرجاع واستبدال مرنة وسهلة خلال 30 يوماً.'
   }
 ];

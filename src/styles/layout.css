@@ -5,6 +5,7 @@
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
+  background-color: var(--color-bg);
 }
 
 .main-content {
@@ -69,14 +70,13 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-xs);
-  padding: 4px 12px;
+  gap: 6px;
+  padding: 5px 14px;
   border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
   font-weight: 600;
-  background: var(--color-surface);
+  background: var(--color-surface-soft);
   border: 1px solid var(--color-border);
   color: var(--color-accent);
   max-width: 100%;

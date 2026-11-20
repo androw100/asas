@@ -1,17 +1,14 @@
-import React, { useState, useEffect, useRef, useMemo, Suspense } from 'react';
+import React, { useRef, useState, useEffect, Suspense, useMemo } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Center, ContactShadows, Environment, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
-import { RotateCcw, Compass } from 'lucide-react';
+import { RotateCcw, ZoomIn, ZoomOut, RefreshCw, Eye } from 'lucide-react';
 import { applyFinishToModel } from '../utils/materialMapping';
 import LoadingState from './LoadingState';
 import ModelErrorState from './ModelErrorState';
-import ProceduralFurniture from './ProceduralFurniture';
-import { ThreeErrorBoundary } from './ThreeErrorBoundary';
 
-// Helper to check WebGL support
+// WebGL Compatibility Detection
 function checkWebGLSupport() {
-  if (typeof window === 'undefined') return true;
   try {
     const canvas = document.createElement('canvas');
     return !!(
@@ -23,39 +20,66 @@ function checkWebGLSupport() {
   }
 }
 
-// Controller component to smoothly reposition camera to presets
+// Error Boundary for Three.js rendering
+class ThreeErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    if (this.props.onError) {
+      this.props.onError(error, errorInfo);
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || null;
+    }
+    return this.props.children;
+  }
+}
+
+// Controls camera transitions smoothly based on presets
 function CameraPresetController({ cameraPreset, defaultPos, defaultTarget, controlsRef }) {
   const { camera } = useThree();
 
   useEffect(() => {
-    if (!cameraPreset) return;
+    if (!controlsRef.current) return;
 
-    let targetPos = [...defaultPos];
+    const baseDist = Math.hypot(defaultPos[0], defaultPos[1], defaultPos[2]) || 6;
+    const targetY = defaultTarget[1] || 1.35;
+
     switch (cameraPreset) {
       case 'front':
-        targetPos = [0, defaultPos[1] * 0.9, defaultPos[2] * 1.1];
+        camera.position.set(0, targetY + 0.15, baseDist * 0.95);
         break;
       case 'side':
-        targetPos = [defaultPos[0] * 1.3, defaultPos[1] * 0.9, 0];
+        camera.position.set(baseDist * 0.95, targetY + 0.15, 0);
+        break;
+      case 'sideLeft':
+        camera.position.set(-baseDist * 0.95, targetY + 0.15, 0);
+        break;
+      case 'back':
+        camera.position.set(0, targetY + 0.15, -baseDist * 0.95);
         break;
       case 'top':
-        targetPos = [0.1, defaultPos[1] * 2.2, 0.1];
+        camera.position.set(0.01, targetY + baseDist * 0.95, 0.01);
         break;
       case 'threequarter':
       default:
-        targetPos = [...defaultPos];
+        camera.position.set(defaultPos[0], defaultPos[1], defaultPos[2]);
         break;
     }
 
-    camera.position.set(targetPos[0], targetPos[1], targetPos[2]);
-    camera.lookAt(new THREE.Vector3(...defaultTarget));
-    camera.updateProjectionMatrix();
-
-    if (controlsRef?.current) {
-      controlsRef.current.target.set(...defaultTarget);
-      controlsRef.current.update();
-    }
-  }, [cameraPreset, camera, defaultPos, defaultTarget, controlsRef]);
+    controlsRef.current.target.set(defaultTarget[0], targetY, defaultTarget[2]);
+    controlsRef.current.update();
+  }, [cameraPreset, defaultPos, defaultTarget, camera, controlsRef]);
 
   return null;
 }
@@ -65,7 +89,6 @@ function GLTFModel({ url, product, finish }) {
   const gltf = useGLTF(url);
   const [embeddedMaterials, setEmbeddedMaterials] = useState({});
 
-  // Extract all materials parsed by GLTFLoader, including KHR_materials_variants
   useEffect(() => {
     let isMounted = true;
     if (gltf?.parser) {
@@ -86,7 +109,6 @@ function GLTFModel({ url, product, finish }) {
     return () => { isMounted = false; };
   }, [gltf]);
 
-  // Apply material changes whenever finish, scene, or embedded materials change
   useEffect(() => {
     if (gltf?.scene && finish) {
       const allMaterials = {
@@ -106,38 +128,38 @@ function GLTFModel({ url, product, finish }) {
 
 export default function ProductViewer({ product, selectedFinish }) {
   const [webGLSupported] = useState(() => checkWebGLSupport());
-  const [modelStatus, setModelStatus] = useState('loaded'); // 'loaded' | 'missing' | 'error'
-  const [useProcedural, setUseProcedural] = useState(false);
-  const [customModelUrl, setCustomModelUrl] = useState(null);
+  const [modelStatus, setModelStatus] = useState('loaded');
   const [cameraPreset, setCameraPreset] = useState('threequarter');
+  const [autoRotate, setAutoRotate] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [loadError, setLoadError] = useState(null);
 
   const controlsRef = useRef();
 
-  const activeModelUrl = customModelUrl || product?.modelUrl;
+  const activeModelUrl = product?.modelUrl;
 
   const defaultCamPos = useMemo(() => {
     return product?.cameraDefaults?.position || [8.7, 5.5, 10.2];
   }, [product]);
 
   const defaultCamTarget = useMemo(() => {
-    return product?.cameraDefaults?.target || [0, 0.4, 0];
+    return product?.cameraDefaults?.target || [0, 1.35, 0];
   }, [product]);
 
-  // Handle local user-selected GLB file for instantaneous testing
-  const handleLocalFileSelect = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setCustomModelUrl(url);
-      setUseProcedural(false);
-      setModelStatus('loaded');
+  const handleZoom = (factor) => {
+    if (controlsRef.current) {
+      const camera = controlsRef.current.object;
+      const target = controlsRef.current.target;
+      const offset = new THREE.Vector3().subVectors(camera.position, target);
+      offset.multiplyScalar(factor);
+      camera.position.addVectors(target, offset);
+      controlsRef.current.update();
     }
   };
 
   const handleResetCamera = () => {
     setCameraPreset('threequarter');
+    setAutoRotate(false);
     if (controlsRef.current) {
       controlsRef.current.reset();
     }
@@ -146,202 +168,190 @@ export default function ProductViewer({ product, selectedFinish }) {
   if (!webGLSupported) {
     return (
       <div className="viewer-wrapper">
-        <ModelErrorState
-          modelUrl={activeModelUrl}
-          errorType="webgl"
-        />
+        <ModelErrorState modelUrl={activeModelUrl} errorType="webgl" />
       </div>
     );
   }
 
-  const showOverlayError = (modelStatus === 'missing' || modelStatus === 'error') && !useProcedural;
+  const showOverlayError = (modelStatus === 'missing' || modelStatus === 'error');
+
+  const angleOptions = [
+    { id: 'threequarter', label: 'منظور 3/4', icon: '📐' },
+    { id: 'front', label: 'الواجهة', icon: '👁️' },
+    { id: 'side', label: 'الجانب الأيمن', icon: '↔️' },
+    { id: 'sideLeft', label: 'الجانب الأيسر', icon: '↩️' },
+    { id: 'back', label: 'الجهة الخلفية', icon: '🔄' },
+    { id: 'top', label: 'من الأعلى', icon: '⬆️' }
+  ];
 
   return (
-    <div className="viewer-wrapper" aria-label={`عارض ثلاثي الأبعاد لـ ${product?.name}`}>
-      {/* Viewer Hints & Badges */}
-      <div className="viewer-hint">
-        <Compass size={14} />
-        <span>اسحب للتدوير 360° • قرّب باللمس أو العجلة</span>
-      </div>
-
-      <div className="viewer-badge-status">
-        {customModelUrl ? (
-          <span className="badge" style={{ borderColor: 'var(--color-accent)' }}>
-            مجسم محلي نشط
-          </span>
-        ) : useProcedural ? (
-          <span className="badge" style={{ opacity: 0.85 }}>
-            معاينة ثلاثية الأبعاد
-          </span>
-        ) : modelStatus === 'loaded' ? (
-          <span className="badge">مجسم 3D حقيقي</span>
-        ) : null}
-      </div>
-
-      {/* Fallback & State Overlays */}
-      {showOverlayError && (
-        <ModelErrorState
-          modelUrl={activeModelUrl}
-          errorType="missing"
-          errorMessage={loadError}
-          onRetry={() => {
-            setLoadError(null);
-            setModelStatus('loaded');
-            setRetryCount((c) => c + 1);
-          }}
-          onFileSelect={handleLocalFileSelect}
-          onEnableProcedural={() => setUseProcedural(true)}
-        />
-      )}
-
-      {/* Main 3D Canvas */}
-      {(!showOverlayError || useProcedural) && (
-        <div className="viewer-canvas-container">
-          <ThreeErrorBoundary
-            key={`${activeModelUrl}_${retryCount}`}
-            onError={(err) => {
-              console.error('Three.js Error in ProductViewer:', err);
-              setLoadError(err?.message || String(err));
-              setModelStatus('missing');
-            }}
-            fallback={
-              <ModelErrorState
-                modelUrl={activeModelUrl}
-                errorType="missing"
-                errorMessage={loadError}
-                onRetry={() => {
-                  setLoadError(null);
-                  setModelStatus('loaded');
-                  setRetryCount((c) => c + 1);
-                }}
-                onFileSelect={handleLocalFileSelect}
-                onEnableProcedural={() => setUseProcedural(true)}
-              />
-            }
+    <div className="viewer-master-container">
+      {/* Main 3D Canvas Box */}
+      <div className="viewer-wrapper" aria-label={`عارض ثلاثي الأبعاد لـ ${product?.name}`}>
+        {/* Floating Top Controls (360, Zoom In, Zoom Out) */}
+        <div className="viewer-floating-top-controls">
+          <button
+            type="button"
+            className={`viewer-control-btn ${autoRotate ? 'active' : ''}`}
+            onClick={() => setAutoRotate(!autoRotate)}
+            title="دوران 360 درجة"
           >
-            <Canvas
-              shadows
-              dpr={[1, 1.8]}
-              camera={{
-                position: defaultCamPos,
-                fov: product?.cameraDefaults?.fov || 38,
-                near: 0.1,
-                far: 200
+            <RefreshCw size={15} className={autoRotate ? 'spin-anim' : ''} />
+            <span>360°</span>
+          </button>
+
+          <button
+            type="button"
+            className="viewer-control-btn"
+            onClick={() => handleZoom(0.85)}
+            title="تكبير"
+          >
+            <ZoomIn size={16} />
+            <span>تكبير</span>
+          </button>
+
+          <button
+            type="button"
+            className="viewer-control-btn"
+            onClick={() => handleZoom(1.15)}
+            title="تصغير"
+          >
+            <ZoomOut size={16} />
+            <span>تصغير</span>
+          </button>
+        </div>
+
+        {/* Interaction Hint Pill */}
+        <div className="viewer-hint-pill">
+          <span>اسحب لتدوير المجسم ✋</span>
+        </div>
+
+        {/* Main 3D Canvas */}
+        {!showOverlayError && (
+          <div className="viewer-canvas-container">
+            <ThreeErrorBoundary
+              key={`${activeModelUrl}_${retryCount}`}
+              onError={(err) => {
+                console.error('Three.js Error in ProductViewer:', err);
+                setLoadError(err?.message || String(err));
+                setModelStatus('missing');
               }}
-              gl={{
-                antialias: true,
-                powerPreference: 'high-performance',
-                alpha: true
-              }}
+              fallback={
+                <ModelErrorState
+                  modelUrl={activeModelUrl}
+                  errorType="missing"
+                  errorMessage={loadError}
+                  onRetry={() => {
+                    setLoadError(null);
+                    setModelStatus('loaded');
+                    setRetryCount((c) => c + 1);
+                  }}
+                />
+              }
             >
-              {/* Neutral High-Fidelity Studio Lighting */}
-              <ambientLight intensity={0.7} color="#FFFFFF" />
-              <directionalLight
-                position={[5, 8, 5]}
-                intensity={1.2}
-                color="#FFFFFF"
-                castShadow
-                shadow-mapSize-width={1024}
-                shadow-mapSize-height={1024}
-                shadow-bias={-0.0001}
-              />
-              <directionalLight position={[-5, 4, -5]} intensity={0.4} color="#FFFFFF" />
-              <directionalLight position={[0, -2, 4]} intensity={0.2} color="#FFFFFF" />
+              <Canvas
+                shadows
+                dpr={[1, 1.8]}
+                camera={{
+                  position: defaultCamPos,
+                  fov: product?.cameraDefaults?.fov || 38,
+                  near: 0.1,
+                  far: 200
+                }}
+                gl={{
+                  antialias: true,
+                  powerPreference: 'high-performance',
+                  alpha: true
+                }}
+              >
+                {/* Clean Lighting for Warm Studio Aesthetic */}
+                <ambientLight intensity={0.95} color="#FFFFFF" />
+                <directionalLight
+                  position={[5, 9, 6]}
+                  intensity={1.35}
+                  color="#FFFDF9"
+                  castShadow
+                  shadow-mapSize-width={1024}
+                  shadow-mapSize-height={1024}
+                  shadow-bias={-0.0001}
+                />
+                <directionalLight position={[-6, 5, -5]} intensity={0.5} color="#FFFFFF" />
+                <directionalLight position={[0, -2, 5]} intensity={0.25} color="#F4EFEB" />
 
-              {/* Offline-safe Environment */}
-              <Suspense fallback={null}>
-                <Environment preset="city" />
-              </Suspense>
+                <Suspense fallback={null}>
+                  <Environment preset="city" />
+                </Suspense>
 
-              {/* Models */}
-              <Suspense fallback={null}>
-                {useProcedural ? (
-                  <ProceduralFurniture product={product} finish={selectedFinish} />
-                ) : (
+                {/* Model */}
+                <Suspense fallback={null}>
                   <GLTFModel
                     url={activeModelUrl}
                     product={product}
                     finish={selectedFinish}
                   />
-                )}
-              </Suspense>
+                </Suspense>
 
-              {/* Floor Shadow Grounding */}
-              <ContactShadows
-                position={[0, 0, 0]}
-                opacity={0.65}
-                scale={20}
-                blur={1.6}
-                far={10}
-                resolution={512}
-                color="#0D0D0C"
+                {/* Realistic Soft Contact Shadow */}
+                <ContactShadows
+                  position={[0, 0, 0]}
+                  opacity={0.42}
+                  scale={22}
+                  blur={2.4}
+                  far={8}
+                  resolution={512}
+                  color="#5C5346"
+                />
+
+                {/* Orbit Controls */}
+                <OrbitControls
+                  ref={controlsRef}
+                  enablePan={false}
+                  enableDamping
+                  dampingFactor={0.06}
+                  minDistance={1.2}
+                  maxDistance={50.0}
+                  autoRotate={autoRotate}
+                  autoRotateSpeed={1.5}
+                  maxPolarAngle={Math.PI / 2 + 0.05}
+                  target={defaultCamTarget}
+                />
+
+                {/* Camera Preset Handler */}
+                <CameraPresetController
+                  cameraPreset={cameraPreset}
+                  defaultPos={defaultCamPos}
+                  defaultTarget={defaultCamTarget}
+                  controlsRef={controlsRef}
+                />
+              </Canvas>
+            </ThreeErrorBoundary>
+          </div>
+        )}
+      </div>
+
+      {/* 6 Angle Thumbnails Row (Matches Image 2 exactly) */}
+      <div className="viewer-perspective-thumbnails-row">
+        {angleOptions.map((opt) => (
+          <button
+            key={opt.id}
+            type="button"
+            className={`angle-thumb-card ${cameraPreset === opt.id ? 'active' : ''}`}
+            onClick={() => {
+              setCameraPreset(opt.id);
+              setAutoRotate(false);
+            }}
+          >
+            <div className="angle-thumb-preview">
+              <span className="angle-thumb-icon">{opt.icon}</span>
+              <img
+                src={product.thumbnail}
+                alt={opt.label}
+                className="angle-thumb-mini-img"
               />
-
-              {/* Orbit Controls */}
-              <OrbitControls
-                ref={controlsRef}
-                enablePan={false}
-                enableDamping
-                dampingFactor={0.06}
-                minDistance={1.2}
-                maxDistance={50.0}
-                maxPolarAngle={Math.PI / 2 + 0.05} // منع الكاميرا من النزول تحت الأرض
-                target={defaultCamTarget}
-              />
-
-              {/* Camera Preset Handler */}
-              <CameraPresetController
-                cameraPreset={cameraPreset}
-                defaultPos={defaultCamPos}
-                defaultTarget={defaultCamTarget}
-                controlsRef={controlsRef}
-              />
-            </Canvas>
-          </ThreeErrorBoundary>
-        </div>
-      )}
-
-      {/* Floating Viewport Toolbar */}
-      <div className="viewer-toolbar" role="toolbar" aria-label="أدوات التحكم بالعارض ثلاثي الأبعاد">
-        <button
-          className={`viewer-preset-btn ${cameraPreset === 'threequarter' ? 'active' : ''}`}
-          onClick={() => setCameraPreset('threequarter')}
-          title="منظور ثلاثي"
-        >
-          منظور 3/4
-        </button>
-        <button
-          className={`viewer-preset-btn ${cameraPreset === 'front' ? 'active' : ''}`}
-          onClick={() => setCameraPreset('front')}
-          title="الواجهة الأمامية"
-        >
-          الواجهة
-        </button>
-        <button
-          className={`viewer-preset-btn ${cameraPreset === 'side' ? 'active' : ''}`}
-          onClick={() => setCameraPreset('side')}
-          title="المنظر الجانبي"
-        >
-          الجانب
-        </button>
-        <button
-          className={`viewer-preset-btn ${cameraPreset === 'top' ? 'active' : ''}`}
-          onClick={() => setCameraPreset('top')}
-          title="منظور علوي"
-        >
-          من الأعلى
-        </button>
-
-        <div className="viewer-toolbar-divider" />
-
-        <button
-          className="btn-icon viewer-reset-btn"
-          onClick={handleResetCamera}
-          title="إعادة ضبط زاوية الكاميرا"
-          aria-label="إعادة ضبط زاوية الكاميرا"
-        >
-          <RotateCcw size={14} />
-        </button>
+            </div>
+            <span className="angle-thumb-label">{opt.label}</span>
+          </button>
+        ))}
       </div>
     </div>
   );
