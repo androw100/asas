@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
 
-const PORT = 8999;
+const PORT = 9099;
 const outDir = path.join(__dirname, '../public/images/products');
 if (!fs.existsSync(outDir)) {
   fs.mkdirSync(outDir, { recursive: true });
