@@ -688,18 +688,44 @@
   font-weight: 600;
 }
 
+.product-grid,
 .products-grid-artha {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .product-grid,
+  .products-grid-artha {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-grid,
+  .products-grid-artha {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .product-grid,
+  .products-grid-artha {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }
 
 /* =========================================
    PRODUCT CARD (Artha Minimalist Luxury)
    ========================================= */
 .product-card {
-  background: #FFFFFF;
-  border: 1px solid var(--color-border-subtle);
+  background: #FAF8F5;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
   display: flex;
@@ -711,7 +737,7 @@
 
 .product-card:hover {
   transform: translateY(-4px);
-  border-color: var(--color-border);
+  border-color: #D6CEBE;
   box-shadow: 0 16px 36px rgba(44, 38, 30, 0.09);
 }
 
@@ -766,13 +792,17 @@
   justify-content: center;
   padding: 16px;
   overflow: hidden;
+  border: none;
 }
 
 .product-card-img {
   max-width: 92%;
   max-height: 92%;
   object-fit: contain;
-  filter: drop-shadow(0 6px 14px rgba(44, 38, 30, 0.08));
+  filter: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
   transition: transform var(--transition-smooth);
 }
 
@@ -788,13 +818,13 @@
 }
 
 .product-card-body {
-  padding: 18px 20px 22px 20px;
+  padding: 16px 18px 22px 18px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 6px;
-  background: #FFFFFF;
+  background: #FAF8F5;
 }
 
 .product-card-title {
