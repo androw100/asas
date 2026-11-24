@@ -207,17 +207,17 @@ export default function ProductViewer({
   const showOverlayError = (modelStatus === 'missing' || modelStatus === 'error');
 
   const angleOptions = [
-    { id: 'threequarter', label: 'منظور 3/4', icon: '📐' },
-    { id: 'front', label: 'الواجهة', icon: '👁️' },
-    { id: 'side', label: 'الجانب الأيمن', icon: '↔️' },
-    { id: 'sideLeft', label: 'الجانب الأيسر', icon: '↩️' },
-    { id: 'back', label: 'الجهة الخلفية', icon: '🔄' },
-    { id: 'top', label: 'من الأعلى', icon: '⬆️' }
+    { id: 'threequarter', label: 'منظور 3/4' },
+    { id: 'front', label: 'الواجهة' },
+    { id: 'side', label: 'الجانب الأيمن' },
+    { id: 'sideLeft', label: 'الجانب الأيسر' },
+    { id: 'back', label: 'الجهة الخلفية' },
+    { id: 'top', label: 'من الأعلى' }
   ];
 
   const hintLabel = product?.category?.includes('كنب') || product?.name?.includes('أريكة') || product?.name?.includes('كنبة')
-    ? 'اسحب لتدوير الأريكة ✋'
-    : 'اسحب لتدوير المجسم ✋';
+    ? 'اسحب لتدوير الأريكة'
+    : 'اسحب لتدوير المجسم';
 
   return (
     <div className={`viewer-master-container ${isInsideModal ? 'inside-modal' : ''}`}>
@@ -389,7 +389,6 @@ export default function ProductViewer({
             }}
           >
             <div className="angle-thumb-preview">
-              <span className="angle-thumb-icon">{opt.icon}</span>
               <img
                 src={product.thumbnail}
                 alt={opt.label}

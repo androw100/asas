@@ -132,7 +132,7 @@ export default function Home() {
                 className="teaser-img"
               />
               <div className="teaser-floating-indicator">
-                <span>⚡ دوران وتغيير ألوان مباشر</span>
+                <span>دوران وتغيير ألوان مباشر</span>
               </div>
             </div>
           </div>

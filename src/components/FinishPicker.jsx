@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Check, ChevronDown, ChevronUp } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp, Layers, Trees, Ruler, Armchair } from 'lucide-react';
 
 export default function FinishPicker({
   finishes = [],
@@ -101,7 +101,9 @@ export default function FinishPicker({
             onClick={() => toggleSection('fabric')}
           >
             <div className="accordion-title-wrap">
-              <span className="accordion-icon-box">🛋️</span>
+              <span className="accordion-icon-box">
+                <Layers size={18} strokeWidth={1.5} color="#8C827A" />
+              </span>
               <div>
                 <span className="accordion-main-title">القماش</span>
                 <span className="accordion-sub-title">اختر نوع ولون القماش</span>
@@ -135,7 +137,9 @@ export default function FinishPicker({
             onClick={() => toggleSection('wood')}
           >
             <div className="accordion-title-wrap">
-              <span className="accordion-icon-box">🪵</span>
+              <span className="accordion-icon-box">
+                <Trees size={18} strokeWidth={1.5} color="#8C827A" />
+              </span>
               <div>
                 <span className="accordion-main-title">الخشب</span>
                 <span className="accordion-sub-title">اختر نوع ولون الخشب</span>
@@ -168,7 +172,9 @@ export default function FinishPicker({
           onClick={() => toggleSection('size')}
         >
           <div className="accordion-title-wrap">
-            <span className="accordion-icon-box">📐</span>
+            <span className="accordion-icon-box">
+              <Ruler size={18} strokeWidth={1.5} color="#8C827A" />
+            </span>
             <div>
               <span className="accordion-main-title">المقاس</span>
               <span className="accordion-sub-title">اختر المقاس المناسب</span>
@@ -210,7 +216,9 @@ export default function FinishPicker({
           onClick={() => toggleSection('cushion')}
         >
           <div className="accordion-title-wrap">
-            <span className="accordion-icon-box">🪑</span>
+            <span className="accordion-icon-box">
+              <Armchair size={18} strokeWidth={1.5} color="#8C827A" />
+            </span>
             <div>
               <span className="accordion-main-title">الوسائد</span>
               <span className="accordion-sub-title">اختر شكل ولون الوسائد</span>
