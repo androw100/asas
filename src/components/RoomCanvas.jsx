@@ -4,6 +4,76 @@ import { OrbitControls, useGLTF, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import { applyFinishToModel } from '../utils/materialMapping';
 import { getItemBounds } from '../utils/roomUtils';
+import { assetUrl } from '../utils/assetUrl';
+
+// Protects individual 3D items from crashing the whole canvas if a model fails to fetch
+class ItemErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(err) {
+    console.warn('Placed item 3D render warning:', err);
+  }
+  render() {
+    if (this.state.hasError) return null;
+    return this.props.children;
+  }
+}
+
+// Global Canvas Error Boundary for WebGL / Device context errors
+class CanvasErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(err, errInfo) {
+    console.error('Room Canvas WebGL error:', err, errInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#F0EAE1',
+          color: '#4A4633',
+          padding: '24px',
+          textAlign: 'center'
+        }}>
+          <h3 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>تعذر تشغيل العارض ثلاثي الأبعاد</h3>
+          <p style={{ fontSize: '0.9rem', color: '#736B63', marginBottom: '16px' }}>يرجى التحقق من اتصال الإنترنت أو تفعيل تسريع الرسوميات (WebGL).</p>
+          <button
+            type="button"
+            onClick={() => this.setState({ hasError: false, error: null })}
+            style={{
+              background: '#4A4633',
+              color: '#FFFFFF',
+              border: 'none',
+              padding: '8px 20px',
+              borderRadius: '999px',
+              cursor: 'pointer',
+              fontWeight: 600
+            }}
+          >
+            إعادة المحاولة
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // Renders an individual placed piece of furniture in the 3D room with smooth, free drag & drop
 function PlacedFurnitureItem({
@@ -13,7 +83,8 @@ function PlacedFurnitureItem({
   isDraggingThis,
   onStartDrag
 }) {
-  const gltf = useGLTF(item.modelUrl);
+  const finalModelUrl = assetUrl(item.modelUrl);
+  const gltf = useGLTF(finalModelUrl);
   const groupRef = useRef();
   const [embeddedMaterials, setEmbeddedMaterials] = useState({});
   const [hovered, setHovered] = useState(false);
@@ -451,113 +522,117 @@ export default function RoomCanvas({
       className="room-canvas-viewport"
       onContextMenu={(e) => e.preventDefault()}
     >
-      <Canvas
-        shadows
-        dpr={[1, 1.8]}
-        camera={{
-          position: [6.5, 6.2, 7.5],
-          fov: 40,
-          near: 0.1,
-          far: 150
-        }}
-        gl={{
-          antialias: true,
-          alpha: false,
-          powerPreference: 'high-performance'
-        }}
-        onPointerMissed={() => onSelectItem(null)}
-      >
-        {/* Warm Studio Background Tone */}
-        <color attach="background" args={['#F5F0EB']} />
-
-        {/* Studio Lighting Calibrated to Exact Product Page Color Balance (Scalable via lightIntensity) */}
-        <ambientLight intensity={1.0 * lightIntensity} color="#FFFFFF" />
-
-        {/* Main Sun/Key Directional Light (Casts soft, clean, real-time shadows on the floor) */}
-        <directionalLight
-          position={[6, 11, 7]}
-          intensity={1.35 * lightIntensity}
-          color="#FFFDF9"
-          castShadow
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
-          shadow-bias={-0.0001}
-          shadow-camera-near={0.5}
-          shadow-camera-far={35}
-          shadow-camera-left={-12}
-          shadow-camera-right={12}
-          shadow-camera-top={12}
-          shadow-camera-bottom={-12}
-        />
-
-        {/* Soft Interior Ambient Fill Lights for Crisp Color & Fabric Vibrancy */}
-        <directionalLight position={[-6, 7, -5]} intensity={0.5 * lightIntensity} color="#FFFFFF" />
-        <directionalLight position={[0, -1, 5]} intensity={0.25 * lightIntensity} color="#F4EFEB" />
-        <pointLight position={[0, 4.5, 0]} intensity={0.3 * lightIntensity} color="#FFFDF5" distance={20} />
-
-        {/* High-End Studio Environment Reflections for Realistic Texture Specularity */}
-        <Suspense fallback={null}>
-          <Environment preset="city" environmentIntensity={0.6 * lightIntensity} />
-        </Suspense>
-
-        {/* Architectural Metric Room Floor with Exact Room Dimensions & Framing */}
-        <ArchitecturalRoomFloor
-          roomWidth={roomWidth}
-          roomDepth={roomDepth}
-          floorColor={floorColor}
-          wallColor={wallColor}
-        />
-
-        {/* Global Active Floor Drag Listener (Clamped Strictly Inside Room) */}
-        <FloorDragListener
-          draggingItemId={draggingItemId}
-          dragOffsetRef={dragOffsetRef}
-          placedItems={placedItems}
-          roomWidth={roomWidth}
-          roomDepth={roomDepth}
-          onUpdatePosition={onUpdatePosition}
-          onEndDrag={handleEndDrag}
-        />
-
-        {/* Placed Furniture Items */}
-        {placedItems.map((item) => (
-          <Suspense key={item.instanceId} fallback={null}>
-            <PlacedFurnitureItem
-              item={item}
-              isSelected={selectedItemId === item.instanceId}
-              onSelect={onSelectItem}
-              isDraggingThis={draggingItemId === item.instanceId}
-              onStartDrag={handleStartDrag}
-            />
-          </Suspense>
-        ))}
-
-        {/* Camera Preset Handler */}
-        <RoomCameraController
-          cameraMode={cameraMode}
-          roomWidth={roomWidth}
-          roomDepth={roomDepth}
-        />
-
-        {/* Orbit Controls with Free Unrestricted Orbit & Blender-Style Right-Click Pan */}
-        <OrbitControls
-          ref={controlsRef}
-          enablePan={true}
-          panSpeed={1.0}
-          screenSpacePanning={true}
-          mouseButtons={{
-            LEFT: THREE.MOUSE.ROTATE,
-            MIDDLE: THREE.MOUSE.DOLLY,
-            RIGHT: THREE.MOUSE.PAN
+      <CanvasErrorBoundary>
+        <Canvas
+          shadows
+          dpr={[1, 1.8]}
+          camera={{
+            position: [6.5, 6.2, 7.5],
+            fov: 40,
+            near: 0.1,
+            far: 150
           }}
-          enableDamping
-          dampingFactor={0.06}
-          minDistance={1.8}
-          maxDistance={40}
-          maxPolarAngle={cameraMode === 'top' ? 0.05 : Math.PI / 2 - 0.05}
-          target={[0, 0.6, 0]}
-        />
-      </Canvas>
+          gl={{
+            antialias: true,
+            alpha: false,
+            powerPreference: 'high-performance'
+          }}
+          onPointerMissed={() => onSelectItem(null)}
+        >
+          {/* Warm Studio Background Tone */}
+          <color attach="background" args={['#F5F0EB']} />
+
+          {/* Studio Lighting Calibrated to Exact Product Page Color Balance (Scalable via lightIntensity) */}
+          <ambientLight intensity={1.0 * lightIntensity} color="#FFFFFF" />
+
+          {/* Main Sun/Key Directional Light (Casts soft, clean, real-time shadows on the floor) */}
+          <directionalLight
+            position={[6, 11, 7]}
+            intensity={1.35 * lightIntensity}
+            color="#FFFDF9"
+            castShadow
+            shadow-mapSize-width={2048}
+            shadow-mapSize-height={2048}
+            shadow-bias={-0.0001}
+            shadow-camera-near={0.5}
+            shadow-camera-far={35}
+            shadow-camera-left={-12}
+            shadow-camera-right={12}
+            shadow-camera-top={12}
+            shadow-camera-bottom={-12}
+          />
+
+          {/* Soft Interior Ambient Fill Lights for Crisp Color & Fabric Vibrancy */}
+          <directionalLight position={[-6, 7, -5]} intensity={0.5 * lightIntensity} color="#FFFFFF" />
+          <directionalLight position={[0, -1, 5]} intensity={0.25 * lightIntensity} color="#F4EFEB" />
+          <pointLight position={[0, 4.5, 0]} intensity={0.3 * lightIntensity} color="#FFFDF5" distance={20} />
+
+          {/* High-End Studio Environment Reflections for Realistic Texture Specularity */}
+          <Suspense fallback={null}>
+            <Environment preset="city" environmentIntensity={0.6 * lightIntensity} />
+          </Suspense>
+
+          {/* Architectural Metric Room Floor with Exact Room Dimensions & Framing */}
+          <ArchitecturalRoomFloor
+            roomWidth={roomWidth}
+            roomDepth={roomDepth}
+            floorColor={floorColor}
+            wallColor={wallColor}
+          />
+
+          {/* Global Active Floor Drag Listener (Clamped Strictly Inside Room) */}
+          <FloorDragListener
+            draggingItemId={draggingItemId}
+            dragOffsetRef={dragOffsetRef}
+            placedItems={placedItems}
+            roomWidth={roomWidth}
+            roomDepth={roomDepth}
+            onUpdatePosition={onUpdatePosition}
+            onEndDrag={handleEndDrag}
+          />
+
+          {/* Placed Furniture Items */}
+          {placedItems.map((item) => (
+            <ItemErrorBoundary key={item.instanceId}>
+              <Suspense fallback={null}>
+                <PlacedFurnitureItem
+                  item={item}
+                  isSelected={selectedItemId === item.instanceId}
+                  onSelect={onSelectItem}
+                  isDraggingThis={draggingItemId === item.instanceId}
+                  onStartDrag={handleStartDrag}
+                />
+              </Suspense>
+            </ItemErrorBoundary>
+          ))}
+
+          {/* Camera Preset Handler */}
+          <RoomCameraController
+            cameraMode={cameraMode}
+            roomWidth={roomWidth}
+            roomDepth={roomDepth}
+          />
+
+          {/* Orbit Controls with Free Unrestricted Orbit & Blender-Style Right-Click Pan */}
+          <OrbitControls
+            ref={controlsRef}
+            enablePan={true}
+            panSpeed={1.0}
+            screenSpacePanning={true}
+            mouseButtons={{
+              LEFT: THREE.MOUSE.ROTATE,
+              MIDDLE: THREE.MOUSE.DOLLY,
+              RIGHT: THREE.MOUSE.PAN
+            }}
+            enableDamping
+            dampingFactor={0.06}
+            minDistance={1.8}
+            maxDistance={40}
+            maxPolarAngle={cameraMode === 'top' ? 0.05 : Math.PI / 2 - 0.05}
+            target={[0, 0.6, 0]}
+          />
+        </Canvas>
+      </CanvasErrorBoundary>
     </div>
   );
 }
