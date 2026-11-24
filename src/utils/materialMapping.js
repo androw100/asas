@@ -199,30 +199,48 @@ export function applyFinishToModel(scene, finishOrFinishes, product, availableMa
             const foundVariantMat = findVariantMaterial(finish);
 
             if (foundVariantMat) {
-              // Ensure fabric materials have realistic diffuse matte behavior and prevent glossy specular glare/artifacts
+              // Clone the variant material so it is unique to this instance and can be safely tinted
+              const activeMat = foundVariantMat.clone();
+              activeMat.name = matName;
+
               const isFabric =
                 targetGroup === 'fabric' ||
-                (foundVariantMat.name && /fabric|cloth|hessain|cushion|seat|upholstery/i.test(foundVariantMat.name));
+                (activeMat.name && /fabric|cloth|hessain|cushion|seat|upholstery/i.test(activeMat.name));
 
               if (isFabric) {
-                foundVariantMat.roughness = 0.95;
-                foundVariantMat.metalness = 0.0;
-                if (foundVariantMat.normalScale) {
-                  foundVariantMat.normalScale.set(0.8, 0.8);
+                activeMat.roughness = 0.95;
+                activeMat.metalness = 0.0;
+                if (activeMat.normalScale) {
+                  activeMat.normalScale.set(0.8, 0.8);
                 }
               }
 
-              foundVariantMat.needsUpdate = true;
-              materials[i] = foundVariantMat;
+              // Apply color tint for woods (like Oak on Cabin) or when variant lacks custom texture
+              if (finish.color && (finish.id?.includes('oak') || finish.id?.includes('cabin') || finish.id?.startsWith('custom-color') || !activeMat.map)) {
+                activeMat.color.set(finish.color);
+              }
+
+              activeMat.needsUpdate = true;
+              materials[i] = activeMat;
               modified.push(`${meshName} Slot ${i} (Variant: ${finish.variantName})`);
               continue;
             }
 
-            // C) Custom Color Tint (only when explicitly requested as a custom color)
-            if (finish.color && finish.id?.startsWith('custom-color')) {
-              const clonedMat = mat.clone();
+            // C) Immediate Fallback Color Tint (0ms instant response on click!)
+            if (finish.color) {
+              const baseMat = materials[i] || mat;
+              const clonedMat = baseMat.isMaterial ? baseMat.clone() : mat.clone();
               clonedMat.name = matName;
-              clonedMat.color = new THREE.Color(finish.color);
+              clonedMat.color.set(finish.color);
+
+              if (targetGroup === 'fabric') {
+                clonedMat.roughness = 0.95;
+                clonedMat.metalness = 0.0;
+              } else if (targetGroup === 'wood') {
+                clonedMat.roughness = 0.45;
+                clonedMat.metalness = 0.05;
+              }
+
               clonedMat.needsUpdate = true;
               materials[i] = clonedMat;
               modified.push(`${meshName} Slot ${i} (Color: ${finish.color})`);
@@ -233,6 +251,11 @@ export function applyFinishToModel(scene, finishOrFinishes, product, availableMa
       });
 
       node.material = Array.isArray(node.material) ? materials : materials[0];
+      if (Array.isArray(node.material)) {
+        node.material.forEach((m) => { if (m) m.needsUpdate = true; });
+      } else if (node.material) {
+        node.material.needsUpdate = true;
+      }
     }
   });
 

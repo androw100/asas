@@ -323,18 +323,39 @@ const catalog = [
   }
 ];
 
-export const products = catalog.map((product) => ({
-  ...product,
-  modelUrl: assetUrl(product.modelUrl),
-  finishes: product.finishes || tableFinishes,
-  materialMapping: product.materialMapping || tableMaterialMapping,
-  cameraDefaults: product.cameraDefaults || {
-    position: [8.5, 5.5, 10.5],
-    target: [0, 1.48, 0],
-    fov: 38
-  },
-  thumbnail: assetUrl(product.thumbnail)
-}));
+// Calibrated scale factors and footprints in real-world meters (1 unit = 1 meter)
+const modelPlannerMetadata = {
+  'sofa-1': { plannerScale: [0.35, 0.35, 0.35], footprint: { width: 2.40, depth: 1.15, height: 0.94 } },
+  'sofa-2': { plannerScale: [0.38, 0.38, 0.38], footprint: { width: 1.75, depth: 1.00, height: 1.00 } },
+  'sofa-3': { plannerScale: [0.37, 0.37, 0.37], footprint: { width: 2.85, depth: 1.20, height: 0.99 } },
+  'sofa-4': { plannerScale: [0.30, 0.30, 0.30], footprint: { width: 3.50, depth: 2.25, height: 0.79 } },
+  'chair-1': { plannerScale: [0.30, 0.30, 0.30], footprint: { width: 0.68, depth: 0.65, height: 0.81 } },
+  'chair-2': { plannerScale: [0.22, 0.22, 0.22], footprint: { width: 0.62, depth: 0.67, height: 0.60 } },
+  'chair-3': { plannerScale: [0.22, 0.22, 0.22], footprint: { width: 0.65, depth: 0.57, height: 0.56 } },
+  'chair-4': { plannerScale: [0.31, 0.31, 0.31], footprint: { width: 0.64, depth: 0.64, height: 0.87 } },
+  'dining-table-1': { plannerScale: [0.225, 0.225, 0.225], footprint: { width: 2.43, depth: 1.28, height: 0.67 } }
+};
+
+export const products = catalog.map((product) => {
+  const meta = modelPlannerMetadata[product.id] || {
+    plannerScale: [0.3, 0.3, 0.3],
+    footprint: { width: 1.0, depth: 1.0, height: 0.8 }
+  };
+  return {
+    ...product,
+    plannerScale: meta.plannerScale,
+    footprint: meta.footprint,
+    modelUrl: assetUrl(product.modelUrl),
+    finishes: product.finishes || tableFinishes,
+    materialMapping: product.materialMapping || tableMaterialMapping,
+    cameraDefaults: product.cameraDefaults || {
+      position: [8.5, 5.5, 10.5],
+      target: [0, 1.48, 0],
+      fov: 38
+    },
+    thumbnail: assetUrl(product.thumbnail)
+  };
+});
 
 export const faqs = [
   {

@@ -2283,133 +2283,161 @@
   animation: toastFadeIn 0.25s ease;
 }
 
-/* Studio Window Body */
+/* Studio Window Body: Full-Bleed 3D Viewport with Floating Glassmorphism Options */
 .studio-modal-body {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  flex: 1;
-  overflow: hidden;
+  position: relative;
+  width: 100%;
   height: calc(100% - 68px);
-}
-
-@media (max-width: 992px) {
-  .studio-modal-body {
-    grid-template-columns: 1fr;
-    overflow-y: auto;
-    height: auto;
-  }
+  overflow: hidden;
+  display: block;
 }
 
 .studio-viewer-pane {
-  background: #F3EDE4;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
   height: 100%;
-  position: relative;
+  background: #F3EDE4;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  z-index: 1;
 }
 
 .studio-viewer-pane .viewer-master-container {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 16px;
+  padding: 0;
+  margin: 0;
 }
 
 .studio-viewer-pane .viewer-wrapper {
-  flex: 1;
-  min-height: 0;
-  border-radius: 16px;
+  height: 100% !important;
+  aspect-ratio: unset !important;
+  border: none !important;
+  border-radius: 0 !important;
 }
 
-.studio-options-pane {
-  background: #FFFFFF;
-  border-right: 1px solid var(--color-border);
-  height: 100%;
-  overflow-y: auto;
-  padding: 24px;
+/* Inside Studio Window - Separate top-left zoom/360 controls from top-right options panel to prevent any overlap */
+.studio-viewer-pane .viewer-floating-top-controls,
+.viewer-master-container.inside-modal .viewer-floating-top-controls {
+  right: auto !important;
+  left: 20px !important;
+  top: 20px !important;
+  z-index: 15;
 }
 
-@media (max-width: 992px) {
-  .studio-options-pane {
-    border-right: none;
-    border-top: 1px solid var(--color-border);
-    padding: 18px 16px;
+@media (max-width: 768px) {
+  .studio-viewer-pane .viewer-floating-top-controls,
+  .viewer-master-container.inside-modal .viewer-floating-top-controls {
+    right: auto !important;
+    left: 12px !important;
+    top: 12px !important;
   }
 }
 
-.studio-options-inner {
+/* Floating Glassmorphism Customizer Panel (Inside 3D Window) */
+.studio-floating-panel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  bottom: 20px;
+  width: 360px;
+  max-width: calc(100% - 40px);
+  max-height: calc(100% - 40px);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  box-shadow: 0 16px 45px rgba(44, 38, 30, 0.16), 0 0 0 1px rgba(74, 70, 51, 0.08);
+  z-index: 20;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  overflow: hidden;
+  animation: slideInRight 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.studio-price-block {
-  background: #FAF8F5;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 14px 18px;
-}
-
-.studio-price-label {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--color-text-dim);
-  margin-bottom: 4px;
-}
-
-.studio-price-row {
+.studio-floating-header {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(74, 70, 51, 0.08);
+  background: rgba(255, 255, 255, 0.65);
 }
 
-.studio-price-num {
-  font-size: 1.5rem;
+.studio-floating-price .floating-price-num {
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--color-text-main);
+  display: block;
 }
 
-.studio-vat-tag {
-  font-size: 0.78rem;
+.studio-floating-price .floating-vat-tag {
+  font-size: 0.72rem;
   color: var(--color-text-dim);
 }
 
-.studio-pickers-container {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.studio-footer-cta {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-top: 12px;
-  margin-top: auto;
-}
-
-.studio-submit-btn {
-  width: 100%;
-  justify-content: center;
-  padding: 14px 20px;
-  font-size: 1rem;
-}
-
-.studio-btn-cancel {
-  background: transparent;
-  border: none;
-  font-size: 0.88rem;
+.studio-floating-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: #FFFFFF;
   color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  padding: 8px;
-  text-align: center;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
-.studio-btn-cancel:hover {
-  color: var(--color-text-main);
+.studio-floating-close-btn:hover {
+  background: #4A4633;
+  color: #FFFFFF;
+}
+
+.studio-floating-body {
+  padding: 16px 18px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.studio-floating-footer {
+  padding: 14px 18px;
+  border-top: 1px solid rgba(74, 70, 51, 0.08);
+  background: rgba(255, 255, 255, 0.65);
+}
+
+/* Floating Open Pill Button (When panel is collapsed) */
+.studio-floating-open-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(74, 70, 51, 0.15);
+  box-shadow: 0 10px 30px rgba(44, 38, 30, 0.16);
+  border-radius: var(--radius-full);
+  padding: 10px 18px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #4A4633;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  animation: fadeIn 0.25s ease;
+}
+
+.studio-floating-open-btn:hover {
+  background: #4A4633;
+  color: #FFFFFF;
+  transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {
@@ -2433,9 +2461,14 @@
     display: none;
   }
 
-  .studio-viewer-pane .viewer-wrapper {
-    min-height: 280px;
-    aspect-ratio: 1 / 1;
+  .studio-floating-panel {
+    top: auto;
+    bottom: 12px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+    max-width: none;
+    max-height: 60vh;
   }
 }
 
@@ -2571,6 +2604,46 @@
 
 .floor-swatch-circle.active {
   box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 3.5px #4A4633;
+}
+
+/* Custom Color Picker Swatch */
+.custom-color-picker-label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-right: 2px;
+}
+
+.custom-color-native-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.custom-color-picker-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px dashed #8F8073;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  transition: all var(--transition-fast);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.custom-color-picker-label:hover .custom-color-picker-btn {
+  transform: scale(1.15);
+  border-style: solid;
+  border-color: #4A4633;
 }
 
 /* Room Dimensions Popup Card */
@@ -3043,6 +3116,220 @@
   flex-wrap: wrap;
 }
 
+/* Precision Position Sliders */
+.inspector-position-sliders {
+  background: #FAF8F5;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pos-slider-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pos-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.74rem;
+  color: var(--color-text-main);
+}
+
+.pos-label-row strong {
+  color: #4A4633;
+  font-size: 0.76rem;
+  direction: ltr;
+}
+
+.pos-slider-field input[type='range'] {
+  width: 100%;
+  accent-color: #4A4633;
+  cursor: pointer;
+  height: 4px;
+}
+
+/* Floating In-3D Model Action Gizmo Bar */
+.model-floating-gizmo-bar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(74, 70, 51, 0.16);
+  border-radius: var(--radius-full);
+  padding: 4px 6px;
+  box-shadow: 0 10px 28px rgba(44, 38, 30, 0.16), 0 2px 6px rgba(44, 38, 30, 0.08);
+  pointer-events: auto;
+  user-select: none;
+  animation: gizmoPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+@keyframes gizmoPop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -40%) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.gizmo-btn {
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 5px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-main);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.gizmo-btn:hover {
+  background: #FAF8F5;
+  color: #4A4633;
+}
+
+.gizmo-btn.rotate {
+  background: #F4EFEB;
+  color: #4A4633;
+}
+
+.gizmo-btn.rotate:hover {
+  background: #4A4633;
+  color: #FFFFFF;
+}
+
+.gizmo-btn.delete:hover {
+  background: #FDE8E8;
+  color: #DC3545;
+}
+
+.gizmo-btn.duplicate:hover {
+  background: #EAE6DF;
+  color: #2B261F;
+}
+
+/* Precision Position Sliders */
+.inspector-position-sliders {
+  background: #FAF8F5;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pos-slider-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pos-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.74rem;
+  color: var(--color-text-main);
+}
+
+.pos-label-row strong {
+  color: #4A4633;
+  font-size: 0.76rem;
+  direction: ltr;
+}
+
+.pos-slider-field input[type='range'] {
+  width: 100%;
+  accent-color: #4A4633;
+  cursor: pointer;
+  height: 4px;
+}
+
+/* Floating In-3D Model Action Gizmo Bar */
+.model-floating-gizmo-bar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(74, 70, 51, 0.16);
+  border-radius: var(--radius-full);
+  padding: 4px 6px;
+  box-shadow: 0 10px 28px rgba(44, 38, 30, 0.16), 0 2px 6px rgba(44, 38, 30, 0.08);
+  pointer-events: auto;
+  user-select: none;
+  animation: gizmoPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+@keyframes gizmoPop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -40%) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.gizmo-btn {
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 5px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-main);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.gizmo-btn:hover {
+  background: #FAF8F5;
+  color: #4A4633;
+}
+
+.gizmo-btn.rotate {
+  background: #F4EFEB;
+  color: #4A4633;
+}
+
+.gizmo-btn.rotate:hover {
+  background: #4A4633;
+  color: #FFFFFF;
+}
+
+.gizmo-btn.delete:hover {
+  background: #FDE8E8;
+  color: #DC3545;
+}
+
+.gizmo-btn.duplicate:hover {
+  background: #EAE6DF;
+  color: #2B261F;
+}
+
 .inspector-swatch-circle {
   width: 26px;
   height: 26px;
@@ -3359,5 +3646,410 @@
     font-size: 0.88rem;
   }
 }
+
+/* ==========================================================================
+   Room Planner Interactive Lighting Controls
+   ========================================================================== */
+.planner-lighting-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.planner-lighting-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FAF8F5;
+  border: 1px solid var(--color-border);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-main);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.planner-lighting-btn:hover {
+  background: #F0ECE4;
+  border-color: #D4CDBC;
+}
+
+.planner-lighting-btn.active {
+  background: #4A4633;
+  color: #FFFFFF;
+  border-color: #4A4633;
+}
+
+.planner-lighting-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 290px;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(43, 34, 27, 0.16);
+  padding: 14px;
+  z-index: 1000;
+  animation: fadeInDown 0.18s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lighting-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #F0ECE4;
+}
+
+.lighting-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.lighting-val-badge {
+  background: #FAF8F5;
+  border: 1px solid var(--color-border);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #4A4633;
+}
+
+.lighting-slider-row {
+  margin-bottom: 14px;
+}
+
+.lighting-range-input {
+  width: 100%;
+  accent-color: #4A4633;
+  cursor: pointer;
+  height: 6px;
+  border-radius: 4px;
+}
+
+.lighting-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+.lighting-presets-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.lighting-preset-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: #FAF8F5;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 8px 6px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--color-text-main);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.lighting-preset-btn:hover {
+  background: #F2EDE4;
+  border-color: #D4CDBC;
+}
+
+.lighting-preset-btn.active {
+  background: #4A4633;
+  color: #FFFFFF;
+  border-color: #4A4633;
+}
+
+/* ==========================================================================
+   Full-Window Product Page Hero with Floating In-Window Options
+   ========================================================================== */
+.product-fullscreen-hero {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 75px);
+  min-height: 600px;
+  background: radial-gradient(circle at 50% 40%, #FFFFFF 0%, #F6F2EC 60%, #E8E0D2 100%);
+  overflow: hidden;
+}
+
+.product-fullscreen-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Full-window modifier for viewer wrapper */
+.viewer-master-container.full-window,
+.viewer-wrapper.full-window {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  aspect-ratio: unset;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+/* Floating Top Nav Pill */
+.floating-top-nav-pill {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 4px 16px rgba(44, 38, 30, 0.08);
+}
+
+.floating-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+/* Floating Open Trigger (When Panel is Collapsed) */
+.floating-options-open-btn {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(74, 70, 51, 0.95);
+  backdrop-filter: blur(16px);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(44, 38, 30, 0.25);
+  transition: all var(--transition-fast);
+}
+
+.floating-options-open-btn:hover {
+  background: #3B3828;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(44, 38, 30, 0.35);
+}
+
+.floating-price-mini {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* Floating Glassmorphism Options Panel INSIDE the 3D Window */
+.floating-options-panel {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  bottom: 24px;
+  width: 420px;
+  max-width: calc(100vw - 48px);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 22px;
+  box-shadow: 0 20px 48px rgba(44, 38, 30, 0.16);
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+}
+
+.floating-options-panel.closed {
+  transform: translateX(-120%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.floating-options-panel.open {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.floating-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 22px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
+}
+
+.floating-title-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.floating-category-badge {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #7A7265;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.floating-product-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  line-height: 1.25;
+}
+
+.floating-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.floating-price-val {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text-main);
+}
+
+.floating-vat-tag {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.floating-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.floating-panel-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--color-text-main);
+  transition: all var(--transition-fast);
+}
+
+.floating-panel-close-btn:hover {
+  background: #F0ECE4;
+}
+
+.floating-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.floating-panel-footer {
+  padding: 14px 22px 18px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.floating-footer-btn-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-customizer-icon-sub {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-text-main);
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.btn-customizer-icon-sub:hover {
+  background: #F0ECE4;
+  border-color: #4A4633;
+}
+
+.product-details-bottom-content {
+  padding: 48px 0 64px;
+}
+
+@media (max-width: 900px) {
+  .floating-top-nav-pill {
+    display: none;
+  }
+  .floating-options-panel {
+    top: auto;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    width: auto;
+    max-width: none;
+    max-height: 52vh;
+    border-radius: 18px;
+  }
+  .floating-options-open-btn {
+    top: auto;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+
 
 

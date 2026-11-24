@@ -156,7 +156,8 @@ export default function ProductViewer({
   product,
   selectedFinish,
   onOpenStudioModal,
-  isInsideModal = false
+  isInsideModal = false,
+  fullWindow = false
 }) {
   const [webGLSupported] = useState(() => checkWebGLSupport());
   const [modelStatus, setModelStatus] = useState('loaded');
@@ -215,14 +216,20 @@ export default function ProductViewer({
     { id: 'top', label: 'من الأعلى' }
   ];
 
-  const hintLabel = product?.category?.includes('كنب') || product?.name?.includes('أريكة') || product?.name?.includes('كنبة')
-    ? 'اسحب لتدوير الأريكة'
-    : 'اسحب لتدوير المجسم';
+  const hintLabel = isInsideModal
+    ? '🖱️ كليك شمال: تدوير • 🖱️ كليك يمين: تحريك المنظور (Pan) • العجلة: زووم'
+    : (product?.category?.includes('كنب') || product?.name?.includes('أريكة') || product?.name?.includes('كنبة')
+      ? 'اسحب لتدوير الأريكة • كليك يمين لتحريك المنظور'
+      : 'اسحب لتدوير المجسم • كليك يمين لتحريك المنظور');
 
   return (
-    <div className={`viewer-master-container ${isInsideModal ? 'inside-modal' : ''}`}>
+    <div className={`viewer-master-container ${isInsideModal ? 'inside-modal' : ''} ${fullWindow ? 'full-window' : ''}`}>
       {/* Main 3D Canvas Box */}
-      <div className="viewer-wrapper" aria-label={`عارض ثلاثي الأبعاد لـ ${product?.name}`}>
+      <div
+        className={`viewer-wrapper ${fullWindow ? 'full-window' : ''}`}
+        aria-label={`عارض ثلاثي الأبعاد لـ ${product?.name}`}
+        onContextMenu={(e) => e.preventDefault()}
+      >
         {/* Floating Top Controls (360, Zoom In, Zoom Out, Studio Window) */}
         <div className="viewer-floating-top-controls">
           <button
@@ -349,10 +356,17 @@ export default function ProductViewer({
                   color="#5C5346"
                 />
 
-                {/* Orbit Controls */}
+                {/* Orbit Controls with Left-Click Rotate, Middle Dolly & Right-Click Pan */}
                 <OrbitControls
                   ref={controlsRef}
-                  enablePan={false}
+                  enablePan={true}
+                  panSpeed={1.0}
+                  screenSpacePanning={true}
+                  mouseButtons={{
+                    LEFT: THREE.MOUSE.ROTATE,
+                    MIDDLE: THREE.MOUSE.DOLLY,
+                    RIGHT: THREE.MOUSE.PAN
+                  }}
                   enableDamping
                   dampingFactor={0.06}
                   minDistance={1.2}

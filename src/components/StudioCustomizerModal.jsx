@@ -10,7 +10,8 @@ import {
   Sparkles,
   Layers,
   ChevronDown,
-  Box
+  Box,
+  Sliders
 } from 'lucide-react';
 import FinishPicker from './FinishPicker';
 import LoadingState from './LoadingState';
@@ -23,6 +24,7 @@ export default function StudioCustomizerModal({
   product,
   selectedFinish,
   onSelectFinish,
+  sizes,
   selectedSize,
   onSelectSize,
   selectedCushion,
@@ -30,6 +32,7 @@ export default function StudioCustomizerModal({
   onAddToCart
 }) {
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isOptionsOpen, setIsOptionsOpen] = useState(true);
   const [addedToast, setAddedToast] = useState(false);
 
   // Close on Escape key
@@ -78,7 +81,10 @@ export default function StudioCustomizerModal({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className={`studio-modal-window ${isFullScreen ? 'is-fullscreen' : ''}`}>
+      <div
+        className={`studio-modal-window ${isFullScreen ? 'is-fullscreen' : ''}`}
+        onContextMenu={(e) => e.preventDefault()}
+      >
         {/* Modal Window Header */}
         <div className="studio-modal-header">
           <div className="studio-header-title-wrap">
@@ -119,37 +125,59 @@ export default function StudioCustomizerModal({
           </div>
         )}
 
-        {/* Modal Window Body */}
+        {/* Modal Window Body: Full-Bleed 3D Viewport with Floating Glassmorphism Options */}
         <div className="studio-modal-body">
-          {/* Left / Main Column: 3D Viewport */}
+          {/* 1. Full-Window 3D Viewport taking the entire window */}
           <div className="studio-viewer-pane">
             <Suspense fallback={<LoadingState message="جارٍ تحميل استوديو 3D..." />}>
               <ProductViewer
                 product={product}
                 selectedFinish={selectedFinish}
                 isInsideModal={true}
+                fullWindow={true}
               />
             </Suspense>
           </div>
 
-          {/* Right Column: Customizer Options */}
-          <div className="studio-options-pane">
-            <div className="studio-options-inner">
-              <div className="studio-price-block">
-                <span className="studio-price-label">السعر الإجمالي</span>
-                <div className="studio-price-row">
-                  <span className="studio-price-num">{formattedPrice}</span>
-                  <span className="studio-vat-tag">شامل الضريبة 15%</span>
+          {/* 2. Floating Open Button (When options panel is collapsed) */}
+          {!isOptionsOpen && (
+            <button
+              type="button"
+              className="studio-floating-open-btn"
+              onClick={() => setIsOptionsOpen(true)}
+              title="إظهار خيارات وتخصيص القطعة"
+            >
+              <Sliders size={18} />
+              <span>خيارات التخصيص</span>
+            </button>
+          )}
+
+          {/* 3. Small Floating Glassmorphism Options Panel inside the 3D window */}
+          {isOptionsOpen && (
+            <div className="studio-floating-panel" role="region" aria-label="خيارات التخصيص">
+              <div className="studio-floating-header">
+                <div className="studio-floating-price">
+                  <span className="floating-price-num">{formattedPrice}</span>
+                  <span className="floating-vat-tag">شامل ضريبة القيمة المضافة</span>
                 </div>
+                <button
+                  type="button"
+                  className="studio-floating-close-btn"
+                  onClick={() => setIsOptionsOpen(false)}
+                  title="طي لوحة الخيارات"
+                  aria-label="طي لوحة الخيارات"
+                >
+                  <ChevronDown size={18} />
+                </button>
               </div>
 
-              {/* Accordion Material & Finish Selectors */}
-              <div className="studio-pickers-container">
+              {/* Scrollable Pickers Body */}
+              <div className="studio-floating-body">
                 <FinishPicker
                   finishes={product.finishes}
                   selectedFinish={selectedFinish}
                   onSelectFinish={onSelectFinish}
-                  sizes={product.sizes}
+                  sizes={sizes || product.sizes}
                   selectedSize={selectedSize}
                   onSelectSize={onSelectSize}
                   selectedCushion={selectedCushion}
@@ -157,26 +185,19 @@ export default function StudioCustomizerModal({
                 />
               </div>
 
-              {/* Bottom Sticky Action Bar inside Modal */}
-              <div className="studio-footer-cta">
+              {/* Sticky Action Footer */}
+              <div className="studio-floating-footer">
                 <button
                   type="button"
                   className="btn-customizer-primary-direct studio-submit-btn"
                   onClick={handleModalAddToCart}
                 >
                   <ShoppingBag size={18} />
-                  <span>أضف إلى السلة ({formattedPrice})</span>
-                </button>
-                <button
-                  type="button"
-                  className="studio-btn-cancel"
-                  onClick={onClose}
-                >
-                  إغلاق ومتابعة التسوق
+                  <span>أضف إلى السلة</span>
                 </button>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
