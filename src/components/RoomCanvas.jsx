@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, Suspense, useMemo } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment } from '@react-three/drei';
+import { OrbitControls, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { applyFinishToModel } from '../utils/materialMapping';
 import { getItemBounds } from '../utils/roomUtils';
@@ -567,10 +567,12 @@ export default function RoomCanvas({
           <directionalLight position={[0, -1, 5]} intensity={0.25 * lightIntensity} color="#F4EFEB" />
           <pointLight position={[0, 4.5, 0]} intensity={0.3 * lightIntensity} color="#FFFDF5" distance={20} />
 
-          {/* High-End Studio Environment Reflections for Realistic Texture Specularity */}
-          <Suspense fallback={null}>
-            <Environment preset="city" environmentIntensity={0.6 * lightIntensity} />
-          </Suspense>
+          {/* Realistic Sky/Ground Hemisphere Ambient Fill (0ms, 100% Offline, Zero External CORS calls) */}
+          <hemisphereLight
+            skyColor="#FFFFFF"
+            groundColor="#D8D0C5"
+            intensity={0.65 * lightIntensity}
+          />
 
           {/* Architectural Metric Room Floor with Exact Room Dimensions & Framing */}
           <ArchitecturalRoomFloor

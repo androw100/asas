@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, Suspense, useMemo } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, Center, ContactShadows, Environment, useGLTF } from '@react-three/drei';
+import { OrbitControls, Center, ContactShadows, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { RotateCcw, ZoomIn, ZoomOut, RefreshCw, Eye, Maximize2 } from 'lucide-react';
 import { applyFinishToModel } from '../utils/materialMapping';
@@ -332,9 +332,8 @@ export default function ProductViewer({
                 <directionalLight position={[-6, 5, -5]} intensity={0.5} color="#FFFFFF" />
                 <directionalLight position={[0, -2, 5]} intensity={0.25} color="#F4EFEB" />
 
-                <Suspense fallback={null}>
-                  <Environment preset="city" />
-                </Suspense>
+                {/* Realistic Sky/Ground Hemisphere Ambient Fill (0ms, 100% Offline, Zero External CORS calls) */}
+                <hemisphereLight skyColor="#FFFFFF" groundColor="#DFD8CE" intensity={0.65} />
 
                 {/* Model */}
                 <Suspense fallback={null}>
