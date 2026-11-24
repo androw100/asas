@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 const Home = React.lazy(() => import('./pages/Home'));
 const Collections = React.lazy(() => import('./pages/Collections'));
 const ProductDetails = React.lazy(() => import('./pages/ProductDetails'));
+const RoomPlanner = React.lazy(() => import('./pages/RoomPlanner'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
 
 function ScrollToTop() {
@@ -44,6 +45,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/collections" element={<Collections />} />
+              <Route path="/room-planner" element={<RoomPlanner />} />
               <Route path="/product/:id" element={<ProductDetails />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

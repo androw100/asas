@@ -51,6 +51,14 @@ export default function Navbar() {
                 </NavLink>
               </li>
               <li>
+                <NavLink
+                  to="/room-planner"
+                  className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                >
+                  مصمم الغرف 3D
+                </NavLink>
+              </li>
+              <li>
                 <a href={`${assetUrl('')}#contact`} className="nav-link">
                   تواصل معنا
                 </a>
@@ -84,6 +92,11 @@ export default function Navbar() {
             <li>
               <NavLink to="/collections" className="mobile-nav-link" onClick={closeMobileMenu}>
                 المتجر
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/room-planner" className="mobile-nav-link" onClick={closeMobileMenu}>
+                مصمم الغرف 3D
               </NavLink>
             </li>
             <li>

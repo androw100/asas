@@ -118,7 +118,7 @@ export default function Home() {
               <p className="teaser-description">
                 غيّر ألوان التنجيد، واختر من بين أجود أنواع الأخشاب الطبيعية، ودوّر القطعة 360 درجة لمشاهدة أدق التفاصيل الواقعية.
               </p>
-              <Link to="/product/sofa-1" className="btn btn-primary-pill">
+              <Link to="/room-planner" className="btn btn-primary-pill">
                 <Box size={18} />
                 <span>ابدأ تجربة التخصيص الآن</span>
               </Link>

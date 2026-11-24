@@ -31,7 +31,7 @@ export default function Hero() {
             </p>
 
             <div className="hero-btn-wrap">
-              <Link to="/product/sofa-1" className="btn-hero-primary">
+              <Link to="/room-planner" className="btn-hero-primary">
                 <span>ابدأ التصميم</span>
                 <ArrowLeft size={16} />
               </Link>
