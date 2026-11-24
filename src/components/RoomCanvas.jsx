@@ -1,10 +1,11 @@
 import React, { useRef, useState, useEffect, Suspense, useMemo } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, useGLTF, useProgress } from '@react-three/drei';
+import { OrbitControls, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { applyFinishToModel } from '../utils/materialMapping';
 import { getItemBounds } from '../utils/roomUtils';
 import { assetUrl } from '../utils/assetUrl';
+import { useRealProgress } from '../utils/realProgressTracker';
 
 // Wireframe placeholder showing furniture position while GLB is downloading
 function ItemLoadingPlaceholder({ item }) {
@@ -20,20 +21,21 @@ function ItemLoadingPlaceholder({ item }) {
   );
 }
 
-// Live asset download indicator
+// Live asset download indicator with REAL byte streaming progress
 function RoomProgressOverlay() {
-  const { active, progress } = useProgress();
-  if (!active || progress >= 100) return null;
+  const { active, percent, loadedMB, totalMB } = useRealProgress();
+  if (!active || percent >= 100) return null;
   return (
     <div className="planner-assets-loading-overlay">
       <div className="planner-loading-card">
         <div className="planner-loading-spinner" />
         <div className="planner-loading-text">
           <span>جارٍ تنزيل موديلات الغرفة...</span>
-          <span className="planner-loading-percent">{Math.round(progress)}%</span>
+          <span className="planner-loading-percent">{percent}%</span>
+          <span className="planner-loading-bytes">({loadedMB} / {totalMB} ميجابايت)</span>
         </div>
         <div className="planner-progress-track">
-          <div className="planner-progress-fill" style={{ width: `${Math.round(progress)}%` }} />
+          <div className="planner-progress-fill" style={{ width: `${percent}%` }} />
         </div>
       </div>
     </div>

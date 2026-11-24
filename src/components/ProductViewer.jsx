@@ -1,10 +1,11 @@
 import React, { useRef, useState, useEffect, Suspense, useMemo } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, Center, ContactShadows, useGLTF, useProgress } from '@react-three/drei';
+import { OrbitControls, Center, ContactShadows, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { RotateCcw, ZoomIn, ZoomOut, RefreshCw, Eye, Maximize2 } from 'lucide-react';
 import { applyFinishToModel } from '../utils/materialMapping';
 import { assetUrl } from '../utils/assetUrl';
+import { useRealProgress } from '../utils/realProgressTracker';
 import LoadingState from './LoadingState';
 import ModelErrorState from './ModelErrorState';
 
@@ -85,14 +86,14 @@ function CameraPresetController({ cameraPreset, defaultPos, defaultTarget, contr
   return null;
 }
 
-// Live asset download indicator
-function ProductViewerProgress() {
-  const { active, progress } = useProgress();
-  if (!active || progress >= 100) return null;
+// Live asset download indicator with real byte streaming progress
+function ProductViewerProgress({ modelUrl }) {
+  const { active, percent, loadedMB, totalMB } = useRealProgress(modelUrl);
+  if (!active || percent >= 100) return null;
   return (
     <div className="viewer-download-progress-pill">
       <div className="viewer-download-spinner" />
-      <span>جارٍ تنزيل الموديل ({Math.round(progress)}%)</span>
+      <span>جارٍ تنزيل الموديل {percent}% ({loadedMB} / {totalMB} MB)</span>
     </div>
   );
 }
@@ -295,7 +296,7 @@ export default function ProductViewer({
         </div>
 
         {/* Live Asset Download Indicator */}
-        <ProductViewerProgress />
+        <ProductViewerProgress modelUrl={activeModelUrl} />
 
         {/* Main 3D Canvas */}
         {!showOverlayError && (

@@ -2387,6 +2387,13 @@ html[dir="rtl"] .viewer-master-container.inside-modal .viewer-floating-top-contr
   color: var(--color-accent);
 }
 
+.planner-loading-bytes {
+  font-size: 0.75rem;
+  color: #736B63;
+  direction: ltr;
+  display: inline-block;
+}
+
 .planner-progress-track {
   width: 64px;
   height: 5px;
