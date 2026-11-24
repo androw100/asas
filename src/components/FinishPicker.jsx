@@ -1,22 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { Layers, Check, RotateCcw, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp } from 'lucide-react';
 
-export default function FinishPicker({ finishes = [], selectedFinish, onSelectFinish, sizes = [], selectedSize, onSelectSize }) {
+export default function FinishPicker({
+  finishes = [],
+  selectedFinish,
+  onSelectFinish,
+  sizes = [],
+  selectedSize,
+  onSelectSize,
+  selectedCushion,
+  onSelectCushion
+}) {
   const fabricFinishes = finishes.filter((f) => f.group === 'fabric' || f.target === 'fabric');
   const woodFinishes = finishes.filter((f) => f.group === 'wood' || f.target === 'wood');
   const isDualMaterial = fabricFinishes.length > 0 && woodFinishes.length > 0;
 
-  const [openSection, setOpenSection] = useState(() => (fabricFinishes.length > 0 ? 'fabric' : 'wood'));
+  // Accordion open states - in Image 2, all sections are visible or toggled
+  const [openSections, setOpenSections] = useState({
+    fabric: true,
+    wood: true,
+    size: true,
+    cushion: true
+  });
 
-  useEffect(() => {
-    if (fabricFinishes.length > 0) {
-      setOpenSection('fabric');
-    } else if (woodFinishes.length > 0) {
-      setOpenSection('wood');
-    }
-  }, [finishes]);
-
-  if (!finishes || finishes.length === 0) return null;
+  const toggleSection = (section) => {
+    setOpenSections((prev) => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
 
   // Active selections
   const currentFabric = Array.isArray(selectedFinish)
@@ -30,6 +42,14 @@ export default function FinishPicker({ finishes = [], selectedFinish, onSelectFi
     : selectedFinish?.target === 'wood' || selectedFinish?.group === 'wood'
     ? selectedFinish
     : woodFinishes[0] || null;
+
+  // Default cushion options matching Image 2
+  const cushionOptions = [
+    { id: 'cushion-camel', name: 'وسادة جلد جملي (Camel)', color: '#A86B42' },
+    { id: 'cushion-cream', name: 'وسادة قماش عاجي (Cream)', color: '#EDE8DF' }
+  ];
+
+  const activeCushion = selectedCushion || cushionOptions[0].id;
 
   const handleSelectFabric = (f) => {
     if (isDualMaterial) {
@@ -47,64 +67,58 @@ export default function FinishPicker({ finishes = [], selectedFinish, onSelectFi
     }
   };
 
-  const renderSwatchBtn = (finish, isSelected, onClick) => {
-    const cleanName = finish?.name ? (finish.name.includes('(') ? finish.name.split('(')[0].trim() : finish.name) : '';
-    const isLight =
-      finish.color?.toLowerCase() === '#ffffff' ||
-      finish.color?.toLowerCase() === '#ede8df' ||
-      finish.color?.toLowerCase() === '#d4c4b1' ||
-      finish.color?.toLowerCase() === '#c6b6a3';
+  // Renders a sleek circular swatch matching Image 2 (outer ring on active, no text underneath)
+  const renderSwatchItem = (item, isSelected, onClick) => {
+    const cleanName = item?.name ? item.name.split('(')[0].trim() : '';
 
     return (
       <button
-        key={finish.id}
+        key={item.id}
         type="button"
         role="radio"
         aria-checked={isSelected}
-        aria-label={`اختيار ${finish.name}`}
-        className={`customizer-swatch-item ${isSelected ? 'selected' : ''}`}
+        aria-label={cleanName}
+        className={`luxury-swatch-circle ${isSelected ? 'is-selected' : ''}`}
         onClick={onClick}
-        title={finish.name}
+        title={cleanName}
       >
-        <div className="swatch-outer-ring">
-          <div className="swatch-inner-circle" style={{ backgroundColor: finish.color }}>
-            {isSelected && (
-              <Check size={14} strokeWidth={3} color={isLight ? '#2B221B' : '#FFFFFF'} />
-            )}
-          </div>
-        </div>
-        <span className="swatch-title-label">{cleanName}</span>
+        <span className="luxury-swatch-inner" style={{ backgroundColor: item.color }} />
       </button>
     );
   };
 
+  const availableSizes = sizes && sizes.length > 0 ? sizes : ['240 سم', '280 سم', '320 سم'];
+  const activeSize = selectedSize || availableSizes[0];
+
   return (
     <div className="customizer-accordions-group" aria-label="أدوات التخصيص 3D">
-      {/* 1. Fabric Section (القماش) */}
+      {/* 1. Fabric Accordion (القماش) */}
       {fabricFinishes.length > 0 && (
         <div className="customizer-accordion-card">
           <button
             type="button"
             className="accordion-header-btn"
-            onClick={() => setOpenSection(openSection === 'fabric' ? '' : 'fabric')}
+            onClick={() => toggleSection('fabric')}
           >
             <div className="accordion-title-wrap">
               <span className="accordion-icon-box">🛋️</span>
               <div>
                 <span className="accordion-main-title">القماش</span>
-                <span className="accordion-sub-title">
-                  {currentFabric?.name ? currentFabric.name.split('(')[0].trim() : 'اختر نوع ولون القماش'}
-                </span>
+                <span className="accordion-sub-title">اختر نوع ولون القماش</span>
               </div>
             </div>
-            {openSection === 'fabric' ? <ChevronUp size={18} color="var(--color-text-dim)" /> : <ChevronDown size={18} color="var(--color-text-dim)" />}
+            {openSections.fabric ? (
+              <ChevronUp size={16} color="var(--color-text-dim)" />
+            ) : (
+              <ChevronDown size={16} color="var(--color-text-dim)" />
+            )}
           </button>
 
-          {openSection === 'fabric' && (
+          {openSections.fabric && (
             <div className="accordion-body-content">
-              <div className="swatches-flex-grid">
+              <div className="swatches-horizontal-row">
                 {fabricFinishes.map((f) =>
-                  renderSwatchBtn(f, currentFabric?.id === f.id, () => handleSelectFabric(f))
+                  renderSwatchItem(f, currentFabric?.id === f.id, () => handleSelectFabric(f))
                 )}
               </div>
             </div>
@@ -112,31 +126,33 @@ export default function FinishPicker({ finishes = [], selectedFinish, onSelectFi
         </div>
       )}
 
-      {/* 2. Wood Base Section (الخشب) */}
+      {/* 2. Wood Base Accordion (الخشب) */}
       {woodFinishes.length > 0 && (
         <div className="customizer-accordion-card">
           <button
             type="button"
             className="accordion-header-btn"
-            onClick={() => setOpenSection(openSection === 'wood' ? '' : 'wood')}
+            onClick={() => toggleSection('wood')}
           >
             <div className="accordion-title-wrap">
               <span className="accordion-icon-box">🪵</span>
               <div>
-                <span className="accordion-main-title">الخشب والقاعدة</span>
-                <span className="accordion-sub-title">
-                  {currentWood?.name ? currentWood.name.split('(')[0].trim() : 'اختر نوع ولون الخشب'}
-                </span>
+                <span className="accordion-main-title">الخشب</span>
+                <span className="accordion-sub-title">اختر نوع ولون الخشب</span>
               </div>
             </div>
-            {openSection === 'wood' ? <ChevronUp size={18} color="var(--color-text-dim)" /> : <ChevronDown size={18} color="var(--color-text-dim)" />}
+            {openSections.wood ? (
+              <ChevronUp size={16} color="var(--color-text-dim)" />
+            ) : (
+              <ChevronDown size={16} color="var(--color-text-dim)" />
+            )}
           </button>
 
-          {openSection === 'wood' && (
+          {openSections.wood && (
             <div className="accordion-body-content">
-              <div className="swatches-flex-grid">
+              <div className="swatches-horizontal-row">
                 {woodFinishes.map((w) =>
-                  renderSwatchBtn(w, currentWood?.id === w.id, () => handleSelectWood(w))
+                  renderSwatchItem(w, currentWood?.id === w.id, () => handleSelectWood(w))
                 )}
               </div>
             </div>
@@ -144,43 +160,81 @@ export default function FinishPicker({ finishes = [], selectedFinish, onSelectFi
         </div>
       )}
 
-      {/* 3. Size Section (المقاس) */}
-      {sizes && sizes.length > 0 && (
-        <div className="customizer-accordion-card">
-          <button
-            type="button"
-            className="accordion-header-btn"
-            onClick={() => setOpenSection(openSection === 'size' ? '' : 'size')}
-          >
-            <div className="accordion-title-wrap">
-              <span className="accordion-icon-box">📐</span>
-              <div>
-                <span className="accordion-main-title">المقاس</span>
-                <span className="accordion-sub-title">{selectedSize || sizes[0]}</span>
-              </div>
+      {/* 3. Size Accordion (المقاس) */}
+      <div className="customizer-accordion-card">
+        <button
+          type="button"
+          className="accordion-header-btn"
+          onClick={() => toggleSection('size')}
+        >
+          <div className="accordion-title-wrap">
+            <span className="accordion-icon-box">📐</span>
+            <div>
+              <span className="accordion-main-title">المقاس</span>
+              <span className="accordion-sub-title">اختر المقاس المناسب</span>
             </div>
-            {openSection === 'size' ? <ChevronUp size={18} color="var(--color-text-dim)" /> : <ChevronDown size={18} color="var(--color-text-dim)" />}
-          </button>
-
-          {openSection === 'size' && (
-            <div className="accordion-body-content">
-              <div className="size-options-grid">
-                {sizes.map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    className={`size-pill-btn ${(selectedSize || sizes[0]) === s ? 'active' : ''}`}
-                    onClick={() => onSelectSize && onSelectSize(s)}
-                  >
-                    <span>{s}</span>
-                    {(selectedSize || sizes[0]) === s && <Check size={14} />}
-                  </button>
-                ))}
-              </div>
-            </div>
+          </div>
+          {openSections.size ? (
+            <ChevronUp size={16} color="var(--color-text-dim)" />
+          ) : (
+            <ChevronDown size={16} color="var(--color-text-dim)" />
           )}
-        </div>
-      )}
+        </button>
+
+        {openSections.size && (
+          <div className="accordion-body-content">
+            <div className="luxury-size-select-wrapper">
+              <select
+                className="luxury-size-dropdown"
+                value={activeSize}
+                onChange={(e) => onSelectSize && onSelectSize(e.target.value)}
+                aria-label="اختر المقاس"
+              >
+                {availableSizes.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown size={16} className="luxury-dropdown-arrow" />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 4. Cushions Accordion (الوسائد) matching Image 2 */}
+      <div className="customizer-accordion-card">
+        <button
+          type="button"
+          className="accordion-header-btn"
+          onClick={() => toggleSection('cushion')}
+        >
+          <div className="accordion-title-wrap">
+            <span className="accordion-icon-box">🪑</span>
+            <div>
+              <span className="accordion-main-title">الوسائد</span>
+              <span className="accordion-sub-title">اختر شكل ولون الوسائد</span>
+            </div>
+          </div>
+          {openSections.cushion ? (
+            <ChevronUp size={16} color="var(--color-text-dim)" />
+          ) : (
+            <ChevronDown size={16} color="var(--color-text-dim)" />
+          )}
+        </button>
+
+        {openSections.cushion && (
+          <div className="accordion-body-content">
+            <div className="swatches-horizontal-row">
+              {cushionOptions.map((c) =>
+                renderSwatchItem(c, activeCushion === c.id, () => {
+                  onSelectCushion && onSelectCushion(c.id);
+                })
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

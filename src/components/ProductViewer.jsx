@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, Suspense, useMemo } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Center, ContactShadows, Environment, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
-import { RotateCcw, ZoomIn, ZoomOut, RefreshCw, Eye } from 'lucide-react';
+import { RotateCcw, ZoomIn, ZoomOut, RefreshCw, Eye, Maximize2 } from 'lucide-react';
 import { applyFinishToModel } from '../utils/materialMapping';
 import LoadingState from './LoadingState';
 import ModelErrorState from './ModelErrorState';
@@ -152,7 +152,12 @@ function GLTFModel({ url, product, finish }) {
   );
 }
 
-export default function ProductViewer({ product, selectedFinish }) {
+export default function ProductViewer({
+  product,
+  selectedFinish,
+  onOpenStudioModal,
+  isInsideModal = false
+}) {
   const [webGLSupported] = useState(() => checkWebGLSupport());
   const [modelStatus, setModelStatus] = useState('loaded');
   const [cameraPreset, setCameraPreset] = useState('threequarter');
@@ -210,11 +215,15 @@ export default function ProductViewer({ product, selectedFinish }) {
     { id: 'top', label: 'من الأعلى', icon: '⬆️' }
   ];
 
+  const hintLabel = product?.category?.includes('كنب') || product?.name?.includes('أريكة') || product?.name?.includes('كنبة')
+    ? 'اسحب لتدوير الأريكة ✋'
+    : 'اسحب لتدوير المجسم ✋';
+
   return (
-    <div className="viewer-master-container">
+    <div className={`viewer-master-container ${isInsideModal ? 'inside-modal' : ''}`}>
       {/* Main 3D Canvas Box */}
       <div className="viewer-wrapper" aria-label={`عارض ثلاثي الأبعاد لـ ${product?.name}`}>
-        {/* Floating Top Controls (360, Zoom In, Zoom Out) */}
+        {/* Floating Top Controls (360, Zoom In, Zoom Out, Studio Window) */}
         <div className="viewer-floating-top-controls">
           <button
             type="button"
@@ -245,11 +254,23 @@ export default function ProductViewer({ product, selectedFinish }) {
             <ZoomOut size={16} />
             <span>تصغير</span>
           </button>
+
+          {!isInsideModal && onOpenStudioModal && (
+            <button
+              type="button"
+              className="viewer-control-btn viewer-open-modal-btn"
+              onClick={onOpenStudioModal}
+              title="فتح في استوديو نافذة متصفح منفصلة"
+            >
+              <Maximize2 size={15} />
+              <span>استوديو 3D</span>
+            </button>
+          )}
         </div>
 
         {/* Interaction Hint Pill */}
         <div className="viewer-hint-pill">
-          <span>اسحب لتدوير المجسم ✋</span>
+          <span>{hintLabel}</span>
         </div>
 
         {/* Main 3D Canvas */}

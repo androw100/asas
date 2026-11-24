@@ -10,9 +10,11 @@ import {
   Truck,
   Ruler,
   Box,
-  ChevronLeft
+  ChevronLeft,
+  Maximize2
 } from 'lucide-react';
 import FinishPicker from '../components/FinishPicker';
+import StudioCustomizerModal from '../components/StudioCustomizerModal';
 import LoadingState from './../components/LoadingState';
 import ProductCard from '../components/ProductCard';
 import { products } from '../data/products';
@@ -26,8 +28,10 @@ export default function ProductDetails() {
 
   const [selectedFinishOverride, setSelectedFinishOverride] = useState(null);
   const [selectedSize, setSelectedSize] = useState(product?.sizes ? product.sizes[0] : '240 سم');
+  const [selectedCushion, setSelectedCushion] = useState('cushion-camel');
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [isStudioModalOpen, setIsStudioModalOpen] = useState(false);
   const [addedToCartToast, setAddedToCartToast] = useState(false);
   const [copiedToast, setCopiedToast] = useState(false);
 
@@ -60,6 +64,10 @@ export default function ProductDetails() {
     setSelectedFinishOverride(null);
     if (product?.sizes) setSelectedSize(product.sizes[0]);
   }, [id, product]);
+
+  const cleanProductName = product?.name
+    ? (product.name.includes('(') ? product.name.split('(')[0].trim() : product.name)
+    : 'أريكة مريحة';
 
   const formattedPrice = product?.price
     ? `SAR ${product.price.toLocaleString('en-US')}`
@@ -101,7 +109,7 @@ export default function ProductDetails() {
           <ChevronLeft size={14} className="crumb-separator" />
           <Link to="/collections" className="crumb-link">{product.category}</Link>
           <ChevronLeft size={14} className="crumb-separator" />
-          <span className="crumb-current">{product.name}</span>
+          <span className="crumb-current">{cleanProductName}</span>
         </nav>
 
         {/* Toast Notifications */}
@@ -119,6 +127,21 @@ export default function ProductDetails() {
           </div>
         )}
 
+        {/* In-Browser 3D Customizer Window / Modal */}
+        <StudioCustomizerModal
+          isOpen={isStudioModalOpen}
+          onClose={() => setIsStudioModalOpen(false)}
+          product={product}
+          selectedFinish={selectedFinish}
+          onSelectFinish={setSelectedFinishOverride}
+          sizes={product.sizes}
+          selectedSize={selectedSize}
+          onSelectSize={setSelectedSize}
+          selectedCushion={selectedCushion}
+          onSelectCushion={setSelectedCushion}
+          onAddToCart={handleAddToCart}
+        />
+
         {/* Split Customizer Layout (Viewer Left, Configurator Right) */}
         <div className="customizer-split-grid">
           {/* 1. Left Viewport Area (3D Viewer) */}
@@ -130,7 +153,11 @@ export default function ProductDetails() {
                 </div>
               }
             >
-              <ProductViewer product={product} selectedFinish={selectedFinish} />
+              <ProductViewer
+                product={product}
+                selectedFinish={selectedFinish}
+                onOpenStudioModal={() => setIsStudioModalOpen(true)}
+              />
             </Suspense>
 
             {/* Bottom Viewer Action Strip (Matches Image 2 exactly) */}
@@ -155,6 +182,16 @@ export default function ProductDetails() {
                   <RotateCcw size={16} />
                   <span>إعادة ضبط</span>
                 </button>
+
+                <button
+                  type="button"
+                  className="viewer-action-sub-btn viewer-action-studio-btn"
+                  onClick={() => setIsStudioModalOpen(true)}
+                  title="عرض في نافذة منفصلة تفاعلية"
+                >
+                  <Maximize2 size={16} />
+                  <span>استوديو 3D</span>
+                </button>
               </div>
 
               <button
@@ -171,10 +208,10 @@ export default function ProductDetails() {
           {/* 2. Right Customizer Configurator Panel */}
           <div className="customizer-config-column">
             <div className="config-card-panel">
-              {/* Header: Title, Wishlist, Price */}
+              {/* Header: Clean Arabic Title, Wishlist, Price */}
               <div className="config-header">
                 <div className="config-title-row">
-                  <h1 className="config-product-title">{product.name}</h1>
+                  <h1 className="config-product-title">{cleanProductName}</h1>
                   <button
                     type="button"
                     className={`config-wishlist-btn ${isLiked ? 'liked' : ''}`}
@@ -199,6 +236,8 @@ export default function ProductDetails() {
                 sizes={product.sizes}
                 selectedSize={selectedSize}
                 onSelectSize={setSelectedSize}
+                selectedCushion={selectedCushion}
+                onSelectCushion={setSelectedCushion}
               />
 
               {/* Specifications Box */}
