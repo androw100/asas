@@ -208,41 +208,43 @@ export default function FinishPicker({
         )}
       </div>
 
-      {/* 4. Cushions Accordion (الوسائد) matching Image 2 */}
-      <div className="customizer-accordion-card">
-        <button
-          type="button"
-          className="accordion-header-btn"
-          onClick={() => toggleSection('cushion')}
-        >
-          <div className="accordion-title-wrap">
-            <span className="accordion-icon-box">
-              <Armchair size={18} strokeWidth={1.5} color="#8C827A" />
-            </span>
-            <div>
-              <span className="accordion-main-title">الوسائد</span>
-              <span className="accordion-sub-title">اختر شكل ولون الوسائد</span>
+      {/* 4. Cushions Accordion (الوسائد) matching Image 2 for sofas/seating */}
+      {fabricFinishes.length > 0 && (
+        <div className="customizer-accordion-card">
+          <button
+            type="button"
+            className="accordion-header-btn"
+            onClick={() => toggleSection('cushion')}
+          >
+            <div className="accordion-title-wrap">
+              <span className="accordion-icon-box">
+                <Armchair size={18} strokeWidth={1.5} color="#8C827A" />
+              </span>
+              <div>
+                <span className="accordion-main-title">الوسائد</span>
+                <span className="accordion-sub-title">اختر شكل ولون الوسائد</span>
+              </div>
             </div>
-          </div>
-          {openSections.cushion ? (
-            <ChevronUp size={16} color="var(--color-text-dim)" />
-          ) : (
-            <ChevronDown size={16} color="var(--color-text-dim)" />
-          )}
-        </button>
+            {openSections.cushion ? (
+              <ChevronUp size={16} color="var(--color-text-dim)" />
+            ) : (
+              <ChevronDown size={16} color="var(--color-text-dim)" />
+            )}
+          </button>
 
-        {openSections.cushion && (
-          <div className="accordion-body-content">
-            <div className="swatches-horizontal-row">
-              {cushionOptions.map((c) =>
-                renderSwatchItem(c, activeCushion === c.id, () => {
-                  onSelectCushion && onSelectCushion(c.id);
-                })
-              )}
+          {openSections.cushion && (
+            <div className="accordion-body-content">
+              <div className="swatches-horizontal-row">
+                {cushionOptions.map((c) =>
+                  renderSwatchItem(c, activeCushion === c.id, () => {
+                    onSelectCushion && onSelectCushion(c.id);
+                  })
+                )}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

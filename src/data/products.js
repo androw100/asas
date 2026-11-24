@@ -4,8 +4,7 @@ export const categories = [
   'جميع المنتجات',
   'الكنب',
   'كراسي',
-  'طاولات',
-  'وحدات تخزين'
+  'طاولات'
 ];
 
 export const tableFinishes = [
@@ -320,33 +319,6 @@ const catalog = [
       fov: 38
     },
     finishes: tableFinishes,
-    materialMapping: tableMaterialMapping
-  },
-
-  // ==========================================
-  // 4. وحدات تخزين (Storage & Cabinets)
-  // ==========================================
-  {
-    id: 'cabinet-1',
-    name: 'خزانة ميلان الخشبية (Milan Storage Cabinet)',
-    category: 'وحدات تخزين',
-    tagline: 'تنظيم ذكي وفخامة خشبية هادئة تعزز جمال مساحتك.',
-    description: 'خزانة متعددة الأغراض بتصميم عصري وأبواب ناعمة الإغلاق. توفر مساحة تخزين واسعة لحفظ الأواني والكتب والمقتنيات الثمينة مع الحفاظ على مظهر راقٍ وبسيط.',
-    price: 3200,
-    rating: 4.8,
-    reviewsCount: 31,
-    sizes: ['180 سم × 90 سم'],
-    dimensions: 'العرض 180 سم × العمق 45 سم × الارتفاع 90 سم',
-    materialsDescription: 'خشب طبيعي مصفح بقشرة البلوط الفاخرة، مفصلات ألمانية مخفية بنظام هيدروليك ناعم.',
-    modelUrl: '/furniture/Cabin.glb',
-    thumbnail: '/images/products/cabinet-1.webp',
-    featured: true,
-    cameraDefaults: {
-      position: [7.2, 4.8, 8.0],
-      target: [0, 1.49, 0],
-      fov: 38
-    },
-    finishes: cabinFinishes,
     materialMapping: tableMaterialMapping
   }
 ];

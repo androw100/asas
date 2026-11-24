@@ -29,8 +29,7 @@ export default function Home() {
   const categoryCards = [
     { name: 'الكنب', image: 'images/products/sofa-1.webp', link: '/collections?category=الكنب' },
     { name: 'كراسي', image: 'images/products/chair-1.webp', link: '/collections?category=كراسي' },
-    { name: 'طاولات', image: 'images/products/dining-table-1.webp', link: '/collections?category=طاولات' },
-    { name: 'وحدات تخزين', image: 'images/products/cabinet-1.webp', link: '/collections?category=وحدات تخزين' }
+    { name: 'طاولات', image: 'images/products/dining-table-1.webp', link: '/collections?category=طاولات' }
   ];
 
   return (
