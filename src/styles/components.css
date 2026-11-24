@@ -2319,6 +2319,8 @@
 }
 
 /* Inside Studio Window - Separate top-left zoom/360 controls from top-right options panel to prevent any overlap */
+html[dir="rtl"] .studio-viewer-pane .viewer-floating-top-controls,
+html[dir="rtl"] .viewer-master-container.inside-modal .viewer-floating-top-controls,
 .studio-viewer-pane .viewer-floating-top-controls,
 .viewer-master-container.inside-modal .viewer-floating-top-controls {
   right: auto !important;
@@ -2328,12 +2330,109 @@
 }
 
 @media (max-width: 768px) {
+  html[dir="rtl"] .studio-viewer-pane .viewer-floating-top-controls,
+  html[dir="rtl"] .viewer-master-container.inside-modal .viewer-floating-top-controls,
   .studio-viewer-pane .viewer-floating-top-controls,
   .viewer-master-container.inside-modal .viewer-floating-top-controls {
     right: auto !important;
     left: 12px !important;
     top: 12px !important;
   }
+}
+
+/* 3D Asset Download Progress Overlay for Room Planner */
+.planner-assets-loading-overlay {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  pointer-events: none;
+  animation: fadeIn 0.25s ease;
+}
+
+.planner-loading-card {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(74, 70, 51, 0.15);
+  box-shadow: 0 10px 30px rgba(44, 38, 30, 0.14);
+  border-radius: var(--radius-full);
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #4A4633;
+}
+
+.planner-loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(74, 70, 51, 0.15);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.planner-loading-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.planner-loading-percent {
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.planner-progress-track {
+  width: 64px;
+  height: 5px;
+  background: rgba(74, 70, 51, 0.12);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.planner-progress-fill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
+/* 3D Download Progress Pill for Product Viewer */
+.viewer-download-progress-pill {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(74, 70, 51, 0.15);
+  box-shadow: 0 6px 20px rgba(44, 38, 30, 0.12);
+  border-radius: var(--radius-full);
+  padding: 6px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #4A4633;
+  pointer-events: none;
+  animation: fadeIn 0.2s ease;
+}
+
+.viewer-download-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(74, 70, 51, 0.18);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
 /* Floating Glassmorphism Customizer Panel (Inside 3D Window) */
@@ -2411,10 +2510,12 @@
 }
 
 /* Floating Open Pill Button (When panel is collapsed) */
+html[dir="rtl"] .studio-floating-open-btn,
 .studio-floating-open-btn {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
   z-index: 20;
   display: inline-flex;
   align-items: center;

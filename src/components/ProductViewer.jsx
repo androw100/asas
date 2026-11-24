@@ -1,9 +1,10 @@
 import React, { useRef, useState, useEffect, Suspense, useMemo } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, Center, ContactShadows, useGLTF } from '@react-three/drei';
+import { OrbitControls, Center, ContactShadows, useGLTF, useProgress } from '@react-three/drei';
 import * as THREE from 'three';
 import { RotateCcw, ZoomIn, ZoomOut, RefreshCw, Eye, Maximize2 } from 'lucide-react';
 import { applyFinishToModel } from '../utils/materialMapping';
+import { assetUrl } from '../utils/assetUrl';
 import LoadingState from './LoadingState';
 import ModelErrorState from './ModelErrorState';
 
@@ -84,9 +85,22 @@ function CameraPresetController({ cameraPreset, defaultPos, defaultTarget, contr
   return null;
 }
 
+// Live asset download indicator
+function ProductViewerProgress() {
+  const { active, progress } = useProgress();
+  if (!active || progress >= 100) return null;
+  return (
+    <div className="viewer-download-progress-pill">
+      <div className="viewer-download-spinner" />
+      <span>جارٍ تنزيل الموديل ({Math.round(progress)}%)</span>
+    </div>
+  );
+}
+
 // Renders the GLTF model with finish application
 function GLTFModel({ url, product, finish }) {
-  const gltf = useGLTF(url);
+  const finalUrl = assetUrl(url);
+  const gltf = useGLTF(finalUrl);
   const [embeddedMaterials, setEmbeddedMaterials] = useState({});
 
   useEffect(() => {
@@ -279,6 +293,9 @@ export default function ProductViewer({
         <div className="viewer-hint-pill">
           <span>{hintLabel}</span>
         </div>
+
+        {/* Live Asset Download Indicator */}
+        <ProductViewerProgress />
 
         {/* Main 3D Canvas */}
         {!showOverlayError && (

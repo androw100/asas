@@ -1,10 +1,44 @@
 import React, { useRef, useState, useEffect, Suspense, useMemo } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, useGLTF } from '@react-three/drei';
+import { OrbitControls, useGLTF, useProgress } from '@react-three/drei';
 import * as THREE from 'three';
 import { applyFinishToModel } from '../utils/materialMapping';
 import { getItemBounds } from '../utils/roomUtils';
 import { assetUrl } from '../utils/assetUrl';
+
+// Wireframe placeholder showing furniture position while GLB is downloading
+function ItemLoadingPlaceholder({ item }) {
+  const fp = item?.footprint || { width: 1.5, depth: 1.0 };
+  const h = 0.75;
+  return (
+    <group position={[item.x, 0.04 + h / 2, item.z]} rotation={[0, ((item.rotation || 0) * Math.PI) / 180, 0]}>
+      <mesh>
+        <boxGeometry args={[fp.width, h, fp.depth]} />
+        <meshStandardMaterial color="#8F8275" transparent opacity={0.25} wireframe />
+      </mesh>
+    </group>
+  );
+}
+
+// Live asset download indicator
+function RoomProgressOverlay() {
+  const { active, progress } = useProgress();
+  if (!active || progress >= 100) return null;
+  return (
+    <div className="planner-assets-loading-overlay">
+      <div className="planner-loading-card">
+        <div className="planner-loading-spinner" />
+        <div className="planner-loading-text">
+          <span>جارٍ تنزيل موديلات الغرفة...</span>
+          <span className="planner-loading-percent">{Math.round(progress)}%</span>
+        </div>
+        <div className="planner-progress-track">
+          <div className="planner-progress-fill" style={{ width: `${Math.round(progress)}%` }} />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // Protects individual 3D items from crashing the whole canvas if a model fails to fetch
 class ItemErrorBoundary extends React.Component {
@@ -522,6 +556,7 @@ export default function RoomCanvas({
       className="room-canvas-viewport"
       onContextMenu={(e) => e.preventDefault()}
     >
+      <RoomProgressOverlay />
       <CanvasErrorBoundary>
         <Canvas
           shadows
@@ -596,7 +631,7 @@ export default function RoomCanvas({
           {/* Placed Furniture Items */}
           {placedItems.map((item) => (
             <ItemErrorBoundary key={item.instanceId}>
-              <Suspense fallback={null}>
+              <Suspense fallback={<ItemLoadingPlaceholder item={item} />}>
                 <PlacedFurnitureItem
                   item={item}
                   isSelected={selectedItemId === item.instanceId}
