@@ -104,6 +104,12 @@ function GLTFModel({ url, product, finish }) {
   const gltf = useGLTF(finalUrl);
   const [embeddedMaterials, setEmbeddedMaterials] = useState({});
 
+  // Clone scene so multiple viewers (main page and modal window) each have their own independent scene graph
+  const modelScene = useMemo(() => {
+    if (!gltf?.scene) return null;
+    return gltf.scene.clone(true);
+  }, [gltf?.scene]);
+
   useEffect(() => {
     let isMounted = true;
     if (gltf?.parser) {
@@ -151,18 +157,20 @@ function GLTFModel({ url, product, finish }) {
   }, [gltf]);
 
   useEffect(() => {
-    if (gltf?.scene && finish) {
+    if (modelScene && finish) {
       const allMaterials = {
         ...(gltf.materials || {}),
         ...embeddedMaterials
       };
-      applyFinishToModel(gltf.scene, finish, product, allMaterials);
+      applyFinishToModel(modelScene, finish, product, allMaterials);
     }
-  }, [gltf, finish, product, embeddedMaterials]);
+  }, [modelScene, finish, product, embeddedMaterials, gltf?.materials]);
+
+  if (!modelScene) return null;
 
   return (
     <Center top>
-      <primitive object={gltf.scene} castShadow receiveShadow />
+      <primitive object={modelScene} castShadow receiveShadow />
     </Center>
   );
 }

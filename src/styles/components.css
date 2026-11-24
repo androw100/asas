@@ -2516,6 +2516,53 @@ html[dir="rtl"] .viewer-master-container.inside-modal .viewer-floating-top-contr
   background: rgba(255, 255, 255, 0.65);
 }
 
+.studio-footer-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.studio-save-design-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px 14px;
+  background: #FFFFFF;
+  color: #4A4633;
+  border: 1.5px solid rgba(74, 70, 51, 0.22);
+  border-radius: var(--radius-full);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.studio-save-design-btn:hover {
+  background: #F7F3EE;
+  border-color: #4A4633;
+  color: #1B1713;
+  transform: translateY(-1px);
+}
+
+.studio-save-design-btn.is-saved {
+  background: #F0F7F2;
+  border-color: #2E6B44;
+  color: #2E6B44;
+}
+
+.studio-save-design-btn .saved-icon {
+  color: #2E6B44;
+}
+
+.studio-modal-toast.studio-save-toast {
+  background: rgba(244, 249, 245, 0.96);
+  border: 1px solid rgba(46, 107, 68, 0.25);
+  color: #1D472D;
+}
+
 /* Floating Open Pill Button (When panel is collapsed) */
 html[dir="rtl"] .studio-floating-open-btn,
 .studio-floating-open-btn {

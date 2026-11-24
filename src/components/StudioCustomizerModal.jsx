@@ -11,7 +11,9 @@ import {
   Layers,
   ChevronDown,
   Box,
-  Sliders
+  Sliders,
+  Save,
+  BookmarkCheck
 } from 'lucide-react';
 import FinishPicker from './FinishPicker';
 import LoadingState from './LoadingState';
@@ -34,6 +36,8 @@ export default function StudioCustomizerModal({
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(true);
   const [addedToast, setAddedToast] = useState(false);
+  const [savedDesignToast, setSavedDesignToast] = useState(false);
+  const [isDesignSaved, setIsDesignSaved] = useState(false);
 
   // Close on Escape key
   useEffect(() => {
@@ -71,6 +75,52 @@ export default function StudioCustomizerModal({
     setTimeout(() => setAddedToast(false), 2500);
   };
 
+  const handleSaveDesign = () => {
+    try {
+      const savedDesignsKey = 'asas_saved_designs';
+      const existing = JSON.parse(localStorage.getItem(savedDesignsKey) || '[]');
+
+      const newDesign = {
+        id: `design-${Date.now()}`,
+        productId: product.id,
+        productName: product.name,
+        thumbnail: product.thumbnail,
+        price: product.price,
+        finish: selectedFinish,
+        size: selectedSize,
+        cushion: selectedCushion,
+        savedAt: new Date().toLocaleDateString('ar-SA', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })
+      };
+
+      // Keep latest designs
+      const updated = [
+        newDesign,
+        ...existing.filter((d) => d.productId !== product.id || JSON.stringify(d.finish) !== JSON.stringify(selectedFinish))
+      ].slice(0, 25);
+
+      localStorage.setItem(savedDesignsKey, JSON.stringify(updated));
+
+      // Sync active finish with the main product page
+      if (onSelectFinish && selectedFinish) {
+        onSelectFinish(selectedFinish);
+      }
+
+      setIsDesignSaved(true);
+      setSavedDesignToast(true);
+      setTimeout(() => setSavedDesignToast(false), 3000);
+      setTimeout(() => setIsDesignSaved(false), 4000);
+    } catch (err) {
+      console.warn('Could not save design:', err);
+      setIsDesignSaved(true);
+      setSavedDesignToast(true);
+      setTimeout(() => setSavedDesignToast(false), 2500);
+    }
+  };
+
   return (
     <div
       className="studio-modal-overlay"
@@ -98,6 +148,15 @@ export default function StudioCustomizerModal({
           <div className="studio-header-actions">
             <button
               type="button"
+              className={`studio-win-btn ${isDesignSaved ? 'saved' : ''}`}
+              onClick={handleSaveDesign}
+              title="حفظ هذا التصميم"
+              aria-label="حفظ هذا التصميم"
+            >
+              {isDesignSaved ? <BookmarkCheck size={18} color="#2E6B44" /> : <Save size={18} />}
+            </button>
+            <button
+              type="button"
               className="studio-win-btn"
               onClick={() => setIsFullScreen(!isFullScreen)}
               title={isFullScreen ? 'تصغير النافذة' : 'تكبير ملء الشاشة'}
@@ -116,6 +175,14 @@ export default function StudioCustomizerModal({
             </button>
           </div>
         </div>
+
+        {/* Modal Saved Design Notification */}
+        {savedDesignToast && (
+          <div className="studio-modal-toast studio-save-toast">
+            <BookmarkCheck size={18} color="#2E6B44" />
+            <span>تم حفظ خيارات تصميمك بنجاح وتطبيقها على المنتج!</span>
+          </div>
+        )}
 
         {/* Modal Added Notification */}
         {addedToast && (
@@ -187,14 +254,26 @@ export default function StudioCustomizerModal({
 
               {/* Sticky Action Footer */}
               <div className="studio-floating-footer">
-                <button
-                  type="button"
-                  className="btn-customizer-primary-direct studio-submit-btn"
-                  onClick={handleModalAddToCart}
-                >
-                  <ShoppingBag size={18} />
-                  <span>أضف إلى السلة</span>
-                </button>
+                <div className="studio-footer-actions-grid">
+                  <button
+                    type="button"
+                    className={`studio-save-design-btn ${isDesignSaved ? 'is-saved' : ''}`}
+                    onClick={handleSaveDesign}
+                    title="حفظ هذا التصميم والخيارات للرجوع إليها لاحقاً"
+                  >
+                    {isDesignSaved ? <BookmarkCheck size={18} className="saved-icon" /> : <Save size={18} />}
+                    <span>{isDesignSaved ? 'تم الحفظ' : 'حفظ التصميم'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    className="btn-customizer-primary-direct studio-submit-btn"
+                    onClick={handleModalAddToCart}
+                  >
+                    <ShoppingBag size={18} />
+                    <span>أضف إلى السلة</span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
