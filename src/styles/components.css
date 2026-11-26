@@ -3271,6 +3271,31 @@ html[dir="rtl"] .studio-floating-open-btn,
   flex-wrap: wrap;
 }
 
+.btn-wall-select {
+  padding: 6px 8px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: #FFFFFF;
+  color: var(--color-text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.btn-wall-select:hover {
+  background: #F5EFE6;
+  border-color: #8C7A5B;
+}
+
+.btn-wall-select.active {
+  background: #2B261F;
+  color: #FFFFFF;
+  border-color: #2B261F;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
 /* Precision Position Sliders */
 .inspector-position-sliders {
   background: #FAF8F5;
@@ -3376,6 +3401,31 @@ html[dir="rtl"] .studio-floating-open-btn,
 .gizmo-btn.duplicate:hover {
   background: #EAE6DF;
   color: #2B261F;
+}
+
+.btn-wall-select {
+  padding: 6px 8px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: #FFFFFF;
+  color: var(--color-text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.btn-wall-select:hover {
+  background: #F5EFE6;
+  border-color: #8C7A5B;
+}
+
+.btn-wall-select.active {
+  background: #2B261F;
+  color: #FFFFFF;
+  border-color: #2B261F;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 /* Precision Position Sliders */
@@ -3552,6 +3602,11 @@ html[dir="rtl"] .studio-floating-open-btn,
   background: #FAF8F5;
   border-bottom: 1px solid var(--color-border);
   overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.catalog-categories-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .catalog-tab-btn {

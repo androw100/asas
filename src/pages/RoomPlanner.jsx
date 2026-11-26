@@ -28,7 +28,7 @@ import {
 import { products, tableFinishes } from '../data/products';
 import RoomCanvas from '../components/RoomCanvas';
 import LoadingState from '../components/LoadingState';
-import { getItemBounds } from '../utils/roomUtils';
+import { getItemBounds, snapToRoomWall } from '../utils/roomUtils';
 
 function getDefaultProductFinish(product) {
   if (!product?.finishes || product.finishes.length === 0) return null;
@@ -125,14 +125,30 @@ export default function RoomPlanner() {
   };
 
   // 1. Direct interactive dragging position update from RoomCanvas (strictly clamped)
-  const handleDirectPositionUpdate = (instanceId, x, z) => {
+  const handleDirectPositionUpdate = (instanceId, x, z, rotation) => {
     setPlacedItems((prev) =>
       prev.map((item) => {
         if (item.instanceId === instanceId) {
+          // Windows strictly snap and glide along the room walls
+          if (item.structuralType === 'window') {
+            const snapped = snapToRoomWall(x, z, item, roomWidth, roomDepth);
+            return {
+              ...item,
+              x: snapped.x,
+              z: snapped.z,
+              rotation: rotation !== undefined ? rotation : snapped.rotation
+            };
+          }
+
           const bounds = getItemBounds(item, roomWidth, roomDepth);
           const clampedX = Math.max(bounds.minX, Math.min(bounds.maxX, x));
           const clampedZ = Math.max(bounds.minZ, Math.min(bounds.maxZ, z));
-          return { ...item, x: Number(clampedX.toFixed(2)), z: Number(clampedZ.toFixed(2)) };
+          return {
+            ...item,
+            x: Number(clampedX.toFixed(2)),
+            z: Number(clampedZ.toFixed(2)),
+            ...(rotation !== undefined ? { rotation } : {})
+          };
         }
         return item;
       })
@@ -144,6 +160,27 @@ export default function RoomPlanner() {
     const newInstanceId = `item-${product.id}-${Date.now()}`;
     const scale = product.plannerScale || [0.35, 0.35, 0.35];
     const footprint = product.footprint || { width: 1.5, depth: 1.0 };
+
+    // Windows start directly mounted flush on the back wall
+    if (product.structuralType === 'window') {
+      const snapped = snapToRoomWall(0, -roomDepth / 2 + 0.03, product, roomWidth, roomDepth);
+      const newItem = {
+        instanceId: newInstanceId,
+        ...product,
+        scale,
+        footprint,
+        x: snapped.x,
+        z: snapped.z,
+        rotation: snapped.rotation,
+        finish: getDefaultProductFinish(product)
+      };
+      setPlacedItems((prev) => [...prev, newItem]);
+      setSelectedItemId(newInstanceId);
+      setIsCatalogOpen(false);
+      showToast(`تم تركيب "${product.name.split('(')[0].trim()}" على الجدار بنجاح`);
+      return;
+    }
+
     const tempItem = { footprint, rotation: 0 };
     const bounds = getItemBounds(tempItem, roomWidth, roomDepth);
 
@@ -800,7 +837,12 @@ export default function RoomPlanner() {
                     {fabricFinishes.length === 0 && woodFinishes.length === 0 && (
                       <div>
                         <div className="finishes-header-row">
-                          <span className="finishes-label">الألوان المتاحة:</span>
+                          <span className="finishes-label">
+                            {selectedItem.structuralType ? 'التشطيبات والألوان المعمارية:' : 'الألوان المتاحة:'}
+                          </span>
+                          <span className="finishes-active-name" style={{ fontSize: '0.72rem', color: '#8C7A5B', fontWeight: 600 }}>
+                            {(Array.isArray(selectedItem.finish) ? selectedItem.finish[0]?.name : selectedItem.finish?.name)?.split('(')[0].trim()}
+                          </span>
                         </div>
                         <div className="inspector-swatches-row">
                           {selectedItem.finishes.map((f) => (
@@ -820,65 +862,137 @@ export default function RoomPlanner() {
                 );
               })()}
 
-              {/* Sliders for Direct Precision Positioning (Strictly Constrained to Room Boundaries) */}
-              <div className="inspector-position-sliders">
-                <div className="pos-slider-field">
-                  <div className="pos-label-row">
-                    <span>الموقع بالعرض (X):</span>
-                    <strong>{selectedItem.x}م</strong>
+              {/* Precision Positioning: Wall Glider for Windows vs Metric Sliders for Furniture */}
+              {selectedItem.structuralType === 'window' ? (
+                <div className="inspector-position-sliders">
+                  <div className="pos-label-row" style={{ marginBottom: '4px' }}>
+                    <span style={{ fontWeight: 700, color: 'var(--color-primary)' }}>الجدار المثبت عليه النافذة:</span>
                   </div>
-                  <input
-                    type="range"
-                    min={itemBounds.minX}
-                    max={itemBounds.maxX}
-                    step="0.05"
-                    value={Math.max(itemBounds.minX, Math.min(itemBounds.maxX, selectedItem.x))}
-                    onChange={(e) => handleDirectPositionUpdate(selectedItem.instanceId, Number(e.target.value), selectedItem.z)}
-                  />
-                </div>
-                <div className="pos-slider-field">
-                  <div className="pos-label-row">
-                    <span>الموقع بالعمق (Z):</span>
-                    <strong>{selectedItem.z}م</strong>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginBottom: '8px' }}>
+                    <button
+                      type="button"
+                      className={`btn-wall-select ${selectedItem.rotation === 0 ? 'active' : ''}`}
+                      onClick={() => handleDirectPositionUpdate(selectedItem.instanceId, 0, -roomDepth / 2 + 0.03, 0)}
+                    >
+                      الجدار الخلفي (شمال)
+                    </button>
+                    <button
+                      type="button"
+                      className={`btn-wall-select ${selectedItem.rotation === 270 ? 'active' : ''}`}
+                      onClick={() => handleDirectPositionUpdate(selectedItem.instanceId, roomWidth / 2 - 0.03, 0, 270)}
+                    >
+                      الجدار الأيمن (شرق)
+                    </button>
+                    <button
+                      type="button"
+                      className={`btn-wall-select ${selectedItem.rotation === 90 ? 'active' : ''}`}
+                      onClick={() => handleDirectPositionUpdate(selectedItem.instanceId, -roomWidth / 2 + 0.03, 0, 90)}
+                    >
+                      الجدار الأيسر (غرب)
+                    </button>
+                    <button
+                      type="button"
+                      className={`btn-wall-select ${selectedItem.rotation === 180 ? 'active' : ''}`}
+                      onClick={() => handleDirectPositionUpdate(selectedItem.instanceId, 0, roomDepth / 2 - 0.03, 180)}
+                    >
+                      الجدار الأمامي (جنوب)
+                    </button>
                   </div>
-                  <input
-                    type="range"
-                    min={itemBounds.minZ}
-                    max={itemBounds.maxZ}
-                    step="0.05"
-                    value={Math.max(itemBounds.minZ, Math.min(itemBounds.maxZ, selectedItem.z))}
-                    onChange={(e) => handleDirectPositionUpdate(selectedItem.instanceId, selectedItem.x, Number(e.target.value))}
-                  />
-                </div>
-                <div className="pos-slider-field">
-                  <div className="pos-label-row">
-                    <span>زاوية الدوران:</span>
-                    <strong>{selectedItem.rotation}°</strong>
+
+                  {/* Slider to glide window horizontally along the active wall */}
+                  <div className="pos-slider-field">
+                    <div className="pos-label-row">
+                      <span>التحريك على مسار الجدار:</span>
+                      <strong>
+                        {selectedItem.rotation === 0 || selectedItem.rotation === 180
+                          ? `${selectedItem.x}م`
+                          : `${selectedItem.z}م`}
+                      </strong>
+                    </div>
+                    {selectedItem.rotation === 0 || selectedItem.rotation === 180 ? (
+                      <input
+                        type="range"
+                        min={Number((-roomWidth / 2 + (selectedItem.footprint?.width || 1.45) / 2 + 0.08).toFixed(2))}
+                        max={Number((roomWidth / 2 - (selectedItem.footprint?.width || 1.45) / 2 - 0.08).toFixed(2))}
+                        step="0.05"
+                        value={selectedItem.x}
+                        onChange={(e) => handleDirectPositionUpdate(selectedItem.instanceId, Number(e.target.value), selectedItem.z, selectedItem.rotation)}
+                      />
+                    ) : (
+                      <input
+                        type="range"
+                        min={Number((-roomDepth / 2 + (selectedItem.footprint?.width || 1.45) / 2 + 0.08).toFixed(2))}
+                        max={Number((roomDepth / 2 - (selectedItem.footprint?.width || 1.45) / 2 - 0.08).toFixed(2))}
+                        step="0.05"
+                        value={selectedItem.z}
+                        onChange={(e) => handleDirectPositionUpdate(selectedItem.instanceId, selectedItem.x, Number(e.target.value), selectedItem.rotation)}
+                      />
+                    )}
                   </div>
-                  <input
-                    type="range"
-                    min="0"
-                    max="360"
-                    step="5"
-                    value={selectedItem.rotation}
-                    onChange={(e) => {
-                      const rot = Number(e.target.value);
-                      setPlacedItems((prev) =>
-                        prev.map((it) => {
-                          if (it.instanceId === selectedItem.instanceId) {
-                            const rotatedTemp = { ...it, rotation: rot };
-                            const bounds = getItemBounds(rotatedTemp, roomWidth, roomDepth);
-                            const clampedX = Math.max(bounds.minX, Math.min(bounds.maxX, it.x));
-                            const clampedZ = Math.max(bounds.minZ, Math.min(bounds.maxZ, it.z));
-                            return { ...it, rotation: rot, x: Number(clampedX.toFixed(2)), z: Number(clampedZ.toFixed(2)) };
-                          }
-                          return it;
-                        })
-                      );
-                    }}
-                  />
+                  <span style={{ fontSize: '0.72rem', color: '#8C7A5B', textAlign: 'center', marginTop: '2px' }}>
+                    💡 يمكنك أيضاً سحب النافذة بالماوس مباشرة لتنزلق بسلاسة بين الجدران
+                  </span>
                 </div>
-              </div>
+              ) : (
+                <div className="inspector-position-sliders">
+                  <div className="pos-slider-field">
+                    <div className="pos-label-row">
+                      <span>الموقع بالعرض (X):</span>
+                      <strong>{selectedItem.x}م</strong>
+                    </div>
+                    <input
+                      type="range"
+                      min={itemBounds.minX}
+                      max={itemBounds.maxX}
+                      step="0.05"
+                      value={Math.max(itemBounds.minX, Math.min(itemBounds.maxX, selectedItem.x))}
+                      onChange={(e) => handleDirectPositionUpdate(selectedItem.instanceId, Number(e.target.value), selectedItem.z)}
+                    />
+                  </div>
+                  <div className="pos-slider-field">
+                    <div className="pos-label-row">
+                      <span>الموقع بالعمق (Z):</span>
+                      <strong>{selectedItem.z}م</strong>
+                    </div>
+                    <input
+                      type="range"
+                      min={itemBounds.minZ}
+                      max={itemBounds.maxZ}
+                      step="0.05"
+                      value={Math.max(itemBounds.minZ, Math.min(itemBounds.maxZ, selectedItem.z))}
+                      onChange={(e) => handleDirectPositionUpdate(selectedItem.instanceId, selectedItem.x, Number(e.target.value))}
+                    />
+                  </div>
+                  <div className="pos-slider-field">
+                    <div className="pos-label-row">
+                      <span>زاوية الدوران:</span>
+                      <strong>{selectedItem.rotation}°</strong>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="360"
+                      step="5"
+                      value={selectedItem.rotation}
+                      onChange={(e) => {
+                        const rot = Number(e.target.value);
+                        setPlacedItems((prev) =>
+                          prev.map((it) => {
+                            if (it.instanceId === selectedItem.instanceId) {
+                              const rotatedTemp = { ...it, rotation: rot };
+                              const bounds = getItemBounds(rotatedTemp, roomWidth, roomDepth);
+                              const clampedX = Math.max(bounds.minX, Math.min(bounds.maxX, it.x));
+                              const clampedZ = Math.max(bounds.minZ, Math.min(bounds.maxZ, it.z));
+                              return { ...it, rotation: rot, x: Number(clampedX.toFixed(2)), z: Number(clampedZ.toFixed(2)) };
+                            }
+                            return it;
+                          })
+                        );
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Movement & Rotation Controls */}
               <div className="inspector-controls-grid">
@@ -980,7 +1094,7 @@ export default function RoomPlanner() {
 
           {/* Category Tabs */}
           <div className="catalog-categories-tabs">
-            {['الكل', 'الكنب', 'كراسي', 'طاولات'].map((cat) => (
+            {['الكل', 'عناصر معمارية', 'الكنب', 'كراسي', 'طاولات'].map((cat) => (
               <button
                 key={cat}
                 type="button"

@@ -13,7 +13,11 @@ const defaultFootprints = {
   'chair-2': { width: 0.62, depth: 0.67 },
   'chair-3': { width: 0.65, depth: 0.57 },
   'chair-4': { width: 0.64, depth: 0.64 },
-  'dining-table-1': { width: 2.43, depth: 1.28 }
+  'dining-table-1': { width: 2.43, depth: 1.28 },
+  'arch-door-1': { width: 0.95, depth: 0.20 },
+  'arch-window-1': { width: 1.40, depth: 0.20 },
+  'arch-column-square': { width: 0.45, depth: 0.45 },
+  'arch-column-round': { width: 0.45, depth: 0.45 }
 };
 
 /**
@@ -36,7 +40,8 @@ export function getItemBounds(item, roomWidth = 5.0, roomDepth = 4.0) {
   const effectiveHalfW = (fp.width * cos + fp.depth * sin) / 2;
   const effectiveHalfD = (fp.width * sin + fp.depth * cos) / 2;
 
-  const safetyMargin = 0.08; // 8 cm buffer inside the skirting wall
+  // Doors and windows can reach right up against the room walls (2cm margin)
+  const safetyMargin = item?.structuralType ? 0.02 : 0.08;
 
   const minX = -roomWidth / 2 + effectiveHalfW + safetyMargin;
   const maxX = roomWidth / 2 - effectiveHalfW - safetyMargin;
@@ -52,3 +57,70 @@ export function getItemBounds(item, roomWidth = 5.0, roomDepth = 4.0) {
     effectiveHalfD
   };
 }
+
+/**
+ * Snaps a structural item (like an architectural window or door)
+ * strictly to the nearest room wall (North, South, East, or West),
+ * clamping it within that wall's length and auto-orienting it facing into the room.
+ * 
+ * @param {number} rawX - Pointer X coordinate
+ * @param {number} rawZ - Pointer Z coordinate
+ * @param {Object} item - Item object with footprint
+ * @param {number} roomWidth - Room width in meters
+ * @param {number} roomDepth - Room depth in meters
+ * @returns {Object} { x, z, rotation, wall }
+ */
+export function snapToRoomWall(rawX, rawZ, item, roomWidth = 5.0, roomDepth = 4.0) {
+  const halfW = roomWidth / 2;
+  const halfD = roomDepth / 2;
+  const itemWidth = item?.footprint?.width || 1.40;
+  const margin = itemWidth / 2 + 0.08;
+
+  // Perpendicular distance to each of the 4 room walls
+  const distNorth = Math.abs(rawZ - (-halfD));
+  const distSouth = Math.abs(rawZ - halfD);
+  const distWest = Math.abs(rawX - (-halfW));
+  const distEast = Math.abs(rawX - halfW);
+
+  const minDist = Math.min(distNorth, distSouth, distWest, distEast);
+  const wallOffset = 0.03; // Sits 3cm right along the inner wall plane
+
+  if (minDist === distNorth) {
+    // Snap to North (Back) Wall - Faces +Z into room (rotation 0°)
+    const clampedX = Math.max(-halfW + margin, Math.min(halfW - margin, rawX));
+    return {
+      x: Number(clampedX.toFixed(2)),
+      z: Number((-halfD + wallOffset).toFixed(2)),
+      rotation: 0,
+      wall: 'north'
+    };
+  } else if (minDist === distSouth) {
+    // Snap to South (Front) Wall - Faces -Z into room (rotation 180°)
+    const clampedX = Math.max(-halfW + margin, Math.min(halfW - margin, rawX));
+    return {
+      x: Number(clampedX.toFixed(2)),
+      z: Number((halfD - wallOffset).toFixed(2)),
+      rotation: 180,
+      wall: 'south'
+    };
+  } else if (minDist === distWest) {
+    // Snap to West (Left) Wall - Faces +X into room (rotation 90°)
+    const clampedZ = Math.max(-halfD + margin, Math.min(halfD - margin, rawZ));
+    return {
+      x: Number((-halfW + wallOffset).toFixed(2)),
+      z: Number(clampedZ.toFixed(2)),
+      rotation: 90,
+      wall: 'west'
+    };
+  } else {
+    // Snap to East (Right) Wall - Faces -X into room (rotation 270°)
+    const clampedZ = Math.max(-halfD + margin, Math.min(halfD - margin, rawZ));
+    return {
+      x: Number((halfW - wallOffset).toFixed(2)),
+      z: Number(clampedZ.toFixed(2)),
+      rotation: 270,
+      wall: 'east'
+    };
+  }
+}
+
